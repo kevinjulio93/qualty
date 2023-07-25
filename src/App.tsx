@@ -6,6 +6,7 @@ import AuthGuard from './guards/auth.guard';
 import AuthLayout from './layout/authLayout';
 import { ThemeProvider } from '@mui/material';
 import { APP_THEME } from './constants/theme';
+import { ROUTES } from './constants/routes';
 
 
 function App() {
@@ -15,13 +16,13 @@ function App() {
       <ThemeProvider theme={APP_THEME}>
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<Navigate to='/login' />}></Route>
-            <Route path='*' element={<> Not Found </>}></Route>
+            <Route path={ROUTES.DEFAULT} element={<Navigate to={ROUTES.DASHBOARD} />}></Route>
+            <Route path={'*'} element={<> Not Found </>}></Route>
             <Route element={<AuthLayout/>}>
-              <Route path='login' element={<Login />}></Route>
+              <Route path={ROUTES.LOGIN} element={<Login />}></Route>
             </Route>
             <Route element={<AuthGuard />}>
-              <Route path='/dashboard' element={<Dashboard />}></Route>
+              <Route path={ROUTES.DASHBOARD} element={<Dashboard />}></Route>
             </Route>
           </Routes>
         </BrowserRouter>
