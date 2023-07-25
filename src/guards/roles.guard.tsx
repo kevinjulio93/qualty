@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import { RootState } from "../app/store";
-import { ROUTES } from "../constants";
+import { ROUTES } from "../constants/routes";
 
 export const RolesGuard = () => {
     const authenticated = useSelector((state: RootState) => state.auth.isLogged);
