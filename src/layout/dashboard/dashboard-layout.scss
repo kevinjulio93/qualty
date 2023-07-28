@@ -1,0 +1,32 @@
+.dashboard-layout {
+    display: flex;
+
+    &__side-bar-container {
+        z-index: 999;
+    }
+
+    &__drawer {
+        width: 240px;
+        flex-shrink: 0;
+    }
+
+    &__body-content {
+        flex-direction: 1;
+        padding: 10px;
+    }
+
+    &__top-bar-container {
+        top: auto;
+        bottom: 0;
+
+        &__tool-bar {
+            justify-content: space-between;
+
+            &__image {
+                width: 40px;
+                height: 40px;
+                border: '50%';
+            }
+        }
+    }
+}

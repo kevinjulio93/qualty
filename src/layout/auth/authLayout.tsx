@@ -1,7 +1,7 @@
 import './auth-layout.scss';
 import { Box } from '@mui/material';
 import { Outlet } from 'react-router-dom';
-import logo from '../assets/logo.png';
+import logo from '../../assets/logo.png';
 
 
 const AuthLayout = () => {
