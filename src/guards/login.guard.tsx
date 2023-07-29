@@ -3,9 +3,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import { RootState } from "../app/store";
 import { ROUTES } from "../constants/routes";
 
-export const AuthGuard = () => {
+export const LoginGuard = () => {
     const authenticated = useSelector((state: RootState) => state.auth.user.id);
-    return authenticated ? <Outlet/> : <Navigate replace to={ROUTES.LOGIN}/>
+    return authenticated ? <Navigate replace to={ROUTES.DASHBOARD}/> : <Outlet/> 
 }
 
-export default AuthGuard
+export default LoginGuard

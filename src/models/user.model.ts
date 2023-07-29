@@ -2,7 +2,7 @@
 abstract class Persona {
     name: string;
     email:string
-    password: string;
+    password?: string;
     id: string;
 
     constructor (user?:Persona) {

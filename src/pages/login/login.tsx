@@ -1,33 +1,66 @@
-// import React from 'react';
 import './login.scss'
 import { Button, Card, TextField } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux'
-import { setUser, setPassword, setLogged } from '../../features/auth/authSlice';
-import { RootState } from '../../app/store';
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
+import { useState } from 'react';
+import {  } from "module";
+// import { FecthRequestModel } from '../../models/request.model';
+import { setUser } from '../../features/auth/authSlice';
+import { ROUTES } from '../../constants/routes';
 
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
-  const password = useSelector((state: RootState) => state.auth.password);
-  
-  const login = () => {
-    if (user !== '' && password !== '') {
-        dispatch(setLogged(true));
-    }
-    navigate('/dashboard');
+  // const loginRequest = FecthRequestModel.getInstance();
+  const [credentials, setCredentials] = useState({email:'', password: ''});
+
+
+  const formHanlder = (target: 'email'| 'password', e:any) => {
+    setCredentials({...credentials, [target]:e.target.value});
   }
+
+  const login = async (e:any)=> {
+    e.preventDefault()
+    // const response = await loginRequest.post('/users/login', credentials, true);
+    dispatch(setUser({
+      rol: 'admin',
+      name: 'kevin',
+      email: credentials.email,
+      id: '123456'
+    }))
+    navigate(ROUTES.DASHBOARD);
+  }
+
   return (
     <div className='login-container'>
-      <Card className='login-container__form-container'>
+      <Card className='login-container__card'>
         <img src={logo} alt="Logo" style={{ width: '50px' }} />
+        
         <h3>Bienvenido de vuelta a Qualty Senior</h3>
-        <TextField className='login-container__form-container__field' id="user" label="User" variant="outlined" onBlur={(e) => dispatch(setUser(e.target.value))} />
-        <TextField className='login-container__form-container__field' id="pass" label="Password" variant="outlined" onBlur={(e) => dispatch(setPassword(e.target.value))} />
-        <Button variant="contained" onClick={login}>Ingresar</Button>
+
+        <form className="login-container__card__form-container"  onSubmit={login}>
+          <TextField
+            className='login-container__form-container__field'
+            id="user"
+            name='email'
+            label="User"
+            variant="outlined"
+            onChange={(e)=>formHanlder('email', e)}
+            />
+
+          <TextField
+            className='login-container__form-container__field'
+            id="pass"
+            name='password'
+            label="Password"
+            variant="outlined"
+            onChange={(e)=>formHanlder('password', e)}
+            />
+
+          <Button variant="contained" type='submit'>Ingresar</Button>
+        </form>
       </Card>
     </div>
   )
