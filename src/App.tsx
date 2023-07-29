@@ -9,6 +9,8 @@ import { APP_THEME } from './constants/theme';
 import DashboardLayout from './layout/dashboard/dashboardLayout';
 import { ROUTES } from './constants/routes';
 import LoginGuard from './guards/login.guard';
+import Users from './pages/users/users';
+import Inventory from './pages/inventario/inventory';
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
             <Route element={<AuthGuard />}>
               <Route path={ROUTES.DASHBOARD} element={<DashboardLayout />}>
                 <Route path='index' element={<Dashboard />}></Route>
+                <Route path={ROUTES.USERS} element={<Users />} />
+                <Route path={ROUTES.INVENTORY} element={<Inventory />} />
               </Route>
             </Route>
           </Routes>

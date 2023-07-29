@@ -1,8 +1,10 @@
+import { ROUTES } from "./routes";
+
 export const sectionList = [
     {
         key: "usuarios",
         name: "Usuarios",
-        path: "/usuarios",
+        path: ROUTES.USERS,
         icon: "person",
         hasChilds: false,
     },
@@ -37,7 +39,7 @@ export const sectionList = [
     {
         key: "inventario",
         name: "Inventario",
-        path: "/inventario",
+        path: ROUTES.INVENTORY,
         icon: "draft",
         hasChilds: false,
     },

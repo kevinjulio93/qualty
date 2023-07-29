@@ -1,27 +1,7 @@
 export const ROUTES = {
     LOGIN: '/login',
     DASHBOARD: '/dashboard',
-    DEFAULT: '/'
+    DEFAULT: '/',
+    USERS:'users',
+    INVENTORY: 'inventario'
 }
-export const SECTIONS = [
-    {
-        name: 'Section 1',
-        route: ROUTES.DEFAULT
-    },
-    {
-        name: 'Section 1',
-        route: ROUTES.DEFAULT
-    },
-    {
-        name: 'Section 1',
-        route: ROUTES.DEFAULT
-    },
-    {
-        name: 'Section 1',
-        route: ROUTES.DEFAULT
-    },
-    {
-        name: 'Section 1',
-        route: ROUTES.DEFAULT
-    },
-]

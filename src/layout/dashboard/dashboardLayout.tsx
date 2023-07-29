@@ -12,7 +12,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import './dashboard-layout.scss';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { sectionList } from '../../constants/section-list';
 import logo from '../../assets/logo.png';
 import { ROUTES } from '../../constants/routes';
@@ -94,23 +94,36 @@ const DashboardLayout = () => {
         >
           {sectionList.map((section) => {
             return <>
-              <ListItemButton key={section.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section.key)}>
-                <ListItemIcon>
-                  {getIcon(section.icon)}
-                </ListItemIcon>
-                <ListItemText primary={section.name} />
-                {section.hasChilds ? open ? <ExpandLess /> : <ExpandMore /> : null}
-              </ListItemButton>
+              {!section.hasChilds ?
+                <Link to={section.path}>
+                  <ListItemButton key={section.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section.key)}>
+                    <ListItemIcon>
+                      {getIcon(section.icon)}
+                    </ListItemIcon>
+                    <ListItemText primary={section.name} />
+                  </ListItemButton>
+                </Link> :
+                <ListItemButton key={section.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section.key)}>
+                  <ListItemIcon>
+                    {getIcon(section.icon)}
+                  </ListItemIcon>
+                  <ListItemText primary={section.name} />
+                  {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>}
               {section.hasChilds &&
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
                     {section.childrens?.map((child) => {
-                      return <ListItemButton sx={{ pl: 4 }} key={child.key} onClick={() => handleSectionChange(child.key)}>
-                        <ListItemIcon>
-                          {getIcon(child.icon)}
-                        </ListItemIcon>
-                        <ListItemText primary={child.name} />
-                      </ListItemButton>
+                      return (
+                        <Link to={child.path}>
+                          <ListItemButton sx={{ pl: 4 }} key={child.key} onClick={() => handleSectionChange(child.key)}>
+                            <ListItemIcon>
+                              {getIcon(child.icon)}
+                            </ListItemIcon>
+                            <ListItemText primary={child.name} />
+                          </ListItemButton>
+                        </Link>
+                      )
                     })}
                   </List>
                 </Collapse>
@@ -132,7 +145,7 @@ const DashboardLayout = () => {
             <IconButton color="inherit">
               <AccountCircleIcon />
             </IconButton>
-            <IconButton color="inherit" onClick={()=>logoutFunction()}>
+            <IconButton color="inherit" onClick={() => logoutFunction()}>
               <ExitToAppIcon />
             </IconButton>
           </div>
