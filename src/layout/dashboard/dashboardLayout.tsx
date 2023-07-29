@@ -16,13 +16,15 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { sectionList } from '../../constants/section-list';
 import logo from '../../assets/logo.png';
 import { ROUTES } from '../../constants/routes';
-import { setUser } from '../../features/auth/authSlice';
+import { setLogout } from '../../features/auth/authSlice';
+import { useDispatch } from 'react-redux';
 import { AppUser } from '../../models/user.model';
 
 const DashboardLayout = () => {
   const [selectedSection, setSelectedSection] = useState(sectionList[0].key);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const iconList = {
     person: <PersonIcon />,
     book: <LibraryBooksIcon />,
@@ -53,10 +55,10 @@ const DashboardLayout = () => {
     }
   }
 
-  const logout = () => {
+  const logoutFunction = () => {
     localStorage.removeItem('user');
-    setUser(new AppUser())
-    navigate(ROUTES.LOGIN)
+    dispatch(setLogout(new AppUser()))
+    navigate(ROUTES.DASHBOARD)
   }
 
   return (
@@ -130,7 +132,7 @@ const DashboardLayout = () => {
             <IconButton color="inherit">
               <AccountCircleIcon />
             </IconButton>
-            <IconButton color="inherit" onClick={()=>logout()}>
+            <IconButton color="inherit" onClick={()=>logoutFunction()}>
               <ExitToAppIcon />
             </IconButton>
           </div>
