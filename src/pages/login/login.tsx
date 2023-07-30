@@ -19,7 +19,8 @@ function Login() {
 
 
   const formHanlder = (target: 'email' | 'password', e: any) => {
-    setCredentials({ ...credentials, [target]: e.target.value });
+    const value = target === 'email' ? (e.target.value as string).trim() : e.target.value;
+    setCredentials({ ...credentials, [target]: value });
   }
 
   const login = async (e: any) => {
@@ -32,6 +33,10 @@ function Login() {
       id: '123456'
     }))
     navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
+  }
+
+  const validCredentials = ():boolean => {
+    return credentials.email === '' || credentials.password === '';
   }
 
   return (
@@ -63,7 +68,7 @@ function Login() {
               onChange={(e) => formHanlder('password', e)}
             />
 
-            <Button variant="contained" type='submit'>Ingresar</Button>
+            <Button variant="contained" type='submit' disabled={validCredentials()}>Ingresar</Button>
           </form>
         </div>
 
