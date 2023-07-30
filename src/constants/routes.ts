@@ -3,5 +3,5 @@ export const ROUTES = {
     DASHBOARD: '/dashboard',
     DEFAULT: '/',
     USERS:'users',
-    INVENTORY: 'inventario'
+    INVENTORY: 'inventory'
 }
