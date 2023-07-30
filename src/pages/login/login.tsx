@@ -30,7 +30,7 @@ function Login() {
       email: credentials.email,
       id: '123456'
     }))
-    navigate(ROUTES.DASHBOARD);
+    navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
   }
 
   return (
