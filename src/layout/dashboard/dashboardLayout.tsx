@@ -132,11 +132,7 @@ const DashboardLayout = () => {
           })}
         </List>
       </Drawer>
-      <main className="dashboard-layout__body-content">
-        <h3>Wapeteando el content</h3>
-        <Outlet />
-      </main>
-      <AppBar position="fixed" className='dashboard-layout__top-bar-container' color="default">
+      <AppBar position="fixed" className='dashboard-layout__top-bar-container' color="default" style={{height: '65px'}}>
         <Toolbar className='dashboard-layout__top-bar-container__tool-bar'>
           <IconButton color="inherit">
             <img src="/path/to/user-avatar.png" alt="User Avatar" className='dashboard-layout__top-bar-container__tool-bar__image' />
@@ -151,6 +147,10 @@ const DashboardLayout = () => {
           </div>
         </Toolbar>
       </AppBar>
+      <main className="dashboard-layout__body-content">
+        <h3>Wapeteando el content</h3>
+        <Outlet />
+      </main>
     </div>
   );
 };

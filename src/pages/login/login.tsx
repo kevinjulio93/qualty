@@ -1,5 +1,5 @@
 import './login.scss'
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
@@ -48,7 +48,7 @@ function Login() {
       <div className='login-view__login-form'>
         <div className='login-view__login-form__card'>
           <img className='login-view__login-form__card__logo' src={logo} alt="Logo" />
-          <span className='login-view__login-form__card__title'>Bienvenido a Qualty</span>
+          <Typography variant="h4">Bienvenido a Qualty</Typography>
           <form className="login-view__login-form__card__form-container" onSubmit={login}>
             <TextField
               className='login-view__login-form__form-container__input'

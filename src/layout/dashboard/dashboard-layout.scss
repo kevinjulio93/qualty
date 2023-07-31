@@ -11,8 +11,12 @@
     }
 
     &__body-content {
-        flex-direction: 1;
-        padding: 10px;
+        // padding: 10px;
+        position: absolute;
+        top: 66px;
+        left: 207px;
+        height: calc(100% - 66px);
+        width: calc(100% - 207px);
     }
 
     &__top-bar-container {
