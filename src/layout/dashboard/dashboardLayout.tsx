@@ -65,7 +65,6 @@ const DashboardLayout = () => {
     <div className="dashboard-layout">
       <AppBar position="fixed" className="dashboard-layout__side-bar-container">
         <Toolbar>
-          <img src={logo} alt="Logo" style={{ width: '60px', position: 'absolute', top: '50px', left: '30px' }} />
           <IconButton edge="start" color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
@@ -86,6 +85,7 @@ const DashboardLayout = () => {
           sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
           component="nav"
           aria-labelledby="nested-list-subheader"
+          className='dashboard-layout__drawer__list'
           subheader={
             <ListSubheader component="div" id="nested-list-subheader">
               Secciones
@@ -135,7 +135,7 @@ const DashboardLayout = () => {
       <AppBar position="fixed" className='dashboard-layout__top-bar-container' color="default" style={{height: '65px'}}>
         <Toolbar className='dashboard-layout__top-bar-container__tool-bar'>
           <IconButton color="inherit">
-            <img src="/path/to/user-avatar.png" alt="User Avatar" className='dashboard-layout__top-bar-container__tool-bar__image' />
+            <img src={logo} className='dashboard-layout__top-bar-container__tool-bar__image' />
           </IconButton>
           <div>
             <IconButton color="inherit">
@@ -148,7 +148,6 @@ const DashboardLayout = () => {
         </Toolbar>
       </AppBar>
       <main className="dashboard-layout__body-content">
-        <h3>Wapeteando el content</h3>
         <Outlet />
       </main>
     </div>
