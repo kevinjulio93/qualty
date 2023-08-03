@@ -57,7 +57,8 @@ const DashboardLayout = () => {
 
   const logoutFunction = () => {
     localStorage.removeItem('user');
-    dispatch(setLogout(new AppUser()))
+    const user = new AppUser();
+    dispatch(setLogout({...user}))
     navigate(ROUTES.DASHBOARD)
   }
 

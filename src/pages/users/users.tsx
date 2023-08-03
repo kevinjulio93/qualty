@@ -14,7 +14,7 @@ const columns: GridColDef[] = [
 
 function Users() {
   return (
-    <div style={{ height: 300, width: '100%' }}>
+    <div style={{padding: '10px', height: '100%', width: '100%', boxSizing: 'border-box' }}>
       <DataGrid rows={rows} columns={columns} />
     </div>
   );

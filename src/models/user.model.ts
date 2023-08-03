@@ -1,13 +1,11 @@
 
 abstract class Persona {
-    name: string;
-    email:string
-    password?: string;
-    id: string;
+    name?: string;
+    email?:string
+    id?: string;
 
     constructor (user?:Persona) {
         this.name = user?.name ?? '';
-        this.password = user?.password ?? '';
         this.email = user?.email ?? '';
         this.id = user?.id ?? '';
     }
@@ -15,10 +13,12 @@ abstract class Persona {
 }
 
 export class AppUser extends Persona {
-    rol:string;
+    role?:string;
+    token:string;
 
     constructor(appUser?:AppUser) {
         super(appUser);
-        this.rol = appUser?.rol ?? '';
+        this.role = appUser?.role ?? '';
+        this.token = appUser?.token ?? '';
     }
 }

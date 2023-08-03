@@ -1,21 +1,22 @@
 import './login.scss'
-import { Button, TextField, Typography } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import loginImg from '../../assets/login-img.jpg';
 import { useState } from 'react';
-import { } from "module";
-// import { FecthRequestModel } from '../../models/request.model';
 import { setUser } from '../../features/auth/authSlice';
 import { ROUTES } from '../../constants/routes';
+import { userLogin } from '../../services/login.service';
+import { AppUser } from '../../models/user.model';
 
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const loginRequest = FecthRequestModel.getInstance();
   const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
 
   const formHanlder = (target: 'email' | 'password', e: any) => {
@@ -25,14 +26,18 @@ function Login() {
 
   const login = async (e: any) => {
     e.preventDefault()
-    // const response = await loginRequest.post('/users/login', credentials, true);
-    dispatch(setUser({
-      rol: 'admin',
-      name: 'kevin',
-      email: credentials.email,
-      id: '123456'
-    }))
-    navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
+    setLoading(true)
+    const response = await userLogin(credentials);
+    if (response.status === 200) {
+      setLoading(false)
+      const user = new AppUser(response.result.user);
+      dispatch(setUser({...user}));
+      navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
+    } else {
+      setLoading(false)
+      console.log('no se encontró el usuario');
+      
+    }
   }
 
   const validCredentials = ():boolean => {
@@ -68,7 +73,7 @@ function Login() {
               onChange={(e) => formHanlder('password', e)}
             />
 
-            <Button variant="contained" type='submit' disabled={validCredentials()}>Ingresar</Button>
+            <LoadingButton loading={loading} variant="contained" type='submit' disabled={validCredentials()}>Ingresar</LoadingButton>
           </form>
         </div>
 
