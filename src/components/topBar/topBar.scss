@@ -1,0 +1,22 @@
+.topbar-conintaer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+    &__logo {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        img {
+            width: auto;
+            height: 60px;
+        }
+    }
+
+    &__profile {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+}
