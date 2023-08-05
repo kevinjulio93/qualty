@@ -15,10 +15,12 @@ abstract class Persona {
 export class AppUser extends Persona {
     role?:string;
     token:string;
+    password: string;
 
     constructor(appUser?:AppUser) {
         super(appUser);
         this.role = appUser?.role ?? '';
         this.token = appUser?.token ?? '';
+        this.password = appUser?.password ?? '';
     }
 }

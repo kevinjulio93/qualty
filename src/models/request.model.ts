@@ -1,17 +1,17 @@
+const loggedUser = JSON.parse(localStorage.getItem('user'));
+
 export class FecthRequestModel {
     public static instance: FecthRequestModel;
-    private token:string;
     private url:string;
     
-    constructor(token:string) {
-        this.token = token;
+    constructor() {
         this.url = 'http://localhost:3000'
     }
 
 
-    public static getInstance(token?:string) {
+    public static getInstance() {
         if (!FecthRequestModel.instance){
-            FecthRequestModel.instance = new FecthRequestModel(token || '');
+            FecthRequestModel.instance = new FecthRequestModel();
         }
         return FecthRequestModel.instance;
     }
@@ -31,7 +31,7 @@ export class FecthRequestModel {
     private getFetchOptions(isPublic?: boolean): Record<string, unknown> {
       const resultOptions: Record<string, unknown> = { 'headers': { 'Content-Type': 'application/json' } };
       if (!isPublic) {
-        (resultOptions['headers'] as any)['Authorization'] = `jwt ${this.token}`
+        (resultOptions['headers'] as any)['x-access-token'] = `jwt ${loggedUser.token}`
       }
       return resultOptions;
     }

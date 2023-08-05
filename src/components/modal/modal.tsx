@@ -1,63 +1,89 @@
-import { Avatar, Dialog, DialogTitle, List, ListItem, ListItemAvatar, ListItemButton, ListItemText } from "@mui/material"
-import AddIcon from '@mui/icons-material/Add';
-import PersonIcon from '@mui/icons-material/Person';
-import { blue } from '@mui/material/colors';
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+        padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+        padding: theme.spacing(1),
+    },
+}));
 
-export interface SimpleDialogProps {
-    open: boolean;
-    selectedValue: string;
-    onClose: (value: string) => void;
+export interface DialogTitleProps {
+    id: string;
+    children?: React.ReactNode;
+    onClose: () => void;
 }
 
-const emails = ['username@gmail.com', 'user02@gmail.com'];
+function ModalHeader(props: DialogTitleProps) {
+    const { children, onClose, ...other } = props;
 
-
-function Modal(props: SimpleDialogProps) {
-
-    const { onClose, selectedValue, open } = props;
-
-    const handleClose = () => {
-        onClose(selectedValue);
-    };
-
-    const handleListItemClick = (value: string) => {
-        onClose(value);
-    };
     return (
-        <Dialog onClose={handleClose} open={open}>
-            <DialogTitle>Set backup account</DialogTitle>
-            <slot name="modal-content">
-                <List sx={{ pt: 0 }}>
-                    {emails.map((email) => (
-                        <ListItem disableGutters>
-                            <ListItemButton onClick={() => handleListItemClick(email)} key={email}>
-                                <ListItemAvatar>
-                                    <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                                        <PersonIcon />
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText primary={email} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                    <ListItem disableGutters>
-                        <ListItemButton
-                            autoFocus
-                            onClick={() => handleListItemClick('addAccount')}
-                        >
-                            <ListItemAvatar>
-                                <Avatar>
-                                    <AddIcon />
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Add account" />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-            </slot>
-        </Dialog>
-    )
+        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+            {children}
+            {onClose ? (
+                <IconButton
+                    aria-label="close"
+                    onClick={onClose}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
+            ) : null}
+        </DialogTitle>
+    );
 }
 
-export default Modal
+function Modal(props:any) {
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    return (
+        <div>
+            <Button variant="outlined" onClick={handleClickOpen}>
+                Crear Usuarios
+            </Button>
+            <BootstrapDialog
+                onClose={handleClose}
+                aria-labelledby="customized-dialog-title"
+                open={open}
+            >
+                <ModalHeader id="customized-dialog-title" onClose={handleClose}>
+                    Crear Usuario
+                </ModalHeader>
+                <DialogContent dividers>
+                    {props.children}
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={handleClose}>
+                        Cancelar
+                    </Button>
+                    <Button autoFocus onClick={props.saveUser}>
+                        Guardar
+                    </Button>
+                </DialogActions>
+            </BootstrapDialog>
+        </div>
+    );
+}
+
+export default Modal;

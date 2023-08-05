@@ -1,8 +1,10 @@
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import Modal from '../../components/modal/modal';
-import { Button, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Typography } from '@mui/material';
 import './users.scss'
+import Modal from '../../components/modal/modal';
+import UserForm from '../../components/userForm/userForm';
+import { useEffect, useRef, useState } from 'react';
+import { createUser, getUserList } from '../../services/user.service';
 
 const rows: GridRowsProp = [
   { id: 1, col1: 'Andres Bobadilla', col2: 'Sura EPS' },
@@ -18,33 +20,35 @@ const columns: GridColDef[] = [
 ];
 
 function Users() {
-  const emails = ['username@gmail.com', 'user02@gmail.com'];
-  const [open, setOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(emails[1]);
+  const userRef = useRef(null)
+  // const [rows, setRows] = useState([]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  useEffect(()=>{
+    getUsers();
+  },[])
 
-  const handleClose = (value: string) => {
-    setOpen(false);
-    setSelectedValue(value);
-  };
+  const getUsers = async () => {
+    const users = await getUserList();
+    console.log(users);
+    
+  }
+
+  const saveData = async () => {
+    if (userRef.current !== null) {
+      const user = (userRef.current as any).getUser()
+      await createUser(user)
+    }
+  }
 
   return (
     <div className='users-container'>
       <div className='users-container__actions'>
-      <Typography variant="h5">Listado de usuarios</Typography>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Create User
-        </Button>
+        <Typography variant="h5">Listado de usuarios</Typography>
+        <Modal saveUser={saveData}>
+          <UserForm ref={userRef} ></UserForm>
+        </Modal>
       </div>
       <DataGrid rows={rows} columns={columns} />
-      <Modal
-        selectedValue={selectedValue}
-        open={open}
-        onClose={handleClose}
-      />
     </div>
   );
 }
