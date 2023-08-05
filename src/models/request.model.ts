@@ -31,7 +31,7 @@ export class FecthRequestModel {
     private getFetchOptions(isPublic?: boolean): Record<string, unknown> {
       const resultOptions: Record<string, unknown> = { 'headers': { 'Content-Type': 'application/json' } };
       if (!isPublic) {
-        (resultOptions['headers'] as any)['x-access-token'] = `jwt ${loggedUser.token}`
+        (resultOptions['headers'] as any)['x-access-token'] = `${loggedUser.token}`
       }
       return resultOptions;
     }
