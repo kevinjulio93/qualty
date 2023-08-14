@@ -23,7 +23,7 @@ function TopBar() {
 
     return (
         <>
-            <Paper className='topbar-conintaer' sx={{ height: '60px', width: '100%', position: 'fixed' }}>
+            <Paper className='topbar-conintaer' sx={{ height: '100px', width: '100%', position: 'fixed' }}>
                 <div className='topbar-conintaer__logo'> <img src={logo} alt="" /></div>
                 <div className='topbar-conintaer__profile'>
                     <Avatar alt="Remy Sharp" src={avatar} />

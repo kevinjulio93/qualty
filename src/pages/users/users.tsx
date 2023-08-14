@@ -1,36 +1,47 @@
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { useEffect, useRef, useState } from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Typography } from '@mui/material';
 import './users.scss'
 import Modal from '../../components/modal/modal';
 import UserForm from '../../components/userForm/userForm';
-import { useEffect, useRef, useState } from 'react';
 import { createUser, getUserList } from '../../services/user.service';
 
-const rows: GridRowsProp = [
-  { id: 1, col1: 'Andres Bobadilla', col2: 'Sura EPS' },
-  { id: 2, col1: 'Kevin Julio', col2: 'Comeva EPS' },
-  { id: 3, col1: 'Keiner Pajaro', col2: 'Salud Total' },
-  { id: 4, col1: 'Hernando Ariza', col2: 'Sura EPS' },
-
-];
-
 const columns: GridColDef[] = [
-  { field: 'col1', headerName: 'Nombre', width: 150 },
-  { field: 'col2', headerName: 'EPS', width: 150 },
+    { field: 'nombre', headerName: 'Nombre', width: 300 },
+    { field: 'email', headerName: 'Email', width: 300 },
+    { field: 'role', headerName: 'Role', width: 300 },
+    {field: 'actions', headerName: 'Acciones', width: 300}
 ];
 
 function Users() {
   const userRef = useRef(null)
-  // const [rows, setRows] = useState([]);
+  const [users, setUsers] = useState(null);
+  const [rows, setRows] = useState(null);
+  
 
   useEffect(()=>{
     getUsers();
   },[])
 
+  function createGridRows(userList) {
+    const rowsList = [];
+    userList.forEach((user, index) => {
+        rowsList.push({
+            id: index,
+            nombre: user.name,
+            email: user.email,
+            role: user.role,
+            actions: 'Editar - Eliminar'
+        });
+    });
+    setRows(rowsList);
+  }
+
   const getUsers = async () => {
-    const users = await getUserList();
-    console.log(users);
-    
+    const response = await getUserList();
+    const userList = response.result.data;
+    createGridRows(userList);
+    setUsers(userList);
   }
 
   const saveData = async () => {
@@ -41,7 +52,7 @@ function Users() {
   }
 
   return (
-    <div className='users-container'>
+    rows && <div className='users-container'>
       <div className='users-container__actions'>
         <Typography variant="h5">Listado de usuarios</Typography>
         <Modal saveUser={saveData}>

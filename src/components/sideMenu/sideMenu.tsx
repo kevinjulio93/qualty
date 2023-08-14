@@ -6,6 +6,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import DraftsIcon from '@mui/icons-material/Drafts';
+import EmojiPeople from '@mui/icons-material/EmojiPeople';
 import { useState } from 'react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
@@ -32,7 +33,8 @@ function SideMenu() {
         draft: <DraftsIcon />,
         assist: <AssistWalkerIcon />,
         eye: <RemoveRedEyeIcon />,
-        smile: <InsertEmoticonIcon />
+        smile: <InsertEmoticonIcon />,
+        beneficiaries: <EmojiPeople />
     };
 
     const getIcon = (icon: string) => {
@@ -43,6 +45,7 @@ function SideMenu() {
             case 'eye': return iconList.eye;
             case 'assist': return iconList.assist;
             case 'smile': return iconList.smile;
+            case 'beneficiaries': return iconList.beneficiaries
             default: return iconList.draft;
         }
     }

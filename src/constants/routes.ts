@@ -3,5 +3,6 @@ export const ROUTES = {
     DASHBOARD: '/dashboard',
     DEFAULT: '/',
     USERS:'users',
-    INVENTORY: 'inventory'
+    INVENTORY: 'inventory',
+    BENEFICIARIES: 'beneficiaries'
 }
