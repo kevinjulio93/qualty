@@ -4,5 +4,6 @@ export const ROUTES = {
     DEFAULT: '/',
     USERS:'users',
     INVENTORY: 'inventory',
-    BENEFICIARIES: 'beneficiaries'
+    BENEFICIARIES: 'beneficiaries',
+    BEN_LIST: 'ben_list',
 }

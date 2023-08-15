@@ -11,6 +11,7 @@ import { ROUTES } from './constants/routes';
 import LoginGuard from './guards/login.guard';
 import Users from './pages/users/users';
 import Inventory from './pages/inventario/inventory';
+import BeneficiariesList from './pages/beneficiariesList/beneficiariesList';
 import Beneficiaries from './pages/beneficiaries/beneficiaries';
 
 
@@ -33,6 +34,7 @@ function App() {
                 <Route path='index' element={<Dashboard />}></Route>
                 <Route path={ROUTES.USERS} element={<Users />} />
                 <Route path={ROUTES.INVENTORY} element={<Inventory />} />
+                <Route path={ROUTES.BEN_LIST} element={<BeneficiariesList />} />
                 <Route path={ROUTES.BENEFICIARIES} element={<Beneficiaries />} />
               </Route>
             </Route>
