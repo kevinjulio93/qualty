@@ -7,32 +7,32 @@ import UserForm from '../../components/userForm/userForm';
 import { createUser, getUserList } from '../../services/user.service';
 
 const columns: GridColDef[] = [
-    { field: 'nombre', headerName: 'Nombre', width: 300 },
-    { field: 'email', headerName: 'Email', width: 300 },
-    { field: 'role', headerName: 'Role', width: 300 },
-    {field: 'actions', headerName: 'Acciones', width: 300}
+  { field: 'nombre', headerName: 'Nombre', width: 300 },
+  { field: 'email', headerName: 'Email', width: 300 },
+  { field: 'role', headerName: 'Role', width: 300 },
+  { field: 'actions', headerName: 'Acciones', width: 300 }
 ];
 
 function Users() {
   const userRef = useRef(null)
-  const [users, setUsers] = useState(null);
-  const [rows, setRows] = useState(null);
-  
+  const [users, setUsers] = useState([]);
+  const [rows, setRows] = useState([]);
 
-  useEffect(()=>{
+
+  useEffect(() => {
     getUsers();
-  },[])
+  }, [])
 
-  function createGridRows(userList) {
-    const rowsList = [];
-    userList.forEach((user, index) => {
-        rowsList.push({
-            id: index,
-            nombre: user.name,
-            email: user.email,
-            role: user.role,
-            actions: 'Editar - Eliminar'
-        });
+  function createGridRows(userList: any[]) {
+    const rowsList: Array<any> = [];
+    userList.forEach((user: any, index: number) => {
+      rowsList.push({
+        id: index,
+        nombre: user.name,
+        email: user.email,
+        role: user.role,
+        actions: 'Editar - Eliminar'
+      });
     });
     setRows(rowsList);
   }
@@ -52,7 +52,8 @@ function Users() {
   }
 
   return (
-    rows && <div className='users-container'>
+    rows &&
+    <div className='users-container'>
       <div className='users-container__actions'>
         <Typography variant="h5">Listado de usuarios</Typography>
         <Modal saveUser={saveData}>
@@ -60,6 +61,7 @@ function Users() {
         </Modal>
       </div>
       <DataGrid rows={rows} columns={columns} />
+      {/* <TableComponent></TableComponent> */}
     </div>
   );
 }
