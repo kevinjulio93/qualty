@@ -1,19 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import './users.scss'
 import Modal from '../../components/modal/modal';
 import UserForm from '../../components/userForm/userForm';
 import { createUser, getUserList } from '../../services/user.service';
 import { Table, TableRow, TableCell } from '../../components/table/table';
+import EditIcon from '@mui/icons-material/Edit';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 function Users() {
   const userRef = useRef(null)
   const [users, setUsers] = useState([]);  
 
-  useEffect(()=>{
+
+  useEffect(() => {
     getUsers();
-  },[])
+  }, [])
 
 
   const getUsers = async () => {
@@ -50,7 +53,12 @@ function Users() {
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
-              <TableCell>Editar - Eliminar</TableCell>
+              <TableCell>
+                <Stack  direction="row" spacing={2}> 
+                  <EditIcon></EditIcon>
+                  <ClearIcon></ClearIcon>
+                </Stack>
+              </TableCell>
             </TableRow>
           );
         })}

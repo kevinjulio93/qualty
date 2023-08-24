@@ -1,60 +1,64 @@
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import { Button, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
+import { Table, TableCell, TableRow } from '../../components/table/table';
+import EditIcon from '@mui/icons-material/Edit';
+import ClearIcon from '@mui/icons-material/Clear';
+import { useEffect, useState } from 'react';
+import { getBeneficiariesList } from '../../services/beneficiaries.service';
 
-const columns: GridColDef[] = [
-    { field: 'nombre', headerName: 'Nombre', width: 300 },
-    { field: 'cedula', headerName: 'Cedula', width: 300 },
-    { field: 'association', headerName: 'Asociación', width: 300 },
-    { field: 'eps', headerName: 'EPS', width: 300 },
-    {field: 'actions', headerName: 'Acciones', width: 300}
-];
-
-const rows: GridRowsProp = [
-    {
-        id: 1,
-        nombre: "Kevin Julio",
-        cedula: "156645454",
-        association: "los chiquiluki",
-        eps: "SURA",
-        actions: "Editar - Eliminar"
-    },
-    {
-        id: 2,
-        nombre: "Andres Bobadilla",
-        cedula: "165455677",
-        association: "cachones alegres",
-        eps: "Salud Total",
-        actions: "Editar - Eliminar"
-    },
-    {
-        id: 3,
-        nombre: "Hernando Ariza",
-        cedula: "1005434345",
-        association: "Los huevo muedto",
-        eps: "SURA",
-        actions: "Editar - Eliminar"
-    },
-];
 
 function BeneficiariesList() {
+  const [benfs, setBenfs] = useState([]);  
   const navigate = useNavigate();
 
-  const handleClickOpen = () => {
+  useEffect(() => {
+    getBenfs();
+  }, [])
 
+  const getBenfs = async () => {
+    const response = await getBeneficiariesList();
+    const dataList = response.result.data;
+    setBenfs(dataList);
+  }
+
+  const handleClickOpen = () => {
     navigate(ROUTES.DASHBOARD + '/' + ROUTES.BENEFICIARIES);
   };
 
   return (
-    rows && <div className='users-container'>
+    benfs.length > 0 && <div className='users-container'>
       <div className='users-container__actions'>
         <Typography variant="h5">Listado de beneficiarios</Typography>
         <Button variant="outlined" onClick={handleClickOpen}>
             Crear Beneficiario
         </Button>
       </div>
-      <DataGrid rows={rows} columns={columns} />
+      <Table>
+        <TableRow header>
+          <TableCell>Nombre</TableCell>
+          <TableCell>Cedula</TableCell>
+          <TableCell>Asociación</TableCell>
+          <TableCell>EPS</TableCell>
+          <TableCell>Acciones</TableCell>
+        </TableRow>
+        {benfs.map((beneficiary: any) => {
+          return (
+            <TableRow>
+              <TableCell>{beneficiary.role}</TableCell>
+              <TableCell>{beneficiary.identification}</TableCell>
+              <TableCell>{beneficiary.municipality}</TableCell>
+              <TableCell>{beneficiary.eps}</TableCell>
+              <TableCell>
+                <Stack  direction="row" spacing={2}> 
+                  <EditIcon></EditIcon>
+                  <ClearIcon></ClearIcon>
+                </Stack>
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </Table>
     </div>
   );
 }

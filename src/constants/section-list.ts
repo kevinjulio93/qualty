@@ -16,33 +16,47 @@ export const sectionList = [
         hasChilds: false,
     },
     {
-        key: "valoraciones",
-        name: "Valoraciones",
-        path: "/valoraciones",
-        icon: "book",
-        hasChilds: true,
-        childrens: [
-            {
-                key: "fisio",
-                name: "Fisioterapia",
-                path: "/fisioterapia",
-                icon: "assist",
-
-            },
-            {
-                key: "odontologia",
-                name: "Odontologia",
-                path: "/odontologia",
-                icon: "smile",
-            },
-            {
-                key: "oftamologia",
-                name: "Oftamologia",
-                path: "/oftamologia",
-                icon: "eye",
-            }
-        ]
+        key: "talleres",
+        name: "Talleres",
+        path: ROUTES.ACTIVITIES,
+        icon: "beneficiaries",
+        hasChilds: false,
     },
+    {
+        key: "roles",
+        name: "Roles",
+        path: ROUTES.ROLES,
+        icon: "beneficiaries",
+        hasChilds: false,
+    },
+    // {
+    //     key: "valoraciones",
+    //     name: "Valoraciones",
+    //     path: "/valoraciones",
+    //     icon: "book",
+    //     hasChilds: true,
+    //     childrens: [
+    //         {
+    //             key: "fisio",
+    //             name: "Fisioterapia",
+    //             path: "/fisioterapia",
+    //             icon: "assist",
+
+    //         },
+    //         {
+    //             key: "odontologia",
+    //             name: "Odontologia",
+    //             path: "/odontologia",
+    //             icon: "smile",
+    //         },
+    //         {
+    //             key: "oftamologia",
+    //             name: "Oftamologia",
+    //             path: "/oftamologia",
+    //             icon: "eye",
+    //         }
+    //     ]
+    // },
     {
         key: "inventario",
         name: "Inventario",

@@ -8,7 +8,7 @@ type TableRowProps = {
 
 const Table = ({ children }: TableRowProps) => {
   return (
-    <table className="table">
+    <table className="table-component">
       {children}
     </table>
   );
@@ -17,9 +17,18 @@ const Table = ({ children }: TableRowProps) => {
 const TableRow = ({ children, header }: TableRowProps) => {
   const rowClassName = header ? 'table-header-row' : 'table-data-row';
   return (
-    <tr className={rowClassName}>
-      {children}
-    </tr>
+    header ?
+    <thead>
+        <tr className={rowClassName}>
+            {children}
+        </tr>
+    </thead>
+    :
+    <tbody>
+        <tr className={rowClassName}>
+            {children}
+        </tr>
+    </tbody>
   );
 };
 

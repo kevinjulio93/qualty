@@ -1,0 +1,14 @@
+.float-simple-dialog {
+    border-radius: 12px;
+    position: absolute;
+    overflow: hidden auto;
+    min-height: 16px;
+    width: 100px;
+    outline: 0px;
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 20px;
+    max-height: calc(100% - 96px);
+    color: rgb(176, 184, 196);
+    background-image: none;
+    border: 1px solid rgb(31, 38, 46);
+    background-color: rgb(16, 20, 24);
+}
