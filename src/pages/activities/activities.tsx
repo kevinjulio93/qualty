@@ -49,9 +49,9 @@ function Activities() {
           <TableCell>Role</TableCell>
           <TableCell>Acciones</TableCell>
         </TableRow>
-        {Boolean(roles.length) && roles.map((user: any) => {
+        {Boolean(roles.length) && roles.map((user: any, index) => {
           return (
-            <TableRow>
+            <TableRow key={index}>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>

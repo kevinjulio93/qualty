@@ -53,10 +53,10 @@ function SideMenu() {
         <>
             <Paper elevation={2} sx={{ width: '100%', height: '100%', maxWidth: 360 }}>
                 <List>
-                    {sectionList.map((section: any) => {
+                    {sectionList.map((section: any, index) => {
                         return <>
                             {!section.hasChilds ?
-                                <Link className='menu-item' to={section.path}>
+                                <Link key={index} className='menu-item' to={section.path}>
                                     <ListItemButton key={section?.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section?.key)}>
                                         <ListItemIcon>
                                             {getIcon(section.icon)}

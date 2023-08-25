@@ -50,9 +50,9 @@ function Roles() {
           <TableCell>Role</TableCell>
           <TableCell>Acciones</TableCell>
         </TableRow>
-        {Boolean(roles.length) && roles.map((role: any) => {
+        {Boolean(roles.length) && roles.map((role: any, index) => {
           return (
-            <TableRow>
+            <TableRow key={index}>
               <TableCell>{role.role}</TableCell>
               <TableCell>{role.email}</TableCell>
               <TableCell>{role.role}</TableCell>

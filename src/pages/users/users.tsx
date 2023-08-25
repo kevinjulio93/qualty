@@ -11,7 +11,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 function Users() {
   const userRef = useRef(null)
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([{name: 'admin', email:'email', role:'role'}]);
 
 
   useEffect(() => {
@@ -22,7 +22,8 @@ function Users() {
   const getUsers = async () => {
     const response = await getUserList();
     const userList = response.result.data;
-    setUsers(userList);
+    console.log(userList);
+    
   }
 
   const saveData = async () => {
@@ -33,7 +34,6 @@ function Users() {
   }
 
   return (
-    users.length > 0 &&
     <div className='users-container'>
       <div className='users-container__actions'>
         <Typography variant="h5">Listado de usuarios</Typography>
@@ -48,9 +48,9 @@ function Users() {
           <TableCell>Role</TableCell>
           <TableCell>Acciones</TableCell>
         </TableRow>
-        {users.map((user: any) => {
+        {users.length > 0 && users.map((user: any, index) => {
           return (
-            <TableRow>
+            <TableRow key={index}>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
