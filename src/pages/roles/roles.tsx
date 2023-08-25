@@ -11,17 +11,17 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 function Roles() {
     const userRef = useRef(null)
-    const [roles, setRoles] = useState([{name: 'admin', email:'email', role:'role'}]);
+    const [roles, setRoles] = useState([]);
 
     useEffect(() => {
-        // getRoles()
+        getRoles()
     }, [])
 
     const getRoles = async () => {
         try {
             const response = await getAllroles();
             if (response.status === 200) {
-                setRoles(response.result);
+                setRoles(response.result.data);
             }
         } catch (error) {
 
@@ -45,17 +45,17 @@ function Roles() {
       </div>
       <Table>
         <TableRow header>
-          <TableCell>Nombre</TableCell>
+          <TableCell>Role</TableCell>
           <TableCell>Email</TableCell>
           <TableCell>Role</TableCell>
           <TableCell>Acciones</TableCell>
         </TableRow>
-        {Boolean(roles.length) && roles.map((user: any) => {
+        {Boolean(roles.length) && roles.map((role: any) => {
           return (
             <TableRow>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role}</TableCell>
+              <TableCell>{role.role}</TableCell>
+              <TableCell>{role.email}</TableCell>
+              <TableCell>{role.role}</TableCell>
               <TableCell>
                 <Stack direction="row" spacing={2}>
                   <EditIcon></EditIcon>
