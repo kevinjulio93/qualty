@@ -13,6 +13,8 @@ import Users from './pages/users/users';
 import Inventory from './pages/inventario/inventory';
 import BeneficiariesList from './pages/beneficiariesList/beneficiariesList';
 import Beneficiaries from './pages/beneficiaries/beneficiaries';
+import Roles from './pages/roles/roles';
+import Activities from './pages/activities/activities';
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
               <Route path={ROUTES.DASHBOARD} element={<DashboardLayout />}>
                 <Route path='index' element={<Dashboard />}></Route>
                 <Route path={ROUTES.USERS} element={<Users />} />
+                <Route path={ROUTES.ROLES} element={<Roles />} />
+                <Route path={ROUTES.ACTIVITIES} element={<Activities />} />
                 <Route path={ROUTES.INVENTORY} element={<Inventory />} />
                 <Route path={ROUTES.BEN_LIST} element={<BeneficiariesList />} />
                 <Route path={ROUTES.BENEFICIARIES} element={<Beneficiaries />} />

@@ -35,8 +35,6 @@ function Login() {
       navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
     } else {
       setLoading(false)
-      console.log('no se encontró el usuario');
-      
     }
   }
 

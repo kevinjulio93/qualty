@@ -60,7 +60,7 @@ function Modal(props:any) {
     return (
         <div>
             <Button variant="outlined" onClick={handleClickOpen}>
-                Crear Usuarios
+                {props.buttonText}
             </Button>
             <BootstrapDialog
                 onClose={handleClose}
