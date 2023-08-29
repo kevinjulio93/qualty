@@ -57,6 +57,11 @@ function Modal(props:any) {
         setOpen(false);
     };
 
+    const handleSave = () => {
+        props.saveUser();
+        setOpen(false);
+    }
+
     return (
         <div>
             <Button variant="outlined" onClick={handleClickOpen}>
@@ -77,7 +82,7 @@ function Modal(props:any) {
                     <Button autoFocus onClick={handleClose}>
                         Cancelar
                     </Button>
-                    <Button autoFocus onClick={props.saveUser}>
+                    <Button autoFocus onClick={handleSave}>
                         Guardar
                     </Button>
                 </DialogActions>

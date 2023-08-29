@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
 import { getBeneficiariesList } from '../../services/beneficiaries.service';
+import LoadingComponent from '../../components/loading/loading';
 
 
 function BeneficiariesList() {
@@ -27,7 +28,7 @@ function BeneficiariesList() {
   };
 
   return (
-    benfs.length > 0 && <div className='users-container'>
+    benfs.length > 0 ? <div className='users-container'>
       <div className='users-container__actions'>
         <Typography variant="h5">Listado de beneficiarios</Typography>
         <Button variant="outlined" onClick={handleClickOpen}>
@@ -45,9 +46,9 @@ function BeneficiariesList() {
         {benfs.map((beneficiary: any) => {
           return (
             <TableRow>
-              <TableCell>{beneficiary.role}</TableCell>
+              <TableCell>{beneficiary.full_name}</TableCell>
               <TableCell>{beneficiary.identification}</TableCell>
-              <TableCell>{beneficiary.municipality}</TableCell>
+              <TableCell>{beneficiary.neighborhood}</TableCell>
               <TableCell>{beneficiary.eps}</TableCell>
               <TableCell>
                 <Stack  direction="row" spacing={2}> 
@@ -59,7 +60,8 @@ function BeneficiariesList() {
           );
         })}
       </Table>
-    </div>
+    </div> 
+    : <LoadingComponent></LoadingComponent>
   );
 }
 

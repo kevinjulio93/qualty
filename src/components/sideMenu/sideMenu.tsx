@@ -54,7 +54,7 @@ function SideMenu() {
             <Paper elevation={2} sx={{ width: '100%', height: '100%', maxWidth: 360 }}>
                 <List>
                     {sectionList.map((section: any, index) => {
-                        return <>
+                        return <div key={index}>
                             {!section.hasChilds ?
                                 <Link key={index} className='menu-item' to={section.path}>
                                     <ListItemButton key={section?.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section?.key)}>
@@ -89,7 +89,7 @@ function SideMenu() {
                                     </List>
                                 </Collapse>
                             }
-                        </>
+                        </div>
                     })}
                 </List>
             </Paper>

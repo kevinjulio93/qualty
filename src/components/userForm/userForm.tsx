@@ -1,9 +1,11 @@
 import './userForm.scss'
-import { TextField } from '@mui/material'
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
+import { getAllroles } from '../../services/roles.service';
 
 const  UserForm = forwardRef((props:any, ref) => {
     const [user, setUser] = useState({ name: '', email: '', password: '' });
+    const [roles, setRoles] = useState([]);
 
     useImperativeHandle(ref, () =>{
         return {
@@ -15,12 +17,23 @@ const  UserForm = forwardRef((props:any, ref) => {
         return user;
     }
 
-    const formHanlder = (target: 'name' |'email' | 'password', e: any) => {
+    useEffect(() => {
+        getRoles();
+    }, [])
+
+    const getRoles = async () => {
+        const response = await getAllroles();
+        const rolList = response.result.data;
+        setRoles(rolList);
+    }
+
+    const formHanlder = (target: 'name' |'email' | 'password' | 'role', e: any) => {
         const value = target === 'email' ? (e.target.value as string).trim() : e.target.value;
         setUser({ ...user, [target]: value });
       }
 
     return (
+        roles.length > 0 &&
         <>
             <form className='user-form-container' action="">
                 <TextField
@@ -50,6 +63,21 @@ const  UserForm = forwardRef((props:any, ref) => {
                     label="Contraseña"
                     onChange={(e) => formHanlder('password', e)}
                 />
+                <FormControl>
+                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        label="Role de usuario"
+                        onChange={(e) => formHanlder('role', e)}
+                    >
+                        {roles.map((role: any) => {
+                            return (
+                                <MenuItem key={role._id} value={role._id}>{role.role}</MenuItem>
+                            );
+                        })}
+                    </Select>
+                </FormControl>
             </form>
         </>
     )

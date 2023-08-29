@@ -6,7 +6,7 @@ import { AppUser } from "../models/user.model";
 const userRequest = FecthRequestModel.getInstance();
 
 export async function createUser(user: AppUser) {
-    const response = await userRequest.post('/users', user, true);
+    const response = await userRequest.post('/users', user);
     return response
 }
 

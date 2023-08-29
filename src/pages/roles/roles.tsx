@@ -8,6 +8,7 @@ import UserForm from '../../components/userForm/userForm';
 import { Table, TableCell, TableRow } from '../../components/table/table';
 import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
+import LoadingComponent from '../../components/loading/loading';
 
 function Roles() {
     const userRef = useRef(null)
@@ -36,6 +37,7 @@ function Roles() {
       }
 
     return (
+      roles.length > 0 ?
         <div className='users-container'>
       <div className='users-container__actions'>
         <Typography variant="h5">Listado de Roles</Typography>
@@ -67,6 +69,7 @@ function Roles() {
         })}
       </Table>
     </div>
+    : <LoadingComponent></LoadingComponent>
     )
 }
 
