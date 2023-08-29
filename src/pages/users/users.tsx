@@ -1,32 +1,38 @@
-import { useEffect, useRef, useState } from 'react';
-import { Stack, Typography } from '@mui/material';
-import './users.scss'
-import Modal from '../../components/modal/modal';
-import UserForm from '../../components/userForm/userForm';
-import { createUser, getUserList } from '../../services/user.service';
-import { Table, TableRow, TableCell } from '../../components/table/table';
-import EditIcon from '@mui/icons-material/Edit';
-import ClearIcon from '@mui/icons-material/Clear';
-import LoadingComponent from '../../components/loading/loading';
-
+import { useEffect, useRef, useState } from "react";
+import { Dialog, Stack, Typography } from "@mui/material";
+import "./users.scss";
+import Modal from "../../components/modal/modal";
+import UserForm from "../../components/userForm/userForm";
+import {
+  createUser,
+  deleteUser,
+  getUserList,
+  updateUser,
+} from "../../services/user.service";
+import { Table, TableRow, TableCell } from "../../components/table/table";
+import EditIcon from "@mui/icons-material/Edit";
+import ClearIcon from "@mui/icons-material/Clear";
+import LoadingComponent from "../../components/loading/loading";
+import { SimpleDialog } from "../../components/dialog/dialog";
 
 function Users() {
-  const userRef = useRef(null)
+  const userRef = useRef(null);
+  const modalRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [currentUser, setCurrentUser] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     getUsers();
-  }, [])
-
+  }, []);
 
   const getUsers = async () => {
     const response = await getUserList();
     const userList = response.result.data;
     setUsers(userList);
     setIsLoading(false);
-  }
+  };
 
   const saveData = async () => {
     if (userRef.current !== null) {
@@ -35,16 +41,58 @@ function Users() {
       setIsLoading(true);
       getUsers();
     }
+    setCurrentUser(null);
+  };
+
+  const updateData = async () => {
+    if (userRef.current !== null) {
+      const user = (userRef.current as any).getUser();
+      await updateUser(user);
+      setIsLoading(true);
+      getUsers();
+    }
+    setCurrentUser(null);
+  };
+
+  const onCloseModal = () => {
+    setCurrentUser(null);
+  };
+
+  const handleEditAction = (user) => {
+    setCurrentUser(user);
+    (modalRef as any).current.handleClickOpen();
+  };
+
+  const handleDeleteAction = (user) => {
+    setCurrentUser(user);
+    setOpenDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsLoading(true);
+    setOpenDialog(false);
+    await deleteUser((currentUser as any)._id);
+    getUsers();
+  };
+
+  const cancelDelete = () => {
+    setCurrentUser(null);
+    setOpenDialog(false);
   }
 
-  return (
-    isLoading ?
+  return isLoading ? (
     <LoadingComponent></LoadingComponent>
-    : <div className='users-container'>
-      <div className='users-container__actions'>
+  ) : (
+    <div className="users-container">
+      <div className="users-container__actions">
         <Typography variant="h5">Listado de usuarios</Typography>
-        <Modal buttonText="Crear Usuarios" saveUser={saveData}>
-          <UserForm ref={userRef} ></UserForm>
+        <Modal
+          buttonText="Crear Usuarios"
+          ref={modalRef}
+          modalClose={onCloseModal}
+          saveUser={currentUser ? updateData : saveData}
+        >
+          <UserForm currentUser={currentUser} ref={userRef}></UserForm>
         </Modal>
       </div>
       <Table>
@@ -54,22 +102,38 @@ function Users() {
           <TableCell>Role</TableCell>
           <TableCell>Acciones</TableCell>
         </TableRow>
-        {users.length > 0 && users.map((user: any, index) => {
-          return (
-            <TableRow key={index}>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role.role}</TableCell>
-              <TableCell>
-                <Stack className='actions-cell' direction="row" spacing={2}>
-                  <EditIcon></EditIcon>
-                  <ClearIcon></ClearIcon>
-                </Stack>
-              </TableCell>
-            </TableRow>
-          );
-        })}
+        {users.length > 0 &&
+          users.map((user: any, index) => {
+            return (
+              <TableRow key={index}>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.role.role}</TableCell>
+                <TableCell>
+                  <Stack className="actions-cell" direction="row" spacing={2}>
+                    <EditIcon
+                      className="action-item-icon"
+                      onClick={() => handleEditAction(user)}
+                    ></EditIcon>
+                    <ClearIcon
+                      className="action-item-icon"
+                      onClick={() => handleDeleteAction(user)}
+                    ></ClearIcon>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            );
+          })}
       </Table>
+     {openDialog && <SimpleDialog
+      title="Eliminar usuaro"
+      bodyContent="¿Está seguro que desea eliminar este usuario?"
+      mainBtnText="Confirmar"
+      secondBtnText="Cancelar"
+      mainBtnHandler={confirmDelete}
+      secondBtnHandler={cancelDelete}
+      open={openDialog}
+      ></SimpleDialog>}
     </div>
   );
 }

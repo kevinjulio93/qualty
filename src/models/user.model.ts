@@ -13,6 +13,7 @@ abstract class Persona {
 }
 
 export class AppUser extends Persona {
+    _id?: string;
     role?:string;
     token:string;
     password: string;

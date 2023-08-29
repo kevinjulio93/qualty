@@ -4,7 +4,7 @@ import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { getAllroles } from '../../services/roles.service';
 
 const  UserForm = forwardRef((props:any, ref) => {
-    const [user, setUser] = useState({ name: '', email: '', password: '' });
+    const [user, setUser] = useState({ name: '', email: '', password: '', role: '' });
     const [roles, setRoles] = useState([]);
 
     useImperativeHandle(ref, () =>{
@@ -21,6 +21,14 @@ const  UserForm = forwardRef((props:any, ref) => {
         getRoles();
     }, [])
 
+    useEffect(() => {
+        setCurrentUser();
+    }, [])
+
+    const setCurrentUser = () => {
+        if(props.currentUser) setUser({...props.currentUser, role: props.currentUser.role._id});
+    }
+
     const getRoles = async () => {
         const response = await getAllroles();
         const rolList = response.result.data;
@@ -33,7 +41,6 @@ const  UserForm = forwardRef((props:any, ref) => {
       }
 
     return (
-        roles.length > 0 &&
         <>
             <form className='user-form-container' action="">
                 <TextField
@@ -44,6 +51,7 @@ const  UserForm = forwardRef((props:any, ref) => {
                     type='text'
                     label="Nombre de usuario"
                     onChange={(e) => formHanlder('name', e)}
+                    value={user.name || ''}
                 />
                 <TextField
                     className='login-view__login-form__form-container__input'
@@ -53,6 +61,7 @@ const  UserForm = forwardRef((props:any, ref) => {
                     type='text'
                     label="Correo electronico"
                     onChange={(e) => formHanlder('email', e)}
+                    value={user.email || ''}
                 />
                 <TextField
                     className='login-view__login-form__form-container__input'
@@ -70,8 +79,9 @@ const  UserForm = forwardRef((props:any, ref) => {
                         id="demo-simple-select"
                         label="Role de usuario"
                         onChange={(e) => formHanlder('role', e)}
+                        value={user.role || ''}
                     >
-                        {roles.map((role: any) => {
+                        {roles.length > 0 && roles.map((role: any) => {
                             return (
                                 <MenuItem key={role._id} value={role._id}>{role.role}</MenuItem>
                             );

@@ -7,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { forwardRef, useImperativeHandle } from 'react';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -47,13 +48,20 @@ function ModalHeader(props: DialogTitleProps) {
     );
 }
 
-function Modal(props:any) {
+const Modal = forwardRef((props:any, ref) => {
     const [open, setOpen] = React.useState(false);
+
+    useImperativeHandle(ref, () =>{
+        return {
+            handleClickOpen,
+        }
+    })
 
     const handleClickOpen = () => {
         setOpen(true);
     };
     const handleClose = () => {
+        props.modalClose();
         setOpen(false);
     };
 
@@ -89,6 +97,6 @@ function Modal(props:any) {
             </BootstrapDialog>
         </div>
     );
-}
+});
 
 export default Modal;
