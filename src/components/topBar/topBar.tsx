@@ -1,6 +1,6 @@
 import { Avatar, Paper } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import logo from '../../assets/logo.png'
+
 import avatar from '../../assets/avatar.jpg'
 import './topBar.scss'
 import { useDispatch } from 'react-redux';
@@ -23,8 +23,7 @@ function TopBar() {
 
     return (
         <>
-            <Paper className='topbar-conintaer' sx={{ height: '100px', width: '100%', position: 'fixed' }}>
-                <div className='topbar-conintaer__logo'> <img src={logo} alt="" /></div>
+            <Paper className='topbar-conintaer'>
                 <div className='topbar-conintaer__profile'>
                     <Avatar alt="Remy Sharp" src={avatar} />
                     <LogoutIcon onClick={logoutFunction} />

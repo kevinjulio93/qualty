@@ -85,54 +85,69 @@ function Users() {
   ) : (
     <div className="users-container">
       <div className="users-container__actions">
-        <Typography variant="h5">Listado de usuarios</Typography>
-        <Modal
-          buttonText="Crear Usuarios"
-          ref={modalRef}
-          modalClose={onCloseModal}
-          saveUser={currentUser ? updateData : saveData}
-        >
-          <UserForm currentUser={currentUser} ref={userRef}></UserForm>
-        </Modal>
+        <div className="content-page-title">
+          <Typography variant="h5" className="page-header">Administrar usuarios</Typography>
+          <span className="page-subtitle">Aqui podras gestionar los usuarios del sistema.</span>
+        </div>
+        <div>
+
+
+        </div>
+
       </div>
-      <Table>
-        <TableRow header>
-          <TableCell>Nombre</TableCell>
-          <TableCell>Email</TableCell>
-          <TableCell>Role</TableCell>
-          <TableCell>Acciones</TableCell>
-        </TableRow>
-        {users.length > 0 &&
-          users.map((user: any, index) => {
-            return (
-              <TableRow key={index}>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role.role}</TableCell>
-                <TableCell>
-                  <Stack className="actions-cell" direction="row" spacing={2}>
-                    <EditIcon
-                      className="action-item-icon"
-                      onClick={() => handleEditAction(user)}
-                    ></EditIcon>
-                    <ClearIcon
-                      className="action-item-icon"
-                      onClick={() => handleDeleteAction(user)}
-                    ></ClearIcon>
-                  </Stack>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-      </Table>
-     {openDialog && <SimpleDialog
-      title="Eliminar usuaro"
-      bodyContent="¿Está seguro que desea eliminar este usuario?"
-      mainBtnText="Confirmar"
-      secondBtnText="Cancelar"
-      mainBtnHandler={confirmDelete}
-      secondBtnHandler={cancelDelete}
-      open={openDialog}
+      <div className="main-center-container">
+        <div className="panel-heading"> Listado de usuarios
+
+          <Modal className="btn-create"
+            buttonText="Crear Usuarios"
+            ref={modalRef}
+            modalClose={onCloseModal}
+            saveUser={currentUser ? updateData : saveData}
+          >
+            <UserForm currentUser={currentUser} ref={userRef}></UserForm>
+          </Modal>
+        </div>
+        <Table>
+          <TableRow header>
+            <TableCell>Nombre</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Role</TableCell>
+            <TableCell>Acciones</TableCell>
+          </TableRow>
+          {users.length > 0 &&
+            users.map((user: any, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.role.role}</TableCell>
+                  <TableCell>
+                    <Stack className="actions-cell" direction="row" spacing={2}>
+                      <EditIcon
+                        className="action-item-icon action-item-icon-edit"
+                        onClick={() => handleEditAction(user)}
+                      ></EditIcon>
+                      <ClearIcon
+                        className="action-item-icon action-item-icon-delete"
+                        onClick={() => handleDeleteAction(user)}
+                      ></ClearIcon>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+        </Table>
+      </div>
+
+
+      {openDialog && <SimpleDialog
+        title="Eliminar usuaro"
+        bodyContent="¿Está seguro que desea eliminar este usuario?"
+        mainBtnText="Confirmar"
+        secondBtnText="Cancelar"
+        mainBtnHandler={confirmDelete}
+        secondBtnHandler={cancelDelete}
+        open={openDialog}
       ></SimpleDialog>}
     </div>
   );

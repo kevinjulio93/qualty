@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import './Table.scss'; // Ajusta la ruta a tu archivo de estilos
+import './table.scss'; // Ajusta la ruta a tu archivo de estilos
 
 type TableRowProps = {
     children: ReactNode;

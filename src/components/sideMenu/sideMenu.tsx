@@ -51,17 +51,17 @@ function SideMenu() {
     }
     return (
         <>
-            <Paper elevation={2} sx={{ width: '100%', height: '100%', maxWidth: 360 }}>
-                <List>
+            <Paper elevation={2} sx={{ width: '100%', height: '100%', maxWidth: 360 }} className='content-menu'>
+                <List >
                     {sectionList.map((section: any, index) => {
                         return <div key={index}>
                             {!section.hasChilds ?
                                 <Link key={index} className='menu-item' to={section.path}>
                                     <ListItemButton key={section?.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section?.key)}>
-                                        <ListItemIcon>
+                                        <ListItemIcon className='menu-item__icon'>
                                             {getIcon(section.icon)}
                                         </ListItemIcon>
-                                        <ListItemText primary={section.name} />
+                                        <ListItemText className='menu-item__text' primary={section.name} />
                                     </ListItemButton>
                                 </Link> :
                                 <ListItemButton key={section?.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section?.key)}>

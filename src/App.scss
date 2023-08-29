@@ -1,0 +1,105 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f3f5;
+    font-weight: 300 !important;
+}
+
+
+.main-center-container {
+    box-shadow: 0px 2px 10px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 35px;
+
+
+}
+
+.content-page-title {
+    padding-bottom: 20px;
+    margin-bottom: 0px;
+    margin-top: 40px;
+}
+
+.panel-heading {
+    color: #607D8B;
+    background-color: #ffffff;
+    font-weight: 400;
+    font-size: 16px;
+    border-radius: 0;
+    border-color: #e1eaef;
+    font-weight: 300;
+    line-height: 40px;
+    padding: 10px 15px;
+    border-bottom: 1px solid #e1eaef;
+    display: flex;
+    justify-content: space-between;
+}
+
+.page-header {
+    padding-bottom: 0;
+    margin: 10px 0px !important;
+    line-height: 40px !important;
+    border: 0;
+    font-size: 34px !important;
+    font-weight: 300 !important;
+    color: #222222;
+}
+
+.page-subtitle {
+    padding-bottom: 0;
+    margin: 0px;
+    line-height: 20px;
+    font-size: 16px;
+    font-weight: 300;
+    color: #607d8b
+}
+
+.actions-cell {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.action-item-icon {
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    padding: 6px;
+    border-radius: 100%;
+    color: #ffffff;
+}
+
+.action-item-icon-edit {
+    background-color: #03A9F4;
+
+}
+
+.action-item-icon-delete {
+    background-color: #F44336ed;
+}
+
+.action-item-icon:hover {
+    opacity: 0.7;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 0px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 10px; 
+    background: rgba(0,0,0,0.1);
+}
+
+.btn-create {
+    color: #fff !important;
+    background-color: #449d44 !important;
+    border-color: #398439 !important;
+    border-radius: 3px !important;
+    line-height: 40px !important;
+    padding: 0 15px !important;
+    text-transform: uppercase !important;
+    font-weight: 300 !important;
+}

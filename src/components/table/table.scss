@@ -1,30 +1,38 @@
 .table-component {
     width: 100%;
+    border-spacing: 0;
     border-collapse: collapse;
+    background: #fafafb;
 
-    th,
-    td {
-        padding: 10px;
-        text-align: center;
-        border: 1px solid #ccc;
+    & thead>tr>td {
+        padding: 15px;
+        line-height: 30px;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        color: #607d8b;
+    }
+    & tbody tr{
+        cursor: pointer;
+    }
+    & tbody tr td {
+        padding: 15px;
+        line-height: 30px;
+        vertical-align: top;
+        border-width: 0;
+        border-top: 1px solid #e1eaef;
+        font-size: 13px;
+        position: relative;
+        transition: 1s all ease;
+
+    }
+    
+
+    & tbody tr:hover{
+        box-shadow: 0px 0px 13px 1px #0000001f;
     }
 
-    th {
-        background-color: #f0f0f0;
-        font-weight: bold;
-    }
 
-    .table-header-row {
-        background-color: #757575;
-        color: white;
-    }
-      
-      /* Estilos para las filas de datos */
-    .table-data-row {
-        background-color: white;
-
-        &:hover {
-            background-color: #f5f5f5;
-        }
-    }
+    /* Estilos para las filas de datos */
+    
 }

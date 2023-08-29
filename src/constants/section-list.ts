@@ -10,7 +10,7 @@ export const sectionList = [
     },
     {
         key: "ben_list",
-        name: "Listado Beneficiarios",
+        name: "Beneficiarios",
         path: ROUTES.BEN_LIST,
         icon: "beneficiaries",
         hasChilds: false,

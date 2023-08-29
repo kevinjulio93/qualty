@@ -6,6 +6,7 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import './dashboard-layout.scss';
+import avatar from '../../assets/avatar01.png'
 import { Outlet, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
 import { setLogout } from '../../features/auth/authSlice';
@@ -36,12 +37,19 @@ const DashboardLayout = () => {
 
   return (
     <div className="dashboard-layout">
-      <TopBar></TopBar>
+
       <div className="dashboard-layout__page-view">
         <div className="dashboard-layout__page-view__menu">
+          <a href='#'>Qualty</a>
+          <div className='dashboard-layout__page-view__menu__logo'> <img src={avatar} alt="" /></div>
+          <div className='dashboard-layout__page-view__menu__info-user'>
+            <h5>Jhon Snow</h5>
+            <p>Administrator</p>
+          </div>
           <SideMenu />
         </div>
         <main className="dashboard-layout__page-view__body-content">
+          <TopBar></TopBar>
           <Outlet />
         </main>
       </div>
