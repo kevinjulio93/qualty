@@ -13,7 +13,6 @@ import { setLogout } from '../../features/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import { AppUser } from '../../models/user.model';
 import SideMenu from '../../components/sideMenu/sideMenu';
-import TopBar from '../../components/topBar/topBar';
 
 const DashboardLayout = () => {
   const [open, setOpen] = useState(false);
@@ -49,7 +48,7 @@ const DashboardLayout = () => {
           <SideMenu />
         </div>
         <main className="dashboard-layout__page-view__body-content">
-          <TopBar></TopBar>
+          
           <Outlet />
         </main>
       </div>
