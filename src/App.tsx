@@ -15,6 +15,7 @@ import BeneficiariesList from './pages/beneficiariesList/beneficiariesList';
 import Beneficiaries from './pages/beneficiaries/beneficiaries';
 import Roles from './pages/roles/roles';
 import Activities from './pages/activities/activities';
+import PermissionGuard from './guards/permission.guard';
 
 
 function App() {
@@ -34,12 +35,24 @@ function App() {
             <Route element={<AuthGuard />}>
               <Route path={ROUTES.DASHBOARD} element={<DashboardLayout />}>
                 <Route path='index' element={<Dashboard />}></Route>
-                <Route path={ROUTES.USERS} element={<Users />} />
-                <Route path={ROUTES.ROLES} element={<Roles />} />
-                <Route path={ROUTES.ACTIVITIES} element={<Activities />} />
-                <Route path={ROUTES.INVENTORY} element={<Inventory />} />
-                <Route path={ROUTES.BEN_LIST} element={<BeneficiariesList />} />
-                <Route path={ROUTES.BENEFICIARIES} element={<Beneficiaries />} />
+                <Route element={<PermissionGuard permissions={{}} />}>
+                  <Route path={ROUTES.USERS} element={<Users />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{}} />}>
+                  <Route path={ROUTES.ACTIVITIES} element={<Activities />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{}} />}>
+                  <Route path={ROUTES.INVENTORY} element={<Inventory />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{}} />}>
+                  <Route path={ROUTES.BEN_LIST} element={<BeneficiariesList />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{}} />}>
+                  <Route path={ROUTES.BENEFICIARIES} element={<Beneficiaries />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{subject: 'role', action: ['read']}} />}>
+                  <Route path={ROUTES.ROLES} element={<Roles />} />
+                </Route>
               </Route>
             </Route>
           </Routes>
