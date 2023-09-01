@@ -16,9 +16,11 @@ import LoadingComponent from "../../components/loading/loading";
 import { SimpleDialog } from "../../components/dialog/dialog";
 import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
+import { useDispatch } from "react-redux";
 
 function Users() {
   const userRef = useRef(null);
+  const dispatch = useDispatch();
   const modalRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -161,7 +163,4 @@ function Users() {
 }
 
 export default Users;
-function dispatch(arg0: any) {
-  throw new Error("Function not implemented.");
-}
 
