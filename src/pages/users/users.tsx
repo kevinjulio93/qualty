@@ -33,6 +33,7 @@ function Users() {
   }, []);
 
   const getUsers = async () => {
+    setIsLoading(true);
     const response = await getUserList();
     const userList = response.result.data;
     setUsers(userList);
