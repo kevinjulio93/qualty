@@ -14,6 +14,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import LoadingComponent from "../../components/loading/loading";
 import { SimpleDialog } from "../../components/dialog/dialog";
+import { getReferences } from "../../services/references.service";
+import { setReference } from "../../features/referencesSlice";
 
 function Users() {
   const userRef = useRef(null);
@@ -25,6 +27,7 @@ function Users() {
 
   useEffect(() => {
     getUsers();
+    getAllReferences()
   }, []);
 
   const getUsers = async () => {
@@ -33,6 +36,15 @@ function Users() {
     setUsers(userList);
     setIsLoading(false);
   };
+
+  const getAllReferences = async () => {
+    const response = await getReferences()
+    if (response.status === 200) {
+      const references = response.result;
+      dispatch(setReference({...references}));
+    } else {
+    }
+  }
 
   const saveData = async () => {
     if (userRef.current !== null) {
@@ -149,3 +161,7 @@ function Users() {
 }
 
 export default Users;
+function dispatch(arg0: any) {
+  throw new Error("Function not implemented.");
+}
+
