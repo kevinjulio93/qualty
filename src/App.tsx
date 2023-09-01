@@ -16,6 +16,7 @@ import Beneficiaries from './pages/beneficiaries/beneficiaries';
 import Roles from './pages/roles/roles';
 import Activities from './pages/activities/activities';
 import PermissionGuard from './guards/permission.guard';
+import Unauthorized from './pages/unauthorized/unauthorized';
 
 
 function App() {
@@ -35,19 +36,20 @@ function App() {
             <Route element={<AuthGuard />}>
               <Route path={ROUTES.DASHBOARD} element={<DashboardLayout />}>
                 <Route path='index' element={<Dashboard />}></Route>
-                <Route element={<PermissionGuard permissions={{}} />}>
+                <Route path={ROUTES.UNAUTHORIZED} element={<Unauthorized />}></Route>
+                <Route element={<PermissionGuard permissions={{subject: 'user', action: ['read']}} />}>
                   <Route path={ROUTES.USERS} element={<Users />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{}} />}>
+                <Route element={<PermissionGuard permissions={{subject: 'activity', action: ['read']}} />}>
                   <Route path={ROUTES.ACTIVITIES} element={<Activities />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{}} />}>
+                <Route element={<PermissionGuard permissions={{subject: 'role', action: ['read']}} />}>
                   <Route path={ROUTES.INVENTORY} element={<Inventory />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{}} />}>
+                <Route element={<PermissionGuard permissions={{subject: 'beneficiary', action: ['read']}} />}>
                   <Route path={ROUTES.BEN_LIST} element={<BeneficiariesList />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{}} />}>
+                <Route element={<PermissionGuard permissions={{subject: 'beneficiary', action: ['create']}} />}>
                   <Route path={ROUTES.BENEFICIARIES} element={<Beneficiaries />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{subject: 'role', action: ['read']}} />}>
