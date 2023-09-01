@@ -51,9 +51,9 @@ function BeneficiariesList() {
               <TableCell>EPS</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
-            {benfs.map((beneficiary: any) => {
+            {benfs.map((beneficiary: any, index) => {
               return (
-                <TableRow>
+                <TableRow key={index}>
                   <TableCell>{beneficiary.full_name}</TableCell>
                   <TableCell>{beneficiary.identification}</TableCell>
                   <TableCell>{beneficiary.neighborhood}</TableCell>

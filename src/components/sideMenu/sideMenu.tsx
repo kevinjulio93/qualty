@@ -23,7 +23,6 @@ function SideMenu(props) {
     };
 
     const handleClick = () => {
-        console.log("llegooo");
         setOpen(!open);
     };
 
