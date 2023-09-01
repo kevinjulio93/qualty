@@ -45,10 +45,9 @@ const DashboardLayout = () => {
             <h5>Jhon Snow</h5>
             <p>Administrator</p>
           </div>
-          <SideMenu />
+          <SideMenu logoutF={logoutFunction}/>
         </div>
         <main className="dashboard-layout__page-view__body-content">
-          
           <Outlet />
         </main>
       </div>

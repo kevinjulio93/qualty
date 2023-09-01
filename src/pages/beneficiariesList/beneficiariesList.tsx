@@ -10,7 +10,7 @@ import LoadingComponent from '../../components/loading/loading';
 
 
 function BeneficiariesList() {
-  const [benfs, setBenfs] = useState([]);  
+  const [benfs, setBenfs] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,40 +28,51 @@ function BeneficiariesList() {
   };
 
   return (
-    benfs.length > 0 ? <div className='users-container'>
-      <div className='users-container__actions'>
-        <Typography variant="h5">Listado de beneficiarios</Typography>
-        <Button variant="outlined" onClick={handleClickOpen}>
-            Crear Beneficiario
-        </Button>
-      </div>
-      <Table>
-        <TableRow header>
-          <TableCell>Nombre</TableCell>
-          <TableCell>Cedula</TableCell>
-          <TableCell>Asociación</TableCell>
-          <TableCell>EPS</TableCell>
-          <TableCell>Acciones</TableCell>
-        </TableRow>
-        {benfs.map((beneficiary: any) => {
-          return (
-            <TableRow>
-              <TableCell>{beneficiary.full_name}</TableCell>
-              <TableCell>{beneficiary.identification}</TableCell>
-              <TableCell>{beneficiary.neighborhood}</TableCell>
-              <TableCell>{beneficiary.eps}</TableCell>
-              <TableCell>
-                <Stack  direction="row" spacing={2}> 
-                  <EditIcon></EditIcon>
-                  <ClearIcon></ClearIcon>
-                </Stack>
-              </TableCell>
+    benfs.length > 0 ?
+      <div className='users-container'>
+        <div className="users-container__actions">
+          <div className="content-page-title">
+            <Typography variant="h5" className="page-header">Administrar beneficiarios</Typography>
+            <span className="page-subtitle">Aqui podras gestionar los usuarios del sistema.</span>
+          </div>
+        </div>
+
+        <div className="main-center-container">
+          <div className="panel-heading"> Listado de beneficiarios
+            <Button className="btn-create" onClick={handleClickOpen}>
+              Crear Beneficiario
+            </Button>
+          </div>
+          <Table>
+            <TableRow header>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Cedula</TableCell>
+              <TableCell>Asociación</TableCell>
+              <TableCell>EPS</TableCell>
+              <TableCell>Acciones</TableCell>
             </TableRow>
-          );
-        })}
-      </Table>
-    </div> 
-    : <LoadingComponent></LoadingComponent>
+            {benfs.map((beneficiary: any) => {
+              return (
+                <TableRow>
+                  <TableCell>{beneficiary.full_name}</TableCell>
+                  <TableCell>{beneficiary.identification}</TableCell>
+                  <TableCell>{beneficiary.neighborhood}</TableCell>
+                  <TableCell>{beneficiary.eps}</TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={2}>
+                      <EditIcon></EditIcon>
+                      <ClearIcon></ClearIcon>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </Table>
+        </div>
+      </div>
+
+      : <LoadingComponent></LoadingComponent>
+
   );
 }
 

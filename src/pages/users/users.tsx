@@ -89,11 +89,6 @@ function Users() {
           <Typography variant="h5" className="page-header">Administrar usuarios</Typography>
           <span className="page-subtitle">Aqui podras gestionar los usuarios del sistema.</span>
         </div>
-        <div>
-
-
-        </div>
-
       </div>
       <div className="main-center-container">
         <div className="panel-heading"> Listado de usuarios
