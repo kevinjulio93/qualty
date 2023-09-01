@@ -14,7 +14,7 @@ import  './sideMenu.scss'
 
 
 
-function SideMenu() {
+function SideMenu(props) {
     const [selectedSection, setSelectedSection] = useState(sectionList[0].key);
     const [open, setOpen] = useState(false);
 
@@ -51,7 +51,7 @@ function SideMenu() {
     }
     return (
         <>
-            <Paper elevation={2} sx={{ width: '100%', height: '100%', maxWidth: 360 }} className='content-menu'>
+            <Paper elevation={2} sx={{ width: '100%', height: '66%', maxWidth: 360 }} className='content-menu'>
                 <List >
                     {sectionList.map((section: any, index) => {
                         return <div key={index}>
@@ -92,6 +92,8 @@ function SideMenu() {
                         </div>
                     })}
                 </List>
+
+                <button onClick={props.logoutF}>log out</button>
             </Paper>
         </>
     )
