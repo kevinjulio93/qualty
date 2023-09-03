@@ -12,7 +12,6 @@
 
     &>div:hover {
         background-color: #eee;
-        border-left: 4px solid #03A9F4;
     }
 
     &__icon>svg {
@@ -32,5 +31,12 @@
         letter-spacing: 1px;
         position: relative;
         overflow: hidden;
+    }
+
+    &__selected {
+
+        &>div {
+            border-left: 4px solid #03A9F4;
+        }
     }
 }

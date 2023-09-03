@@ -11,11 +11,15 @@ import { useState } from 'react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import  './sideMenu.scss'
+import { useSelector } from 'react-redux';
+import { checkPermissions } from '../../helpers/checkPermissions';
 
 
 
 function SideMenu(props) {
-    const [selectedSection, setSelectedSection] = useState(sectionList[0].key);
+    const abilities = useSelector((state: RootState) => state.auth.user.abilities);
+    const availableSections = sectionList.filter(section => checkPermissions(section.permission, abilities));
+    const [selectedSection, setSelectedSection] = useState(availableSections[0].key);
     const [open, setOpen] = useState(false);
 
     const handleSectionChange = (section: string) => {
@@ -52,10 +56,10 @@ function SideMenu(props) {
         <>
             <Paper elevation={2} sx={{ width: '100%', height: '66%', maxWidth: 360 }} className='content-menu'>
                 <List >
-                    {sectionList.map((section: any, index) => {
+                    {availableSections.map((section: any, index) => {
                         return <div key={index}>
                             {!section.hasChilds ?
-                                <Link key={index} className='menu-item' to={section.path}>
+                                <Link key={index} className={selectedSection === section.key ? 'menu-item__selected' : 'menu-item' } to={section.path}>
                                     <ListItemButton key={section?.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section?.key)}>
                                         <ListItemIcon className='menu-item__icon'>
                                             {getIcon(section.icon)}

@@ -7,6 +7,10 @@ export const sectionList = [
         path: ROUTES.USERS,
         icon: "person",
         hasChilds: false,
+        permission: {
+            subject: "user",
+            action: ["read"]
+        }
     },
     {
         key: "ben_list",
@@ -14,6 +18,10 @@ export const sectionList = [
         path: ROUTES.BEN_LIST,
         icon: "beneficiaries",
         hasChilds: false,
+        permission: {
+            subject: "beneficiary",
+            action: ["read"]
+        }
     },
     {
         key: "talleres",
@@ -21,6 +29,10 @@ export const sectionList = [
         path: ROUTES.ACTIVITIES,
         icon: "beneficiaries",
         hasChilds: false,
+        permission: {
+            subject: "unknown",
+            action: ["read"]
+        }
     },
     {
         key: "roles",
@@ -28,6 +40,10 @@ export const sectionList = [
         path: ROUTES.ROLES,
         icon: "beneficiaries",
         hasChilds: false,
+        permission: {
+            subject: "role",
+            action: ["read"]
+        }
     },
     // {
     //     key: "valoraciones",
@@ -63,5 +79,9 @@ export const sectionList = [
         path: ROUTES.INVENTORY,
         icon: "draft",
         hasChilds: false,
+        permission: {
+            subject: "unknown",
+            action: ["read"]
+        }
     },
 ];
