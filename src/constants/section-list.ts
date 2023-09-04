@@ -1,3 +1,5 @@
+import { PERMISSIONS } from "./permissions";
+import { SECTIONS } from "./roles";
 import { ROUTES } from "./routes";
 
 export const sectionList = [
@@ -8,8 +10,8 @@ export const sectionList = [
         icon: "person",
         hasChilds: false,
         permission: {
-            subject: "user",
-            action: ["read"]
+            subject: SECTIONS.USER,
+            action: [PERMISSIONS.READ]
         }
     },
     {
@@ -19,8 +21,8 @@ export const sectionList = [
         icon: "beneficiaries",
         hasChilds: false,
         permission: {
-            subject: "beneficiary",
-            action: ["read"]
+            subject: SECTIONS.BENEFICIARY,
+            action: [PERMISSIONS.READ]
         }
     },
     {
@@ -41,8 +43,8 @@ export const sectionList = [
         icon: "beneficiaries",
         hasChilds: false,
         permission: {
-            subject: "role",
-            action: ["read"]
+            subject: SECTIONS.ROLE,
+            action: [PERMISSIONS.READ]
         }
     },
     // {
