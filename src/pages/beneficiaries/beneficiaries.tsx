@@ -2,11 +2,46 @@
 import tony from '../../assets/tony.jpg';
 // import firma from '../../assets/firma.jpeg';
 // import huella from '../../assets/huella.jpeg';
+import WebcamCapture from './capture';
+import { useState } from 'react';
 import { Button, Paper, TextField, Typography } from '@mui/material';
+import * as benficiaryService from '../../services/beneficiaries.service';
+
 import './beneficiaries.scss';
 
 
 function Beneficiaries() {
+
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
+    const handleFileChange = (event: any) => {
+        const file = event.target.files[0];
+
+        setSelectedFile(file);
+
+
+    };
+
+    const handleWebcamCapture = (imageBlob) => {
+        // Include the imageBlob in your FormData
+        const file = imageBlob;
+        setSelectedFile(file);
+
+    };
+
+    const saveBeneficiary = async () => {
+        if (selectedFile) {
+            console.log(selectedFile);
+            try {
+                const response = await benficiaryService.createBeneficiary(selectedFile, requestData); // Replace with your actual access token
+                console.log('Upload successful:', response);
+            } catch (error) {
+                console.error('Upload failed:', error);
+            }
+        } else {
+            console.log('No file selected.');
+        }
+    }
     return (
         <>
             <section className='beneficiaries-container'>
@@ -20,11 +55,7 @@ function Beneficiaries() {
                 <Paper elevation={1} className="beneficiaries-container__form-section">
                     <div className='beneficiaries-container__form-section__resources'>
                         <div className='beneficiaries-container__form-section__resources__foto'>
-                            <div className='beneficiaries-container__form-section__resources__foto__image'>
-                                <img src={tony} alt="" />
-                            </div>
-                            <Button className='btn-image--capture'>Capturar imagen</Button>
-                            <Button className='btn-image--delete'>Borrar imagen</Button>
+                            <WebcamCapture onCapture={handleWebcamCapture} />
                         </div>
                     </div>
                     <div className='beneficiaries-container__form-section__beneficiarie'>

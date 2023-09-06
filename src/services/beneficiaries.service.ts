@@ -4,8 +4,12 @@ import { FecthRequestModel } from "../models/request.model";
 
 const requestInstance = FecthRequestModel.getInstance();
 
-export async function  createBeneficiary(data) {
-    const response = await requestInstance.post('/beneficiaries', data, true);
+export async function  createBeneficiary(file, data) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('data', data);
+    console.log(formData.getAll('file'))
+    const response = await requestInstance.post('/beneficiaries', formData);
     return response
 }
 
