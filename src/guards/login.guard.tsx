@@ -5,7 +5,7 @@ import { ROUTES } from "../constants/routes";
 
 export const LoginGuard = () => {
     const authenticated = useSelector((state: RootState) => state.auth.user.token);
-    return authenticated ? <Navigate replace to={`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`}/> : <Outlet/> 
+    return authenticated ? <Navigate replace to={`${ROUTES.DASHBOARD}/${ROUTES.USERS}`}/> : <Outlet/> 
 }
 
 export default LoginGuard

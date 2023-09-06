@@ -45,8 +45,8 @@ const DashboardLayout = () => {
           <a href='#'>Qualty</a>
           <div className='dashboard-layout__page-view__menu__logo'> <img src={avatar} alt="" /></div>
           <div className='dashboard-layout__page-view__menu__info-user'>
-            <h5>{loggedUser.email}</h5>
-            <p>{loggedUser.role}</p>
+            <h5>{loggedUser?.name}</h5>
+            <p>{loggedUser?.role?.role}</p>
           </div>
           <SideMenu logoutF={logoutFunction}/>
         </div>

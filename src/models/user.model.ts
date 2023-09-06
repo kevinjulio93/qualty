@@ -19,7 +19,7 @@ interface IAbility {
 
 export class AppUser extends Persona {
     _id?: string;
-    role?:string;
+    role?:any;
     token:string;
     password: string;
     abilities: IAbility[];

@@ -32,7 +32,6 @@ export class FecthRequestModel {
     private getFetchOptions(isPublic?: boolean, haveFormData?:boolean): Record<string, unknown> {
       let resultOptions: Record<string, unknown> = { 'headers': { 'Content-Type': 'application/json' } };
       if (haveFormData) resultOptions = { 'headers': {} }
-      debugger
       if (!isPublic) {
         (resultOptions['headers'] as any)['x-access-token'] = `${loggedUser.token}`
       }

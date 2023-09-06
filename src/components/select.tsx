@@ -12,6 +12,7 @@ interface IProp {
 }
 
 function SelectDropdown(props: IProp) {
+    const value = props.keyValue ? props.keyValue : 'value';
     return (
         <FormControl style={{ width: '100%' }}>
             <InputLabel id={props.value}>{props.label}</InputLabel>
@@ -21,11 +22,12 @@ function SelectDropdown(props: IProp) {
                 label={props.label}
                 onChange={(e)=> props.handleValue(props.targetKey, e)}
             >
-                {props.options && props.options.map((option: any, index: number) => {
+                {props.options?.length && props.options.map((option: any, index: number) => {
                     return (
                         <MenuItem
                             key={index}
-                            value={props.keyValue ? option[props.keyValue] : option.value}>
+                            defaultValue={''}
+                            value={option[`${value}`]}>
                             {props.keyLabel ? option[props.keyLabel] : option.label}
                         </MenuItem>
                     )
