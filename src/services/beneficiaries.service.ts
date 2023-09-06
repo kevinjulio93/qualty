@@ -8,8 +8,7 @@ export async function  createBeneficiary(file: any, data: any) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('data', data);
-    console.log(formData.getAll('file'))
-    const response = await requestInstance.post('/beneficiaries', formData);
+    const response = await requestInstance.post('/beneficiaries', formData, false, true);
     return response
 }
 

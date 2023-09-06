@@ -16,20 +16,23 @@ export class FecthRequestModel {
         return FecthRequestModel.instance;
     }
   
-    private getOption(method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any, isPublic?:boolean) {
+    private getOption(method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any, isPublic?:boolean, haveFormData?:boolean) {
+      const _body = haveFormData ? body : JSON.stringify(body);
       const options = {
         method,
-        ...(this.getFetchOptions(isPublic))
+        ...(this.getFetchOptions(isPublic, haveFormData))
         
       };
-      return body ? {...options, body: JSON.stringify(body) } : options ;
+      return body ? {...options, body: _body } : options ;
     }
   
     private statusError = ({ status, statusText }) => ({ status, statusText });
 
 
-    private getFetchOptions(isPublic?: boolean): Record<string, unknown> {
-      const resultOptions: Record<string, unknown> = { 'headers': { 'Content-Type': 'application/json' } };
+    private getFetchOptions(isPublic?: boolean, haveFormData?:boolean): Record<string, unknown> {
+      let resultOptions: Record<string, unknown> = { 'headers': { 'Content-Type': 'application/json' } };
+      if (haveFormData) resultOptions = { 'headers': {} }
+      debugger
       if (!isPublic) {
         (resultOptions['headers'] as any)['x-access-token'] = `${loggedUser.token}`
       }
@@ -51,9 +54,9 @@ export class FecthRequestModel {
       throw { error: 'catch', message: error };
     }
   
-    private async callRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any, isPublic?:boolean) {
+    private async callRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any, isPublic?:boolean, haveFormData?:boolean) {
       try {
-        let options = { ...this.getOption(method, body, isPublic) };
+        let options = { ...this.getOption(method, body, isPublic, haveFormData) };
         const getResponse = await fetch(url, { ...options });
         const result = await this.handleResponse(getResponse);
         return {result, status: getResponse.status};
@@ -72,9 +75,9 @@ export class FecthRequestModel {
       return this.callRequest(url, 'GET');
     }
   
-    post(path: string, body:any, isPublic?:boolean) {
+    post(path: string, body:any, isPublic?:boolean, haveFormData?:boolean) {
       const url = this.getCompleteURL(path);
-      return this.callRequest(url, 'POST', body ?? {}, isPublic);
+      return this.callRequest(url, 'POST', body ?? {}, isPublic, haveFormData);
     }
   
     put(path: string, body:any, isPublic?:boolean) {

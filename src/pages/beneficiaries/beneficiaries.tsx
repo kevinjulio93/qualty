@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { useEffect, useState } from 'react';
 import WebcamCapture from './capture';
+import { createBeneficiary } from '../../services/beneficiaries.service';
 
 
 function Beneficiaries() {
@@ -16,18 +17,11 @@ function Beneficiaries() {
     const bloodTypes = [{ label: 'A+', value: 'A+' }, { label: 'O+', value: 'O+' }, { label: 'B+', value: 'B+' }, { label: 'AB+', value: 'AB+' }, { label: 'A-', value: 'A-' }, { label: 'O-', value: 'O-' }, { label: 'B-', value: 'B-' }, { label: 'AB-', value: 'AB-' }]
     const comuna = useSelector((state: RootState) => state.references.references.communities);
     const asociacion = useSelector((state: RootState) => state.references.references.associations);
+    const municipios = useSelector((state: RootState) => state.references.references.municipalities);
     const eps = useSelector((state: RootState) => state.references.references.eps);
     const [beneficiarie, setBeneficiarie] = useState({});
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
-
-    const handleFileChange = (event: any) => {
-        const file = event.target.files[0];
-
-        setSelectedFile(file);
-
-
-    };
 
     useEffect(() => {
     }, [])
@@ -35,20 +29,21 @@ function Beneficiaries() {
     const formHanlder = (target: string, e: any) => {
         const value = e.target.value;
         setBeneficiarie({ ...beneficiarie, [target]: value });
+        
     }
 
-    const handleWebcamCapture = (imageBlob) => {
+    const handleWebcamCapture = (imageBlob: any) => {
         // Include the imageBlob in your FormData
         const file = imageBlob;
         setSelectedFile(file);
 
     };
 
-    const saveBeneficiary = async () => {
+    const saveBeneficiary = async (beneficiary: any) => {
         if (selectedFile) {
             console.log(selectedFile);
             try {
-                const response = await benficiaryService.createBeneficiary(selectedFile, requestData); // Replace with your actual access token
+                const response = await createBeneficiary(selectedFile, beneficiary); // Replace with your actual access token
                 console.log('Upload successful:', response);
             } catch (error) {
                 console.error('Upload failed:', error);
@@ -59,7 +54,8 @@ function Beneficiaries() {
     }
 
     const createBeneficiarie = () => {
-        console.log(beneficiarie);
+        const beneficiary = JSON.stringify(beneficiarie);
+        saveBeneficiary(beneficiary);
     }
 
     return (
@@ -87,6 +83,8 @@ function Beneficiaries() {
                                 <SelectDropdown
                                     label="Tipo de documento"
                                     options={documentTypes}
+                                    targetKey='identification_type'
+                                    handleValue={formHanlder}
                                 />
                             </div>
 
@@ -110,7 +108,7 @@ function Beneficiaries() {
                                     placeholder='Zapata'
                                     type='text'
                                     label="Primer Apellido"
-                                    onChange={(e) => formHanlder('firstLastName', e)}
+                                    onChange={(e) => formHanlder('first_last_name', e)}
                                 />
                             </div>
 
@@ -122,7 +120,7 @@ function Beneficiaries() {
                                     placeholder='Rodriguez'
                                     type='text'
                                     label="Segundo Apellido"
-                                    onChange={(e) => formHanlder('secondLastName', e)}
+                                    onChange={(e) => formHanlder('second_last_name', e)}
                                 />
                             </div>
 
@@ -134,7 +132,7 @@ function Beneficiaries() {
                                     placeholder='Juanito'
                                     type='text'
                                     label="Primer Nombre"
-                                    onChange={(e) => formHanlder('firtsName', e)}
+                                    onChange={(e) => formHanlder('first_name', e)}
                                 />
                             </div>
 
@@ -146,14 +144,16 @@ function Beneficiaries() {
                                     placeholder='Andres'
                                     type='text'
                                     label="Segundo Nombre"
-                                    onChange={(e) => formHanlder('secondName', e)}
+                                    onChange={(e) => formHanlder('second_name', e)}
                                 />
                             </div>
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
                                     label="Sexo"
-                                    options={[{ label: 'Masculino', value: 'M' }, { label: 'Femenino', value: 'F' }]}
+                                    options={[{ label: 'Masculino', value: 'Masculino' }, { label: 'Femenino', value: 'Femenino' }]}
+                                    targetKey='gender'
+                                    handleValue={formHanlder}
                                 />
                             </div>
 
@@ -177,14 +177,13 @@ function Beneficiaries() {
                             </div>
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                                <TextField
-                                    id="municipio"
-                                    className="beneficiaries-container__form-section__beneficiarie__form__field__input"
-                                    name='municipio'
-                                    placeholder='Ocaña'
-                                    type='text'
-                                    label="Municipio"
-                                    onChange={(e) => formHanlder('municipality', e)}
+                                <SelectDropdown
+                                    label="Municipios"
+                                    options={municipios}
+                                    keyLabel='name'
+                                    keyValue='_id'
+                                    targetKey='municipality'
+                                    handleValue={formHanlder}
                                 />
                             </div>
 
@@ -194,6 +193,8 @@ function Beneficiaries() {
                                     options={comuna}
                                     keyLabel='name'
                                     keyValue='_id'
+                                    targetKey='community'
+                                    handleValue={formHanlder}
                                 />
                             </div>
 
@@ -203,6 +204,8 @@ function Beneficiaries() {
                                     options={asociacion}
                                     keyLabel='name'
                                     keyValue='_id'
+                                    targetKey='association'
+                                    handleValue={formHanlder}
                                 />
                             </div>
 
@@ -212,6 +215,8 @@ function Beneficiaries() {
                                     options={eps}
                                     keyLabel='name'
                                     keyValue='_id'
+                                    targetKey='eps'
+                                    handleValue={formHanlder}
                                 />
                             </div>
 
@@ -238,3 +243,31 @@ function Beneficiaries() {
 }
 
 export default Beneficiaries;
+
+
+/**
+ *              "first_name": "Keiner",
+                "second_name": "Jose",
+                "first_last_name": "Pajaro",
+                "second_last_name": "Ordoniez",
+                "identification_type": "Cedula",
+                "identification": "123456789",
+                "eps": "64dc6afa77a66abcebddea08",
+                "sisben_score": 85,
+                "birthday": "1990-05-15",
+                "gender": "Masculino",
+                "ethnic_affiliation": "Indigena",
+                "marital_status": "Casado",
+                "is_disability": true,
+                "type_of_disability": "Movilidad",
+                "place_of_birth": "Bogota",
+                "region": "Andina",
+                "municipality": "64dc7d46dc6709f5787e08cf",
+                "community": "64dc7e17dc6709f5787e08d0",
+                "association": "64dc7ec4dc6709f5787e08d1",
+                "neighborhood": "64dc7fd7c4ab7d79157d5ec6",
+                "address": "123 Main St",
+                "phones": ["123-456-7890", "987-654-3210"],
+                "responsible_family_member": "Jane Doe",
+                "kinship": "Spouse"
+ */

@@ -57,10 +57,10 @@ function BeneficiariesList() {
               return (
                 <TableRow key={beneficiary._id}>
                   <TableCell><img className="ben-foto" src={beneficiary.photo_url} alt="foto" /></TableCell>
-                  <TableCell>{beneficiary.first_name} {beneficiary.second_name} {beneficiary.first_last_name} {beneficiary.second_last_name}</TableCell>
-                  <TableCell>{beneficiary.identification}</TableCell>
-                  <TableCell>{beneficiary.association.name}</TableCell>
-                  <TableCell>{beneficiary.eps.name}</TableCell>
+                  <TableCell>{beneficiary?.first_name} {beneficiary.second_name} {beneficiary.first_last_name} {beneficiary.second_last_name}</TableCell>
+                  <TableCell>{beneficiary?.identification}</TableCell>
+                  <TableCell>{beneficiary?.association?.name}</TableCell>
+                  <TableCell>{beneficiary?.eps?.name}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <EditIcon></EditIcon>
