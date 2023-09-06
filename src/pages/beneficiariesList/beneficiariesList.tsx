@@ -1,5 +1,6 @@
 import { Button, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import "./beneficiariesList.scss";
 import { ROUTES } from '../../constants/routes';
 import { Table, TableCell, TableRow } from '../../components/table/table';
 import EditIcon from '@mui/icons-material/Edit';
@@ -33,7 +34,7 @@ function BeneficiariesList() {
         <div className="users-container__actions">
           <div className="content-page-title">
             <Typography variant="h5" className="page-header">Administrar beneficiarios</Typography>
-            <span className="page-subtitle">Aqui podras gestionar los usuarios del sistema.</span>
+            <span className="page-subtitle">Aqui podras gestionar los beneficiarios del sistema.</span>
           </div>
         </div>
 
@@ -45,19 +46,21 @@ function BeneficiariesList() {
           </div>
           <Table>
             <TableRow header>
+              <TableCell>Foto</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Cedula</TableCell>
               <TableCell>Asociación</TableCell>
               <TableCell>EPS</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
-            {benfs.map((beneficiary: any, index) => {
+            {benfs.map((beneficiary: any) => {
               return (
-                <TableRow key={index}>
-                  <TableCell>{beneficiary.full_name}</TableCell>
+                <TableRow key={beneficiary._id}>
+                  <TableCell><img className="ben-foto" src={beneficiary.photo_url} alt="foto" /></TableCell>
+                  <TableCell>{beneficiary.first_name} {beneficiary.second_name} {beneficiary.first_last_name} {beneficiary.second_last_name}</TableCell>
                   <TableCell>{beneficiary.identification}</TableCell>
-                  <TableCell>{beneficiary.neighborhood}</TableCell>
-                  <TableCell>{beneficiary.eps}</TableCell>
+                  <TableCell>{beneficiary.association.name}</TableCell>
+                  <TableCell>{beneficiary.eps.name}</TableCell>
                   <TableCell>
                     <Stack direction="row" spacing={2}>
                       <EditIcon></EditIcon>

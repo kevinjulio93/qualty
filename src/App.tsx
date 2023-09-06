@@ -17,6 +17,8 @@ import Roles from './pages/roles/roles';
 import Activities from './pages/activities/activities';
 import PermissionGuard from './guards/permission.guard';
 import Unauthorized from './pages/unauthorized/unauthorized';
+import { SECTIONS } from './constants/roles';
+import { PERMISSIONS } from './constants/permissions';
 
 
 function App() {
@@ -37,22 +39,22 @@ function App() {
               <Route path={ROUTES.DASHBOARD} element={<DashboardLayout />}>
                 <Route path='index' element={<Dashboard />}></Route>
                 <Route path={ROUTES.UNAUTHORIZED} element={<Unauthorized />}></Route>
-                <Route element={<PermissionGuard permissions={{subject: 'user', action: ['read']}} />}>
+                <Route element={<PermissionGuard permissions={{subject: SECTIONS.USER, action: [PERMISSIONS.READ]}} />}>
                   <Route path={ROUTES.USERS} element={<Users />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{subject: 'activity', action: ['read']}} />}>
+                <Route element={<PermissionGuard permissions={{subject: SECTIONS.ACTIVITY, action: [PERMISSIONS.READ]}} />}>
                   <Route path={ROUTES.ACTIVITIES} element={<Activities />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{subject: 'role', action: ['read']}} />}>
+                <Route element={<PermissionGuard permissions={{subject: SECTIONS.ROLE, action: [PERMISSIONS.READ]}} />}>
                   <Route path={ROUTES.INVENTORY} element={<Inventory />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{subject: 'beneficiary', action: ['read']}} />}>
+                <Route element={<PermissionGuard permissions={{subject: SECTIONS.BENEFICIARY, action: [PERMISSIONS.READ]}} />}>
                   <Route path={ROUTES.BEN_LIST} element={<BeneficiariesList />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{subject: 'beneficiary', action: ['create']}} />}>
+                <Route element={<PermissionGuard permissions={{subject: SECTIONS.BENEFICIARY, action: [PERMISSIONS.CREATE]}} />}>
                   <Route path={ROUTES.BENEFICIARIES} element={<Beneficiaries />} />
                 </Route>
-                <Route element={<PermissionGuard permissions={{subject: 'role', action: ['read']}} />}>
+                <Route element={<PermissionGuard permissions={{subject: SECTIONS.ROLE, action: [PERMISSIONS.READ]}} />}>
                   <Route path={ROUTES.ROLES} element={<Roles />} />
                 </Route>
               </Route>

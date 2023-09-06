@@ -1,3 +1,5 @@
+import { PERMISSIONS } from "./permissions";
+import { SECTIONS } from "./roles";
 import { ROUTES } from "./routes";
 
 export const sectionList = [
@@ -7,6 +9,10 @@ export const sectionList = [
         path: ROUTES.USERS,
         icon: "person",
         hasChilds: false,
+        permission: {
+            subject: SECTIONS.USER,
+            action: [PERMISSIONS.READ]
+        }
     },
     {
         key: "ben_list",
@@ -14,6 +20,10 @@ export const sectionList = [
         path: ROUTES.BEN_LIST,
         icon: "beneficiaries",
         hasChilds: false,
+        permission: {
+            subject: SECTIONS.BENEFICIARY,
+            action: [PERMISSIONS.READ]
+        }
     },
     {
         key: "talleres",
@@ -21,6 +31,10 @@ export const sectionList = [
         path: ROUTES.ACTIVITIES,
         icon: "beneficiaries",
         hasChilds: false,
+        permission: {
+            subject: "unknown",
+            action: ["read"]
+        }
     },
     {
         key: "roles",
@@ -28,6 +42,10 @@ export const sectionList = [
         path: ROUTES.ROLES,
         icon: "beneficiaries",
         hasChilds: false,
+        permission: {
+            subject: SECTIONS.ROLE,
+            action: [PERMISSIONS.READ]
+        }
     },
     // {
     //     key: "valoraciones",
@@ -63,5 +81,9 @@ export const sectionList = [
         path: ROUTES.INVENTORY,
         icon: "draft",
         hasChilds: false,
+        permission: {
+            subject: "unknown",
+            action: ["read"]
+        }
     },
 ];
