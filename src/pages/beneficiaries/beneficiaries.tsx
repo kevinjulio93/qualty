@@ -9,19 +9,19 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { useEffect, useState } from 'react';
 import WebcamCapture from './capture';
+import DPersonaReader from './dpersonaReader';
 import { createBeneficiary } from '../../services/beneficiaries.service';
 
 
 function Beneficiaries() {
     const documentTypes = [{ label: 'C.C', value: 'cc' }, { label: 'Pasaporte', value: 'pasaporte' }, { label: 'NIT', value: 'nit' }]
     const bloodTypes = [{ label: 'A+', value: 'A+' }, { label: 'O+', value: 'O+' }, { label: 'B+', value: 'B+' }, { label: 'AB+', value: 'AB+' }, { label: 'A-', value: 'A-' }, { label: 'O-', value: 'O-' }, { label: 'B-', value: 'B-' }, { label: 'AB-', value: 'AB-' }]
-    const comuna = useSelector((state: RootState) => state.references.references.communities);
-    const asociacion = useSelector((state: RootState) => state.references.references.associations);
-    const municipios = useSelector((state: RootState) => state.references.references.municipalities);
-    const eps = useSelector((state: RootState) => state.references.references.eps);
+    const comuna = useSelector((state: RootState) => state.references.references?.communities);
+    const asociacion = useSelector((state: RootState) => state.references.references?.associations);
+    const municipios = useSelector((state: RootState) => state.references.references?.municipalities);
+    const eps = useSelector((state: RootState) => state.references.references?.eps);
     const [beneficiarie, setBeneficiarie] = useState({});
     const [selectedFile, setSelectedFile] = useState(null);
-    const [previewImage, setPreviewImage] = useState(null);
 
     useEffect(() => {
     }, [])
@@ -29,7 +29,7 @@ function Beneficiaries() {
     const formHanlder = (target: string, e: any) => {
         const value = e.target.value;
         setBeneficiarie({ ...beneficiarie, [target]: value });
-        
+
     }
 
     const handleWebcamCapture = (imageBlob: any) => {
@@ -58,6 +58,10 @@ function Beneficiaries() {
         saveBeneficiary(beneficiary);
     }
 
+    const handleDPersonaReader = (imageBlob: any) => {
+        
+    }
+
     return (
         <>
             <section className='beneficiaries-container'>
@@ -72,6 +76,9 @@ function Beneficiaries() {
                     <div className='beneficiaries-container__form-section__resources'>
                         <div className='beneficiaries-container__form-section__resources__foto'>
                             <WebcamCapture onCapture={handleWebcamCapture} />
+                        </div>
+                        <div>
+                            <DPersonaReader  />
                         </div>
                     </div>
                     <div className='beneficiaries-container__form-section__beneficiarie'>
