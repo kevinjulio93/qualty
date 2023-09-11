@@ -68,7 +68,7 @@ const Modal = forwardRef((props:any, ref) => {
     };
 
     const handleSave = () => {
-        props.saveUser();
+        props.saveMethod();
         setOpen(false);
     }
 
@@ -84,7 +84,7 @@ const Modal = forwardRef((props:any, ref) => {
             >
                 <ModalHeader
                 id="customized-dialog-title" onClose={handleClose}>
-                    Crear Usuario
+                    {props.title}
                 </ModalHeader>
                 <DialogContent dividers>
                     {props.children}

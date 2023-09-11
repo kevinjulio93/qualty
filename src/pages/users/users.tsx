@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Dialog, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import "./users.scss";
 import Modal from "../../components/modal/modal";
 import UserForm from "../../components/userForm/userForm";
@@ -45,7 +45,6 @@ function Users() {
     if (response.status === 200) {
       const references = response.result;
       dispatch(setReference({...references}));
-    } else {
     }
   }
 
@@ -110,9 +109,10 @@ function Users() {
 
           <Modal className="btn-create"
             buttonText="Crear Usuarios"
+            title="Crear usuario"
             ref={modalRef}
             modalClose={onCloseModal}
-            saveUser={currentUser ? updateData : saveData}
+            saveMethod={currentUser ? updateData : saveData}
           >
             <UserForm currentUser={currentUser} ref={userRef}></UserForm>
           </Modal>

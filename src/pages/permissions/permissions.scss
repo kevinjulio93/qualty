@@ -1,0 +1,26 @@
+.roles-container {
+
+    &__form-section {
+        background-color: #fff;
+        height: 100vh;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+
+        &__resources {
+            width: 100%;
+            height: auto;
+            padding: 20px 0;
+            box-sizing: border-box;
+            display: flex;
+            border-bottom: 2px solid #f0f3f5;
+        }
+
+        &__role {
+            padding: 20px 0;
+        }
+    }
+
+
+
+}

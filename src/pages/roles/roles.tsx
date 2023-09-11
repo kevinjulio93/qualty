@@ -1,76 +1,153 @@
 
 import { useEffect, useRef, useState } from 'react';
 import './roles.scss';
-import { createRole, getAllroles } from '../../services/roles.service';
+import { createRole, deleteRole, getAllroles, updateRole } from '../../services/roles.service';
 import { Stack, Typography } from '@mui/material';
 import Modal from '../../components/modal/modal';
-import UserForm from '../../components/userForm/userForm';
 import { Table, TableCell, TableRow } from '../../components/table/table';
 import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
 import LoadingComponent from '../../components/loading/loading';
+import RoleForm from '../../components/roleForm/roleForm';
+import { SimpleDialog } from '../../components/dialog/dialog';
 
 function Roles() {
-    const userRef = useRef(null)
+    const roleRef = useRef(null)
     const [roles, setRoles] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentRole, setCurrentRole] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
+    const modalRef = useRef(null);
 
     useEffect(() => {
         getRoles()
     }, [])
 
     const getRoles = async () => {
+      setIsLoading(true);
         try {
             const response = await getAllroles();
             if (response.status === 200) {
                 setRoles(response.result.data);
             }
         } catch (error) {
-
+          console.error(error);
         }
+        setIsLoading(false);
     }
 
-    const saveData = async () => {
-        if (userRef.current !== null) {
-          const user = (userRef.current as any).getUser()
-          await createRole(user)
-        }
-      }
+    const onCloseModal = () => {
+      setCurrentRole(null);
+    };
 
-    return (
-      roles.length > 0 ?
-        <div className='users-container'>
-      <div className='users-container__actions'>
-        <Typography variant="h5">Listado de Roles</Typography>
-        <Modal buttonText="Crear Roles" saveUser={saveData}>
-          <UserForm ref={userRef} ></UserForm>
-        </Modal>
-      </div>
-      <Table>
-        <TableRow header>
-          <TableCell>Role</TableCell>
-          <TableCell>Email</TableCell>
-          <TableCell>Role</TableCell>
-          <TableCell>Acciones</TableCell>
-        </TableRow>
-        {Boolean(roles.length) && roles.map((role: any, index) => {
-          return (
-            <TableRow key={index}>
-              <TableCell>{role.role}</TableCell>
-              <TableCell>{role.email}</TableCell>
-              <TableCell>{role.role}</TableCell>
-              <TableCell>
-                <Stack direction="row" spacing={2}>
-                  <EditIcon></EditIcon>
-                  <ClearIcon></ClearIcon>
-                </Stack>
-              </TableCell>
+    const updateData = async () => {
+      if (roleRef.current !== null) {
+        const role = (roleRef.current as any).getRole();
+        await updateRole(role);
+        setIsLoading(true);
+        getRoles();
+      }
+      setCurrentRole(null);
+    };
+
+    const saveData = async () => {
+      if (roleRef.current !== null) {
+        const role = (roleRef.current as any).getRole();
+        console.log(role);
+        await createRole(role);
+        setIsLoading(true);
+        getRoles();
+      }
+      setCurrentRole(null);
+    };
+
+    const handleEditAction = (role) => {
+      setCurrentRole(role);
+      (modalRef as any).current.handleClickOpen();
+    };
+  
+    const handleDeleteAction = (role) => {
+      setCurrentRole(role);
+      setOpenDialog(true);
+    };
+  
+    const confirmDelete = async () => {
+      setIsLoading(true);
+      setOpenDialog(false);
+      await deleteRole((currentRole as any)._id);
+      getRoles();
+    };
+  
+    const cancelDelete = () => {
+      setCurrentRole(null);
+      setOpenDialog(false);
+    }
+
+    return isLoading ? (
+      <LoadingComponent></LoadingComponent>
+    ) : (
+      <div className="roles-container">
+        <div className="roles-container__actions">
+          <div className="content-page-title">
+            <Typography variant="h5" className="page-header">Administrar Roles</Typography>
+            <span className="page-subtitle">Aqui podras gestionar los roles de usuarios del sistema.</span>
+          </div>
+        </div>
+        <div className="main-center-container">
+          <div className="panel-heading"> Listado de roles
+  
+            <Modal className="btn-create"
+              buttonText="Crear Roles"
+              title="Crear role"
+              ref={modalRef}
+              modalClose={onCloseModal}
+              saveMethod={currentRole ? updateData : saveData}
+            >
+              <RoleForm currentRole={currentRole} ref={roleRef}></RoleForm>
+            </Modal>
+          </div>
+          <Table>
+            <TableRow header>
+              <TableCell>Role</TableCell>
+              <TableCell>Permisos</TableCell>
+              <TableCell>Acciones</TableCell>
             </TableRow>
-          );
-        })}
-      </Table>
-    </div>
-    : <LoadingComponent></LoadingComponent>
-    )
+            {roles.length > 0 &&
+              roles.map((role: any, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{role.role}</TableCell>
+                    <TableCell>{role.permissions.map(per => per.section).toString()}</TableCell>
+                    <TableCell>
+                      <Stack className="actions-cell" direction="row" spacing={2}>
+                        <EditIcon
+                          className="action-item-icon action-item-icon-edit"
+                          onClick={() => handleEditAction(role)}
+                        ></EditIcon>
+                        <ClearIcon
+                          className="action-item-icon action-item-icon-delete"
+                          onClick={() => handleDeleteAction(role)}
+                        ></ClearIcon>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </Table>
+        </div>
+  
+  
+        {openDialog && <SimpleDialog
+          title="Eliminar usuaro"
+          bodyContent="¿Está seguro que desea eliminar este usuario?"
+          mainBtnText="Confirmar"
+          secondBtnText="Cancelar"
+          mainBtnHandler={confirmDelete}
+          secondBtnHandler={cancelDelete}
+          open={openDialog}
+        ></SimpleDialog>}
+      </div>
+    );
 }
 
 export default Roles
