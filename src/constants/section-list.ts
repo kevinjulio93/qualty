@@ -1,5 +1,5 @@
 import { PERMISSIONS } from "./permissions";
-import { SECTIONS } from "./roles";
+import { SECTIONS } from "./sections";
 import { ROUTES } from "./routes";
 
 export const sectionList = [
