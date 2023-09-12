@@ -29,7 +29,6 @@ function Users() {
 
   useEffect(() => {
     getUsers();
-    getAllReferences()
   }, []);
 
   const getUsers = async () => {
@@ -40,13 +39,7 @@ function Users() {
     setIsLoading(false);
   };
 
-  const getAllReferences = async () => {
-    const response = await getReferences()
-    if (response.status === 200) {
-      const references = response.result;
-      dispatch(setReference({...references}));
-    }
-  }
+  
 
   const saveData = async () => {
     if (userRef.current !== null) {

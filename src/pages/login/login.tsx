@@ -10,6 +10,8 @@ import { setUser } from '../../features/auth/authSlice';
 import { ROUTES } from '../../constants/routes';
 import { userLogin } from '../../services/login.service';
 import { AppUser } from '../../models/user.model';
+import { getReferences } from '../../services/references.service';
+import { setReference } from '../../features/referencesSlice';
 
 
 function Login() {
@@ -31,6 +33,7 @@ function Login() {
     if (response.status === 200) {
       setLoading(false)
       const user = new AppUser(response.result.user);
+      getAllReferences()
       dispatch(setUser({...user}));
       navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
     } else {
@@ -40,6 +43,14 @@ function Login() {
 
   const validCredentials = ():boolean => {
     return credentials.email === '' || credentials.password === '';
+  }
+
+  const getAllReferences = async () => {
+    const response = await getReferences()
+    if (response.status === 200) {
+      const references = response.result;
+      dispatch(setReference({...references}));
+    }
   }
 
   return (

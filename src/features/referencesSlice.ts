@@ -8,7 +8,7 @@ export interface referencesState {
 }
 
 const initialState: referencesState = {
-    references: null
+    references: localStorage.getItem('references') ? JSON.parse(localStorage.getItem('references') as any) : null
 }
 
 export const authSlice = createSlice({
@@ -16,11 +16,12 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         setReference: (state, action: PayloadAction<any>) => {
-            state.references = {...action.payload}
+            localStorage.setItem('references', JSON.stringify(action.payload));
+            state.references = { ...action.payload }
         }
     }
 });
 
-export const { setReference} = authSlice.actions
+export const { setReference } = authSlice.actions
 
 export default authSlice.reducer
