@@ -79,9 +79,9 @@ export class FecthRequestModel {
       return this.callRequest(url, 'POST', body ?? {}, isPublic, haveFormData);
     }
   
-    put(path: string, body:any, isPublic?:boolean) {
+    put(path: string, body:any, isPublic?:boolean, haveFormData?:boolean) {
       const url = this.getCompleteURL(path);
-      return this.callRequest(url, 'PUT', body ?? {}, isPublic);
+      return this.callRequest(url, 'PUT', body ?? {}, isPublic, haveFormData);
     }
   
     delete(path: string, body?:any, isPublic?:boolean) {

@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 
 import Webcam from 'react-webcam';
 
-function WebcamCapture({ onCapture }) {
+function WebcamCapture({ onCapture, isEditing, existingImage }) {
     const webcamRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
     const [cameraOpen, setCameraOpen] = useState(false); // Track whether the camera is open
@@ -52,7 +52,8 @@ function WebcamCapture({ onCapture }) {
             {(
                 <div className='content-image'>
                     <div className='content-image__borde-image'>
-                        {(capturedImage && <img src={capturedImage} alt="Captured" className='content-image__image' />)}
+                        {((!isEditing && capturedImage) && <img src={capturedImage || existingImage} alt="Captured" className='content-image__image' />) }
+                        {(isEditing &&  existingImage && <img src={capturedImage || existingImage} alt="Captured" className='content-image__image' />)}
                     </div>
                     <div className='content-image__buttons'>
                         <Button onClick={startCamera} className='btn-image--capture'>Abrir camara</Button>

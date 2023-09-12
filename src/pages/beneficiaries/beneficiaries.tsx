@@ -1,5 +1,4 @@
 // import { Avatar, Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
-import tony from '../../assets/tony.jpg';
 // import firma from '../../assets/firma.jpeg';
 // import huella from '../../assets/huella.jpeg';
 import { Button, Paper, TextField, Typography } from '@mui/material';
@@ -10,7 +9,8 @@ import { RootState } from '../../app/store';
 import { useEffect, useState } from 'react';
 import WebcamCapture from './capture';
 import DPersonaReader from './dpersonaReader';
-import { createBeneficiary } from '../../services/beneficiaries.service';
+import { createBeneficiary, getBeneficiarieById, updateBeneficiary } from '../../services/beneficiaries.service';
+import { useParams } from 'react-router-dom';
 
 
 function Beneficiaries() {
@@ -22,8 +22,10 @@ function Beneficiaries() {
     const eps = useSelector((state: RootState) => state.references.references?.eps);
     const [beneficiarie, setBeneficiarie] = useState({});
     const [selectedFile, setSelectedFile] = useState(null);
+    const { beneficiarieId } = useParams();
 
     useEffect(() => {
+        getBeneficiary();
     }, [])
 
     const formHanlder = (target: string, e: any) => {
@@ -40,10 +42,10 @@ function Beneficiaries() {
     };
 
     const saveBeneficiary = async (beneficiary: any) => {
-        if (selectedFile) {
-            console.log(selectedFile);
+        const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
+        if (selectedFile || (beneficiarie as any)?.photo_url) {
             try {
-                const response = await createBeneficiary(selectedFile, beneficiary); // Replace with your actual access token
+                const response = await saveData(selectedFile, beneficiary); // Replace with your actual access token
                 console.log('Upload successful:', response);
             } catch (error) {
                 console.error('Upload failed:', error);
@@ -54,13 +56,21 @@ function Beneficiaries() {
     }
 
     const createBeneficiarie = () => {
-        const beneficiary = JSON.stringify(beneficiarie);
-        saveBeneficiary(beneficiary);
+        saveBeneficiary(beneficiarie);
     }
 
-    const handleDPersonaReader = (imageBlob: any) => {
-        
+    const getBeneficiary = async () => {
+        try {
+            const response = await getBeneficiarieById(beneficiarieId);
+            if (response.status === 200) {
+                setBeneficiarie(response.result.data);
+            }
+        } catch (error) {
+            throw new Error("the beneficieary doesn't exist");
+        }
     }
+
+
 
     return (
         <>
@@ -75,10 +85,10 @@ function Beneficiaries() {
                 <Paper elevation={1} className="beneficiaries-container__form-section">
                     <div className='beneficiaries-container__form-section__resources'>
                         <div className='beneficiaries-container__form-section__resources__foto'>
-                            <WebcamCapture onCapture={handleWebcamCapture} />
+                            <WebcamCapture onCapture={handleWebcamCapture} isEditing={Boolean(beneficiarieId)} existingImage={(beneficiarie as any)?.photo_url || null} />
                         </div>
                         <div>
-                            <DPersonaReader  />
+                            <DPersonaReader />
                         </div>
                     </div>
                     <div className='beneficiaries-container__form-section__beneficiarie'>
@@ -88,6 +98,7 @@ function Beneficiaries() {
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
+                                    selectValue={(beneficiarie as any)?.identification_type}
                                     label="Tipo de documento"
                                     options={documentTypes}
                                     targetKey='identification_type'
@@ -104,6 +115,7 @@ function Beneficiaries() {
                                     type='number'
                                     onChange={(e) => formHanlder('identification', e)}
                                     label="No Documento"
+                                    value={(beneficiarie as any)?.identification || ''}
                                 />
                             </div>
 
@@ -116,6 +128,7 @@ function Beneficiaries() {
                                     type='text'
                                     label="Primer Apellido"
                                     onChange={(e) => formHanlder('first_last_name', e)}
+                                    value={(beneficiarie as any)?.first_last_name || ''}
                                 />
                             </div>
 
@@ -128,6 +141,7 @@ function Beneficiaries() {
                                     type='text'
                                     label="Segundo Apellido"
                                     onChange={(e) => formHanlder('second_last_name', e)}
+                                    value={(beneficiarie as any)?.second_last_name || ''}
                                 />
                             </div>
 
@@ -140,6 +154,7 @@ function Beneficiaries() {
                                     type='text'
                                     label="Primer Nombre"
                                     onChange={(e) => formHanlder('first_name', e)}
+                                    value={(beneficiarie as any)?.first_name || ''}
                                 />
                             </div>
 
@@ -152,11 +167,13 @@ function Beneficiaries() {
                                     type='text'
                                     label="Segundo Nombre"
                                     onChange={(e) => formHanlder('second_name', e)}
+                                    value={(beneficiarie as any)?.second_name || ''}
                                 />
                             </div>
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
+                                    selectValue={(beneficiarie as any)?.gender}
                                     label="Sexo"
                                     options={[{ label: 'Masculino', value: 'Masculino' }, { label: 'Femenino', value: 'Femenino' }]}
                                     targetKey='gender'
@@ -173,18 +190,23 @@ function Beneficiaries() {
                                     type='text'
                                     label="Fecha de Nacimiento"
                                     onChange={(e) => formHanlder('birthday', e)}
+                                    value={(beneficiarie as any)?.birthday || ''}
                                 />
                             </div>
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
+                                    selectValue={(beneficiarie as any)?.blood_type}
                                     label="Tipo de Sangre"
                                     options={bloodTypes}
+                                    targetKey='blood_type'
+                                    handleValue={formHanlder}
                                 />
                             </div>
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
+                                    selectValue={(beneficiarie as any)?.municipality}
                                     label="Municipios"
                                     options={municipios}
                                     keyLabel='name'
@@ -196,6 +218,7 @@ function Beneficiaries() {
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
+                                    selectValue={(beneficiarie as any)?.community}
                                     label="Comuna"
                                     options={comuna}
                                     keyLabel='name'
@@ -207,6 +230,7 @@ function Beneficiaries() {
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
+                                    selectValue={(beneficiarie as any)?.association}
                                     label="Asociación"
                                     options={asociacion}
                                     keyLabel='name'
@@ -218,6 +242,7 @@ function Beneficiaries() {
 
                             <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                                 <SelectDropdown
+                                    selectValue={(beneficiarie as any)?.eps}
                                     label="EPS"
                                     options={eps}
                                     keyLabel='name'
@@ -236,6 +261,7 @@ function Beneficiaries() {
                                     type='text'
                                     label="Puntaje SISBEN"
                                     onChange={(e) => formHanlder('sisben_score', e)}
+                                    value={(beneficiarie as any)?.sisben_score || ''}
                                 />
                             </div>
 
@@ -250,31 +276,3 @@ function Beneficiaries() {
 }
 
 export default Beneficiaries;
-
-
-/**
- *              "first_name": "Keiner",
-                "second_name": "Jose",
-                "first_last_name": "Pajaro",
-                "second_last_name": "Ordoniez",
-                "identification_type": "Cedula",
-                "identification": "123456789",
-                "eps": "64dc6afa77a66abcebddea08",
-                "sisben_score": 85,
-                "birthday": "1990-05-15",
-                "gender": "Masculino",
-                "ethnic_affiliation": "Indigena",
-                "marital_status": "Casado",
-                "is_disability": true,
-                "type_of_disability": "Movilidad",
-                "place_of_birth": "Bogota",
-                "region": "Andina",
-                "municipality": "64dc7d46dc6709f5787e08cf",
-                "community": "64dc7e17dc6709f5787e08d0",
-                "association": "64dc7ec4dc6709f5787e08d1",
-                "neighborhood": "64dc7fd7c4ab7d79157d5ec6",
-                "address": "123 Main St",
-                "phones": ["123-456-7890", "987-654-3210"],
-                "responsible_family_member": "Jane Doe",
-                "kinship": "Spouse"
- */
