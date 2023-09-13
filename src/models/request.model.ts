@@ -38,7 +38,7 @@ export class FecthRequestModel {
         }
         return resultOptions;
      } catch (error) {
-      console.log(error)
+       throw this.handleError(error);
      }
     }
   
