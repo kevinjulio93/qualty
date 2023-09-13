@@ -4,6 +4,8 @@ import { RootState } from "../app/store";
 import { ROUTES } from "../constants/routes";
 
 export const AuthGuard = () => {
+    const completeState = useSelector((state: RootState) => state);
+    console.log(completeState);
     const authenticated = useSelector((state: RootState) => state.auth.user.token);
     return authenticated ? <Outlet/> : <Navigate replace to={ROUTES.LOGIN}/>
 }

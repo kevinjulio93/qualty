@@ -5,7 +5,7 @@ import { arrayPermissions, arraySections } from '../../constants/resources';
 
 const  RoleForm = forwardRef((props: any, ref) => {
     const [role, setRole] = useState("");
-    const [permissions, setPermissions] = useState({});
+    const [permissions, setPermissions] = useState([]);
 
     useImperativeHandle(ref, () =>{
         return {
@@ -32,14 +32,21 @@ const  RoleForm = forwardRef((props: any, ref) => {
         
     }
 
-    const permissionHandler = (section, permission, e) => {
+    const permissionHandler = (section: any, permission: any, e) => {
         const value = e.target.value;
-        setPermissions({
-            ...permissions,
-            [section]: {
-                [permission]: value,
-            }
-        });
+        const index = permissions.findIndex((perm: any) => perm.section === section);
+        const tempPerm: any = permissions;
+        if(index === -1) {
+            const newPerm = {
+                section: section,
+                actions: [permission]
+            };
+            tempPerm.push(newPerm);
+        } else {
+            if(value) tempPerm[index].actions.push(permission) 
+            else tempPerm[index].actions = tempPerm[index].actions.filter(act => act !== permission);
+        }
+        setPermissions(tempPerm);
     }
 
     return (
