@@ -30,10 +30,11 @@ export class FecthRequestModel {
 
 
     private getFetchOptions(isPublic?: boolean, haveFormData?:boolean): Record<string, unknown> {
+      const loggedUserApp = JSON.parse(localStorage.getItem('user'));
       let resultOptions: Record<string, unknown> = { 'headers': { 'Content-Type': 'application/json' } };
       if (haveFormData) resultOptions = { 'headers': {} }
       if (!isPublic) {
-        (resultOptions['headers'] as any)['x-access-token'] = `${loggedUser.token}`
+        (resultOptions['headers'] as any)['x-access-token'] = `${loggedUserApp.token}`
       }
       return resultOptions;
     }

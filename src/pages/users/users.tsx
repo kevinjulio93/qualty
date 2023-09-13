@@ -32,14 +32,17 @@ function Users() {
   }, []);
 
   const getUsers = async () => {
-    setIsLoading(true);
-    const response = await getUserList();
-    const userList = response.result.data;
-    setUsers(userList);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const response = await getUserList();
+      const userList = response.result.data;
+      setUsers(userList);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("parte de origen del error de la consola al hacer login por primera vez")
+      console.log(error)
+    }
   };
-
-  
 
   const saveData = async () => {
     if (userRef.current !== null) {
@@ -85,7 +88,7 @@ function Users() {
   const cancelDelete = () => {
     setCurrentUser(null);
     setOpenDialog(false);
-  }
+  };
 
   return isLoading ? (
     <LoadingComponent></LoadingComponent>
@@ -93,14 +96,20 @@ function Users() {
     <div className="users-container">
       <div className="users-container__actions">
         <div className="content-page-title">
-          <Typography variant="h5" className="page-header">Administrar usuarios</Typography>
-          <span className="page-subtitle">Aqui podras gestionar los usuarios del sistema.</span>
+          <Typography variant="h5" className="page-header">
+            Administrar usuarios
+          </Typography>
+          <span className="page-subtitle">
+            Aqui podras gestionar los usuarios del sistema.
+          </span>
         </div>
       </div>
       <div className="main-center-container">
-        <div className="panel-heading"> Listado de usuarios
-
-          <Modal className="btn-create"
+        <div className="panel-heading">
+          {" "}
+          Listado de usuarios
+          <Modal
+            className="btn-create"
             buttonText="Crear Usuarios"
             title="Crear usuario"
             ref={modalRef}
@@ -142,19 +151,19 @@ function Users() {
         </Table>
       </div>
 
-
-      {openDialog && <SimpleDialog
-        title="Eliminar usuaro"
-        bodyContent="¿Está seguro que desea eliminar este usuario?"
-        mainBtnText="Confirmar"
-        secondBtnText="Cancelar"
-        mainBtnHandler={confirmDelete}
-        secondBtnHandler={cancelDelete}
-        open={openDialog}
-      ></SimpleDialog>}
+      {openDialog && (
+        <SimpleDialog
+          title="Eliminar usuaro"
+          bodyContent="¿Está seguro que desea eliminar este usuario?"
+          mainBtnText="Confirmar"
+          secondBtnText="Cancelar"
+          mainBtnHandler={confirmDelete}
+          secondBtnHandler={cancelDelete}
+          open={openDialog}
+        ></SimpleDialog>
+      )}
     </div>
   );
 }
 
 export default Users;
-
