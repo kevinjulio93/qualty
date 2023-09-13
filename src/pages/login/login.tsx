@@ -29,7 +29,6 @@ function Login() {
   const getAllReferences = async () => {
     try {
       const response = await getReferences();
-      console.log(response);
       if (response.status === 200) {
         const references = response.result;
         dispatch(setReference({ ...references }));
@@ -41,17 +40,21 @@ function Login() {
   };
 
   const login = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-    const response = await userLogin(credentials);
-    if (response.status === 200) {
-      setLoading(false);
-      const user = new AppUser(response.result.user);
-      getAllReferences();
-      dispatch(setUser({ ...user }));
-      navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
-    } else {
-      setLoading(false);
+    try{
+      e.preventDefault();
+      setLoading(true);
+      const response = await userLogin(credentials);
+      if (response.status === 200) {
+        setLoading(false);
+        const user = new AppUser(response.result.user);
+        getAllReferences();
+        dispatch(setUser({ ...user }));
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
+      } else {
+        setLoading(false);
+      }
+    }catch(error){
+      console.log(error)
     }
   };
 
