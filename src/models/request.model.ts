@@ -1,4 +1,3 @@
-const loggedUser = JSON.parse(localStorage.getItem('user'));
 
 export class FecthRequestModel {
     public static instance: FecthRequestModel;
@@ -26,7 +25,7 @@ export class FecthRequestModel {
       return body ? {...options, body: _body } : options ;
     }
   
-    private statusError = ({ status, statusText }) => ({ status, statusText });
+    private statusError = ({ status, statusText }:{status:number,statusText:string}) => ({ status, statusText });
 
 
     private getFetchOptions(isPublic?: boolean, haveFormData?:boolean): Record<string, unknown> {
@@ -34,7 +33,7 @@ export class FecthRequestModel {
       let resultOptions: Record<string, unknown> = { 'headers': { 'Content-Type': 'application/json' } };
       if (haveFormData) resultOptions = { 'headers': {} }
       if (!isPublic) {
-        (resultOptions['headers'] as any)['x-access-token'] = `${loggedUserApp.token}`
+        (resultOptions['headers'] as any)['x-access-token'] = `${loggedUserApp?.token}`
       }
       return resultOptions;
     }
@@ -56,7 +55,7 @@ export class FecthRequestModel {
   
     private async callRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any, isPublic?:boolean, haveFormData?:boolean) {
       try {
-        let options = { ...this.getOption(method, body, isPublic, haveFormData) };
+        let options:any = { ...this.getOption(method, body, isPublic, haveFormData) };
         const getResponse = await fetch(url, { ...options });
         const result = await this.handleResponse(getResponse);
         return {result, status: getResponse.status};
