@@ -32,14 +32,14 @@ function Users() {
   }, []);
 
   const getUsers = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await getUserList();
       const userList = response.result.data;
       setUsers(userList);
       setIsLoading(false);
     } catch (error) {
-      console.log(error)
+      setIsLoading(false);
     }
   };
 
@@ -105,7 +105,6 @@ function Users() {
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
-          {" "}
           Listado de usuarios
           <Modal
             className="btn-create"

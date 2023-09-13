@@ -41,14 +41,18 @@ function Login() {
   const login = async (e: any) => {
     e.preventDefault();
     setLoading(true);
-    const response = await userLogin(credentials);
-    if (response.status === 200) {
-      setLoading(false);
-      const user = new AppUser(response.result.user);
-      dispatch(setUser({ ...user }));
-      getAllReferences();
-      navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
-    } else {
+    try {
+      const response = await userLogin(credentials);
+      if (response.status === 200) {
+        setLoading(false);
+        const user = new AppUser(response.result.user);
+        dispatch(setUser({ ...user }));
+        getAllReferences();
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
       setLoading(false);
     }
   };
