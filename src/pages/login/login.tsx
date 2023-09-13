@@ -34,7 +34,6 @@ function Login() {
         dispatch(setReference({ ...references }));
       }
     } catch (error) {
-      console.log("aqui esta el error de la referencias")
       console.log(error)
     }
   };
@@ -47,8 +46,8 @@ function Login() {
       if (response.status === 200) {
         setLoading(false);
         const user = new AppUser(response.result.user);
-        getAllReferences();
         dispatch(setUser({ ...user }));
+        getAllReferences();
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
       } else {
         setLoading(false);

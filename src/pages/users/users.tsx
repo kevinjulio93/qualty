@@ -39,7 +39,6 @@ function Users() {
       setUsers(userList);
       setIsLoading(false);
     } catch (error) {
-      console.log("parte de origen del error de la consola al hacer login por primera vez")
       console.log(error)
     }
   };
