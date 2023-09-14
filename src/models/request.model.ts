@@ -65,6 +65,7 @@ export class FecthRequestModel {
         return {result, status: getResponse.status};
       } catch (error) {
         throw this.handleError(error);
+        
       }
     }
   
