@@ -22,7 +22,10 @@ const  RoleForm = forwardRef((props: any, ref) => {
     }, []);
 
     const setCurrentRole = () => {
-        if(props.currentRole) setRole(props.currentRole);
+        if(props.currentRole) {
+            setRole(props.currentRole.role);
+            setPermissions(props.currentRole.permissions);
+        }
     }
 
 
@@ -49,6 +52,10 @@ const  RoleForm = forwardRef((props: any, ref) => {
         setPermissions(tempPerm);
     }
 
+    const validateCheck = (section: string, permission: string) => {
+        return permissions.some((item: any) => item.section === section && item.actions.includes(permission));
+    }
+
     return (
         <>
             <form className='role-form-container' action="">
@@ -69,10 +76,11 @@ const  RoleForm = forwardRef((props: any, ref) => {
                             <>
                             <FormLabel component="legend" key={section.key + '-section'}>{section.value}</FormLabel>
                             <FormGroup aria-label="position" key={section.key + '-legend'} row>
-                                {arrayPermissions.map((permission) => {
+                                {arrayPermissions.map((permission, index) => {
                                     return (
                                         <FormControlLabel
                                             value={permission.key}
+                                            checked={validateCheck(section.key, permission.key)}
                                             control={<Switch color="primary" />}
                                             label={permission.value}
                                             labelPlacement="start"

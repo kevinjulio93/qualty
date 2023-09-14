@@ -18,8 +18,8 @@ export async function getAllroles() {
 }
 
 
-export async function deleteRole(role: any) {
-    const response = await roles.delete(`/roles/${role.id}`);
+export async function deleteRole(id: any) {
+    const response = await roles.delete(`/roles/${id}`);
     return response;
 }
 
