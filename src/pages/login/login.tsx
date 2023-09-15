@@ -12,6 +12,9 @@ import { userLogin } from "../../services/login.service";
 import { AppUser } from "../../models/user.model";
 import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
+import Toast from "../../components/toast/toast";
+import { errorMessages } from "./../../constants/errorMessageDictionary";
+import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function Login() {
   const navigate = useNavigate();
@@ -19,12 +22,16 @@ function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
+  // toasts
+  const [toastLoginError, setToastLoginError] = useState(false);
+  const [toastGetAllReferencesError, setToastGetAllReferencesError] =
+    useState(false);
+
   const formHanlder = (target: "email" | "password", e: any) => {
     const value =
       target === "email" ? (e.target.value as string).trim() : e.target.value;
     setCredentials({ ...credentials, [target]: value });
   };
-
 
   const getAllReferences = async () => {
     try {
@@ -34,7 +41,8 @@ function Login() {
         dispatch(setReference({ ...references }));
       }
     } catch (error) {
-      console.log(error)
+      //
+      console.log(error);
     }
   };
 
@@ -54,13 +62,13 @@ function Login() {
       }
     } catch (error) {
       setLoading(false);
+      setToastLoginError(true);
     }
   };
 
   const validCredentials = (): boolean => {
     return credentials.email === "" || credentials.password === "";
   };
-
 
   return (
     <div className="login-view">
@@ -108,6 +116,18 @@ function Login() {
           </form>
         </div>
       </div>
+      <Toast
+        open={toastLoginError}
+        handleClose={() => setToastLoginError(false)}
+        message={errorMessages.loginError}
+        severity={SEVERITY_TOAST.ERROR}
+      />
+      <Toast
+        open={toastGetAllReferencesError}
+        handleClose={() => setToastGetAllReferencesError(false)}
+        message={errorMessages.getAllReferencesError}
+        severity={SEVERITY_TOAST.ERROR}
+      />
     </div>
   );
 }
