@@ -42,8 +42,7 @@ function Roles() {
 
     const updateData = async () => {
       if (roleRef.current !== null) {
-        const role = (roleRef.current as any).getRole();
-        await updateRole(role);
+        await updateRole(currentRole);
         setIsLoading(true);
         getRoles();
       }
@@ -52,9 +51,7 @@ function Roles() {
 
     const saveData = async () => {
       if (roleRef.current !== null) {
-        const role = (roleRef.current as any).getRole();
-        console.log(role);
-        await createRole(role);
+        await createRole(currentRole);
         setIsLoading(true);
         getRoles();
       }
