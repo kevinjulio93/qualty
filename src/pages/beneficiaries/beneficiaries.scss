@@ -45,6 +45,10 @@
                     &--capture {
                         background-color: #03a9f4;
                         color: #fff;
+
+                        &:hover {
+                            background-color: #03a9f4;
+                        }
                     }
 
                     &--delete {
@@ -57,12 +61,19 @@
 
         &__beneficiarie {
             padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: calc(100% - 280px);
+            gap: 20px;
 
             &__form {
                 display: grid;
                 width: 100%;
                 grid-template-columns: repeat(3, calc((100% - 20px) / 3));
                 gap: 10px;
+                overflow: auto;
+                padding: 10px 0;
 
                 &__field {
                     width: 100%;
@@ -70,6 +81,16 @@
                     &__input {
                         width: 100%;
                     }
+                }
+            }
+
+            .btn-save-beneficiarie {
+                background-color: #03a9f4;
+                color: #fff;
+                width: 200px;
+
+                &:hover {
+                    background-color: #03a9f4;
                 }
             }
         }

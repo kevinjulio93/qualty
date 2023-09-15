@@ -1,4 +1,4 @@
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material'
+import { Button, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material'
 import { sectionList } from '../../constants/section-list';
 import PersonIcon from '@mui/icons-material/Person';
 import AssistWalkerIcon from '@mui/icons-material/AssistWalker';
@@ -10,9 +10,10 @@ import EmojiPeople from '@mui/icons-material/EmojiPeople';
 import { useState } from 'react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
-import  './sideMenu.scss'
+import './sideMenu.scss'
 import { useSelector } from 'react-redux';
 import { checkPermissions } from '../../helpers/checkPermissions';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 
@@ -54,12 +55,12 @@ function SideMenu(props) {
     }
     return (
         <>
-            <Paper elevation={2} sx={{ width: '100%', height: '66%', maxWidth: 360 }} className='content-menu'>
-                <List >
+            <Paper elevation={2} className='content-menu'>
+                <List style={{width: '100%'}} >
                     {availableSections.map((section: any, index) => {
-                        return <div key={index}>
+                        return <div style={{width: '100%'}} key={index}>
                             {!section.hasChilds ?
-                                <Link key={index} className={selectedSection === section.key ? 'menu-item__selected' : 'menu-item' } to={section.path}>
+                                <Link key={index} className={selectedSection === section.key ? 'menu-item__selected' : 'menu-item'} to={section.path}>
                                     <ListItemButton key={section?.key} onClick={section.hasChilds ? handleClick : () => handleSectionChange(section?.key)}>
                                         <ListItemIcon className='menu-item__icon'>
                                             {getIcon(section.icon)}
@@ -96,7 +97,10 @@ function SideMenu(props) {
                     })}
                 </List>
 
-                <button onClick={props.logoutF}>log out</button>
+                <Button className='content-menu__logout-btn btn-create' variant='contained' onClick={props.logoutF}>
+                    <span>Logout</span>
+                    <LogoutIcon></LogoutIcon> 
+                </Button>
             </Paper>
         </>
     )
