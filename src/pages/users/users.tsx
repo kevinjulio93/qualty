@@ -17,6 +17,7 @@ import { SimpleDialog } from "../../components/dialog/dialog";
 import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
 import { useDispatch } from "react-redux";
+import Search from "../../components/search/search";
 
 function Users() {
   const userRef = useRef(null);
@@ -117,6 +118,13 @@ function Users() {
             <UserForm currentUser={currentUser} ref={userRef}></UserForm>
           </Modal>
         </div>
+        <Search
+          label="Datos del usuario"
+          buttonText="Buscar"
+          searchFunction={(data: any) => {
+            alert(data);
+          }}
+        />
         <Table>
           <TableRow header>
             <TableCell>Nombre</TableCell>
