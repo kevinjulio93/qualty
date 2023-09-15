@@ -1,96 +1,115 @@
-import './userForm.scss'
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { getAllroles } from '../../services/roles.service';
+import "./userForm.scss";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { useState, forwardRef, useImperativeHandle, useEffect } from "react";
+import { getAllroles } from "../../services/roles.service";
 
-const  UserForm = forwardRef((props:any, ref) => {
-    const [user, setUser] = useState({ name: '', email: '', password: '', role: '' });
-    const [roles, setRoles] = useState([]);
+const UserForm = forwardRef((props: any, ref) => {
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+  });
+  const [roles, setRoles] = useState([]);
 
-    useImperativeHandle(ref, () =>{
-        return {
-            getUser,
-        }
-    })
-    
-    const getUser = () => {
-        return user;
-    }
+  useImperativeHandle(ref, () => {
+    return {
+      getUser,
+    };
+  });
 
-    useEffect(() => {
-        getRoles();
-    }, [])
+  const getUser = () => {
+    return user;
+  };
 
-    useEffect(() => {
-        setCurrentUser();
-    }, [])
+  useEffect(() => {
+    getRoles();
+  }, []);
 
-    const setCurrentUser = () => {
-        if(props.currentUser) setUser({...props.currentUser, role: props.currentUser.role._id});
-    }
+  useEffect(() => {
+    setCurrentUser();
+  }, []);
 
-    const getRoles = async () => {
-        const response = await getAllroles();
-        const rolList = response.result.data;
-        setRoles(rolList);
-    }
+  const setCurrentUser = () => {
+    if (props.currentUser)
+      setUser({ ...props.currentUser, role: props.currentUser.role._id });
+  };
 
-    const formHanlder = (target: 'name' |'email' | 'password' | 'role', e: any) => {
-        const value = target === 'email' ? (e.target.value as string).trim() : e.target.value;
-        setUser({ ...user, [target]: value });
-      }
+  const getRoles = async () => {
+    const response = await getAllroles();
+    const rolList = response.result.data;
+    setRoles(rolList);
+  };
 
-    return (
-        <>
-            <form className='user-form-container' action="">
-                <TextField
-                    className='login-view__login-form__form-container__input'
-                    id="name"
-                    name='name'
-                    placeholder='juanito'
-                    type='text'
-                    label="Nombre de usuario"
-                    onChange={(e) => formHanlder('name', e)}
-                    value={user.name || ''}
-                />
-                <TextField
-                    className='login-view__login-form__form-container__input'
-                    id="email"
-                    name='email'
-                    placeholder='ejemplo@gmail.com'
-                    type='text'
-                    label="Correo electronico"
-                    onChange={(e) => formHanlder('email', e)}
-                    value={user.email || ''}
-                />
-                <TextField
-                    className='login-view__login-form__form-container__input'
-                    id="pass"
-                    name='password'
-                    placeholder='·$Wsaf.rwgge665wa'
-                    type='password'
-                    label="Contraseña"
-                    onChange={(e) => formHanlder('password', e)}
-                />
-                <FormControl>
-                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Role de usuario"
-                        onChange={(e) => formHanlder('role', e)}
-                        value={user.role || ''}
-                    >
-                        {roles.length > 0 && roles.map((role: any) => {
-                            return (
-                                <MenuItem key={role._id} value={role._id}>{role.role}</MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-            </form>
-        </>
-    )
-})
+  const formHanlder = (
+    target: "name" | "email" | "password" | "role",
+    e: any
+  ) => {
+    const value =
+      target === "email" ? (e.target.value as string).trim() : e.target.value;
+    setUser({ ...user, [target]: value });
+  };
 
-export default UserForm
+  return (
+    <>
+      <form className="user-form-container" action="">
+        <TextField
+          className="login-view__login-form__form-container__input"
+          id="name"
+          name="name"
+          placeholder="juanito"
+          type="text"
+          label="Nombre de usuario"
+          onChange={(e) => formHanlder("name", e)}
+          value={user.name || ""}
+        />
+        <TextField
+          className="login-view__login-form__form-container__input"
+          id="email"
+          name="email"
+          placeholder="ejemplo@gmail.com"
+          type="text"
+          label="Correo electronico"
+          onChange={(e) => formHanlder("email", e)}
+          value={user.email || ""}
+        />
+        <TextField
+          className="login-view__login-form__form-container__input"
+          id="pass"
+          name="password"
+          placeholder="·$Wsaf.rwgge665wa"
+          type="password"
+          label="Contraseña"
+          onChange={(e) => formHanlder("password", e)}
+        />
+        <FormControl>
+          <InputLabel id="demo-simple-select-label">Role</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Role de usuario"
+            onChange={(e) => formHanlder("role", e)}
+            value={user.role || ""}
+          >
+            {roles.length > 0 &&
+              roles.map((role: any) => {
+                return (
+                  <MenuItem key={role._id} value={role._id}>
+                    {role.role}
+                  </MenuItem>
+                );
+              })}
+          </Select>
+        </FormControl>
+      </form>
+    </>
+  );
+});
+
+export default UserForm;
