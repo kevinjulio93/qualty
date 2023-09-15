@@ -13,6 +13,8 @@ import { AppUser } from "../../models/user.model";
 import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
 import Toast from "../../components/toast/toast";
+import { errorMessages } from "./../../constants/errorMessageDictionary";
+import { severityToast } from "../../constants/severityToast";
 
 function Login() {
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  const [toastErrorLogin, setToastErrorLogin] = useState(false);
+  const [toastLoginError, setToastLoginError] = useState(false);
 
   const formHanlder = (target: "email" | "password", e: any) => {
     const value =
@@ -56,7 +58,7 @@ function Login() {
       }
     } catch (error) {
       setLoading(false);
-      setToastErrorLogin(true);
+      setToastLoginError(true);
     }
   };
 
@@ -111,10 +113,10 @@ function Login() {
         </div>
       </div>
       <Toast
-        open={toastErrorLogin}
-        handleClose={() => setToastErrorLogin(false)}
-        message="Ocurrio un error al iniciar sesion"
-        severity="error"
+        open={toastLoginError}
+        handleClose={() => setToastLoginError(false)}
+        message={errorMessages.loginError}
+        severity={severityToast.error}
       />
     </div>
   );
