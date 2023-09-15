@@ -8,7 +8,7 @@ export async function createRole(role: any) {
 }
 
 export async function updateRole(role: any) {
-    const response = await roles.put('/roles', role);
+    const response = await roles.put('/roles/' + role._id, role);
     return response;
 }
 

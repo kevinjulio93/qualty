@@ -6,6 +6,7 @@ import { arrayPermissions, arraySections } from '../../constants/resources';
 const  RoleForm = forwardRef((props: any, ref) => {
     const [role, setRole] = useState("");
     const [permissions, setPermissions] = useState([]);
+    const [forceRender, setForceRender] = useState(+ new Date());
 
     useImperativeHandle(ref, () =>{
         return {
@@ -46,10 +47,12 @@ const  RoleForm = forwardRef((props: any, ref) => {
             };
             tempPerm.push(newPerm);
         } else {
-            if(value) tempPerm[index].actions.push(permission) 
-            else tempPerm[index].actions = tempPerm[index].actions.filter(act => act !== permission);
+            if(tempPerm[index].actions.includes(value)) tempPerm[index].actions = tempPerm[index].actions.filter(act => act !== permission);
+            else tempPerm[index].actions.push(permission);
         }
         setPermissions(tempPerm);
+        const newDate = + new Date();
+        setForceRender(newDate);
     }
 
     const validateCheck = (section: string, permission: string) => {
