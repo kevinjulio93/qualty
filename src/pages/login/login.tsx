@@ -14,7 +14,7 @@ import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
 import Toast from "../../components/toast/toast";
 import { errorMessages } from "./../../constants/errorMessageDictionary";
-import { severityToast } from "../../constants/severityToast";
+import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function Login() {
   const navigate = useNavigate();
@@ -22,7 +22,10 @@ function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
+  // toasts
   const [toastLoginError, setToastLoginError] = useState(false);
+  const [toastGetAllReferencesError, setToastGetAllReferencesError] =
+    useState(false);
 
   const formHanlder = (target: "email" | "password", e: any) => {
     const value =
@@ -38,6 +41,7 @@ function Login() {
         dispatch(setReference({ ...references }));
       }
     } catch (error) {
+      //
       console.log(error);
     }
   };
@@ -116,7 +120,13 @@ function Login() {
         open={toastLoginError}
         handleClose={() => setToastLoginError(false)}
         message={errorMessages.loginError}
-        severity={severityToast.error}
+        severity={SEVERITY_TOAST.ERROR}
+      />
+      <Toast
+        open={toastGetAllReferencesError}
+        handleClose={() => setToastGetAllReferencesError(false)}
+        message={errorMessages.getAllReferencesError}
+        severity={SEVERITY_TOAST.ERROR}
       />
     </div>
   );

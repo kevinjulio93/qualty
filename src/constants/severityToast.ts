@@ -1,6 +1,6 @@
-export const enum severityToast {
-  error = 'error',
-  warning = 'warning',
-  info = 'info',
-  success = 'success',
+export const enum SEVERITY_TOAST {
+  ERROR = 'error',
+  WARNING = 'warning',
+  INFO = 'info',
+  SUCCESS = 'success',
 }
