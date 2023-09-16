@@ -15,7 +15,7 @@ export const APP_THEME: Theme = createTheme({
           main: '#4a811c',
         },
         error: {
-          main: '#24330a',
+          main: '#F44336',
         },
     },
 });
