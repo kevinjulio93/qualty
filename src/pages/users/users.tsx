@@ -82,6 +82,7 @@ function Users() {
     setIsLoading(true);
     setOpenDialog(false);
     await deleteUser((currentUser as any)._id);
+    setCurrentUser(null);
     getUsers();
   };
 

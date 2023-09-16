@@ -9,5 +9,6 @@ export const ROUTES = {
     ACTIVITIES: 'activities',
     ROLES: 'roles',
     PERMISSIONS: 'permissions',
-    UNAUTHORIZED: 'unauthorized'
+    UNAUTHORIZED: 'unauthorized',
+    ASSISTANCE: 'assistance',
 }

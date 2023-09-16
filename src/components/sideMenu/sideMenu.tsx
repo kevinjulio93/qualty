@@ -8,7 +8,7 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import EmojiPeople from '@mui/icons-material/EmojiPeople';
 import { useState } from 'react';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { Checklist, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import './sideMenu.scss'
 import { useSelector } from 'react-redux';
@@ -38,7 +38,8 @@ function SideMenu(props) {
         assist: <AssistWalkerIcon />,
         eye: <RemoveRedEyeIcon />,
         smile: <InsertEmoticonIcon />,
-        beneficiaries: <EmojiPeople />
+        beneficiaries: <EmojiPeople />,
+        checklist: <Checklist />
     };
 
     const getIcon = (icon: string) => {
@@ -49,7 +50,8 @@ function SideMenu(props) {
             case 'eye': return iconList.eye;
             case 'assist': return iconList.assist;
             case 'smile': return iconList.smile;
-            case 'beneficiaries': return iconList.beneficiaries
+            case 'beneficiaries': return iconList.beneficiaries;
+            case 'checklist': return iconList.checklist;
             default: return iconList.draft;
         }
     }

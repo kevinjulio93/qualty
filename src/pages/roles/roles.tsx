@@ -42,7 +42,8 @@ function Roles() {
 
     const updateData = async () => {
       if (roleRef.current !== null) {
-        await updateRole(currentRole);
+        const role = (roleRef.current as any).getRole();
+        await updateRole(role);
         setIsLoading(true);
         getRoles();
       }
@@ -51,7 +52,8 @@ function Roles() {
 
     const saveData = async () => {
       if (roleRef.current !== null) {
-        await createRole(currentRole);
+        const role = (roleRef.current as any).getRole();
+        await createRole(role);
         setIsLoading(true);
         getRoles();
       }
@@ -72,6 +74,7 @@ function Roles() {
       setIsLoading(true);
       setOpenDialog(false);
       await deleteRole((currentRole as any)._id);
+      setCurrentRole(null);
       getRoles();
     };
   
