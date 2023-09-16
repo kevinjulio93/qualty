@@ -1,4 +1,4 @@
-import React from "react";
+import './search.scss'
 import { Button, Stack, TextField } from "@mui/material";
 import getFormData from "../../helpers/getFormData";
 
@@ -11,7 +11,7 @@ const Search = ({ label, buttonText, searchFunction }: any) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='form-search'>
       <Stack direction={{ xs: "column", md: "row" }}>
         <TextField
           fullWidth
@@ -19,7 +19,7 @@ const Search = ({ label, buttonText, searchFunction }: any) => {
           variant="outlined"
           name="search-data"
         />
-        <Button type="submit" variant="text" className="btn-create">
+        <Button type="submit" variant="text" className="btn-search">
           {buttonText}
         </Button>
       </Stack>
