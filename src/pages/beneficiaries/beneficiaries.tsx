@@ -22,7 +22,9 @@ function Beneficiaries() {
     const eps = useSelector((state: RootState) => state.references.references?.eps);
     const [beneficiarie, setBeneficiarie] = useState({});
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isSisbenValid, setIsSisbenValid] = useState(true);
     const { beneficiarieId } = useParams();
+    const sisbenRegex = /^(A[1-5]|B[1-7]|C[1-18]|D[1-21])$/;
 
     useEffect(() => {
         getBeneficiary();
@@ -31,7 +33,7 @@ function Beneficiaries() {
     const formHanlder = (target: string, e: any) => {
         const value = e.target.value;
         setBeneficiarie({ ...beneficiarie, [target]: value });
-
+        if(target === "sisben_score") setIsSisbenValid(sisbenRegex.test(value));
     }
 
     const handleWebcamCapture = (imageBlob: any) => {
@@ -257,10 +259,12 @@ function Beneficiaries() {
                                     id="puntajesisben"
                                     className="beneficiaries-container__form-section__beneficiarie__form__field__input"
                                     name='puntajesisben'
-                                    placeholder='12'
+                                    placeholder='A1'
                                     type='text'
-                                    label="Puntaje SISBEN"
+                                    label="Categoria SISBEN"
                                     onChange={(e) => formHanlder('sisben_score', e)}
+                                    error={!isSisbenValid}
+                                    helperText={!isSisbenValid ? 'Categoria no valida' : ''}
                                     value={(beneficiarie as any)?.sisben_score || ''}
                                 />
                             </div>
