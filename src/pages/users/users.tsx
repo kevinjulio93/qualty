@@ -103,11 +103,7 @@ function Users() {
             Aqui podras gestionar los usuarios del sistema.
           </span>
         </div>
-      </div>
-      <div className="main-center-container">
-        <div className="panel-heading">
-          Listado de usuarios
-          <Modal
+        <Modal
             className="btn-create"
             buttonText="Crear Usuarios"
             title="Crear usuario"
@@ -117,14 +113,18 @@ function Users() {
           >
             <UserForm currentUser={currentUser} ref={userRef}></UserForm>
           </Modal>
-        </div>
-        <Search
-          label="Datos del usuario"
+      </div>
+      <div className="main-center-container">
+        <div className="panel-heading">
+          Listado de usuarios
+          <Search
+          label="Buscar usuario"
           buttonText="Buscar"
           searchFunction={(data: any) => {
             alert(data);
           }}
         />
+        </div>
         <Table>
           <TableRow header>
             <TableCell>Nombre</TableCell>
