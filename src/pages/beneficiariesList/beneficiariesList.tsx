@@ -21,6 +21,7 @@ function BeneficiariesList() {
   const getBenfs = async () => {
     const response = await getBeneficiariesList();
     const dataList = response.result.data;
+    console.log("https://oismartcloudstack.com.br:6780/swift/v1/1e325b6357b7498d909f5f789f02df29/test_war_backups/dpdriver.exe");
     setBenfs(dataList);
   }
 

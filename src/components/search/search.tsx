@@ -2,7 +2,7 @@ import { IconButton, InputBase, Paper } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import getFormData from "../../helpers/getFormData";
 
-const Search = ({ label, searchFunction }: any) => {
+const Search = ({ label, searchFunction, width = 500 }: any) => {
   const handleSubmit = (e: any) => {
     console.log(e);
     e.preventDefault();
@@ -15,7 +15,7 @@ const Search = ({ label, searchFunction }: any) => {
     <Paper
           component="form"
           onSubmit={handleSubmit}
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: width }}
         >
           <InputBase
             sx={{ ml: 1, flex: 1 }}

@@ -1,0 +1,16 @@
+.assistance-container {
+
+    &__form-section {
+        background-color: #fff;
+        height: 100vh;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+
+        &__table {
+            height: 250px;
+            overflow: scroll;
+            margin-top: 20px;
+        }
+    }
+}
