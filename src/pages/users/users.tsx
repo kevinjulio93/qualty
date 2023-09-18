@@ -7,6 +7,7 @@ import {
   createUser,
   deleteUser,
   getUserList,
+  getUsersByData,
   updateUser,
 } from "../../services/user.service";
 import { Table, TableRow, TableCell } from "../../components/table/table";
@@ -18,6 +19,9 @@ import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
 import { useDispatch } from "react-redux";
 import Search from "../../components/search/search";
+import Toast from "../../components/toast/toast";
+import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
+import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function Users() {
   const userRef = useRef(null);
@@ -28,20 +32,16 @@ function Users() {
   const [currentUser, setCurrentUser] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
 
+  const [toastGetUsersError, setToastGetUsersError] = useState(false);
+
   useEffect(() => {
     getUsers();
   }, []);
 
   const getUsers = async () => {
-    setIsLoading(true);
-    try {
-      const response = await getUserList();
-      const userList = response.result.data;
-      setUsers(userList);
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-    }
+    const response = await getUserList();
+    const userList = response.result.data;
+    setUsers(userList);
   };
 
   const saveData = async () => {
@@ -90,9 +90,7 @@ function Users() {
     setOpenDialog(false);
   };
 
-  return isLoading ? (
-    <LoadingComponent></LoadingComponent>
-  ) : (
+  return users.length > 0 ? (
     <div className="users-container">
       <div className="users-container__actions">
         <div className="content-page-title">
@@ -104,26 +102,38 @@ function Users() {
           </span>
         </div>
         <Modal
-            className="btn-create"
-            buttonText="Crear Usuarios"
-            title="Crear usuario"
-            ref={modalRef}
-            modalClose={onCloseModal}
-            saveMethod={currentUser ? updateData : saveData}
-          >
-            <UserForm currentUser={currentUser} ref={userRef}></UserForm>
-          </Modal>
+          className="btn-create"
+          buttonText="Crear Usuarios"
+          title="Crear usuario"
+          ref={modalRef}
+          modalClose={onCloseModal}
+          saveMethod={currentUser ? updateData : saveData}
+        >
+          <UserForm currentUser={currentUser} ref={userRef}></UserForm>
+        </Modal>
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
           Listado de usuarios
           <Search
-          label="Buscar usuario"
-          buttonText="Buscar"
-          searchFunction={(data: any) => {
-            alert(data);
-          }}
-        />
+            label="Buscar usuario"
+            searchFunction={async (data: string) => {
+              try {
+                const { result } = await getUsersByData(data);
+                const { data: users } = result;
+                setUsers(users);
+              } catch (err) {
+                setToastGetUsersError(true);
+              }
+            }}
+            voidInputFunction={getUsers}
+          />
+          <Toast
+            open={toastGetUsersError}
+            message={ERROR_MESSAGES.GET_USERS_ERROR}
+            severity={SEVERITY_TOAST.ERROR}
+            handleClose={() => setToastGetUsersError(false)}
+          />
         </div>
         <Table>
           <TableRow header>
@@ -132,7 +142,7 @@ function Users() {
             <TableCell>Role</TableCell>
             <TableCell>Acciones</TableCell>
           </TableRow>
-          {users.length > 0 &&
+          {users.length > 0 ? (
             users.map((user: any, index) => {
               return (
                 <TableRow key={index}>
@@ -153,7 +163,10 @@ function Users() {
                   </TableCell>
                 </TableRow>
               );
-            })}
+            })
+          ) : (
+            <LoadingComponent></LoadingComponent>
+          )}
         </Table>
       </div>
 
@@ -169,6 +182,8 @@ function Users() {
         ></SimpleDialog>
       )}
     </div>
+  ) : (
+    <LoadingComponent></LoadingComponent>
   );
 }
 

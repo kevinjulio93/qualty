@@ -13,7 +13,7 @@ import { AppUser } from "../../models/user.model";
 import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
 import Toast from "../../components/toast/toast";
-import { errorMessages } from "./../../constants/errorMessageDictionary";
+import { ERROR_MESSAGES } from "./../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function Login() {
@@ -119,13 +119,13 @@ function Login() {
       <Toast
         open={toastLoginError}
         handleClose={() => setToastLoginError(false)}
-        message={errorMessages.loginError}
+        message={ERROR_MESSAGES.LOGIN_ERROR}
         severity={SEVERITY_TOAST.ERROR}
       />
       <Toast
         open={toastGetAllReferencesError}
         handleClose={() => setToastGetAllReferencesError(false)}
-        message={errorMessages.getAllReferencesError}
+        message={ERROR_MESSAGES.GET_ALL_REFERENCES_ERROR}
         severity={SEVERITY_TOAST.ERROR}
       />
     </div>

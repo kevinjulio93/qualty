@@ -1,31 +1,57 @@
+import { useState } from "react";
 import { IconButton, InputBase, Paper } from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
-import getFormData from "../../helpers/getFormData";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
 
-const Search = ({ label, searchFunction }: any) => {
+const Search = ({ label, searchFunction, voidInputFunction }: any) => {
+  const [inputValue, setInputValue] = useState("");
+  let data: string = "";
+
   const handleSubmit = (e: any) => {
-    console.log(e);
     e.preventDefault();
-    const data: any = getFormData(e.target);
-    if (!data["search-data"].trim()) return;
-    searchFunction(data["search-data"]);
+    if (!inputValue.trim()) return;
+    searchFunction(inputValue);
+  };
+
+  const handleInputChange = (e: any) => {
+    data = e.target.value;
+    setInputValue(data);
+    if (data) return;
+    if (voidInputFunction) voidInputFunction();
+  };
+
+  const handleButtonClick = () => {
+    setInputValue("");
+    voidInputFunction();
   };
 
   return (
     <Paper
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 400 }}
+    >
+      <InputBase
+        sx={{ ml: 1, flex: 1 }}
+        placeholder={label}
+        inputProps={{ "aria-label": label }}
+        name="search-data"
+        onChange={handleInputChange}
+        value={inputValue}
+      />
+      {!!inputValue && (
+        <IconButton
+          type="button"
+          sx={{ p: "10px" }}
+          aria-label="clear"
+          onClick={handleButtonClick}
         >
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder={label}
-            inputProps={{ 'aria-label': label }}
-            name="search-data"
-          />
-          <IconButton type="submit" sx={{ p: '10px' }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
+          <ClearIcon />
+        </IconButton>
+      )}
+      <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
+        <SearchIcon />
+      </IconButton>
     </Paper>
   );
 };

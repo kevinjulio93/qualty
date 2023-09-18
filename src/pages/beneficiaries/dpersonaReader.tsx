@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from "@mui/material";
-import { FingerprintReader, SampleFormat } from '@digitalpersona/devices';
+import { DeviceConnected, DeviceDisconnected, FingerprintReader, SampleFormat } from '@digitalpersona/devices';
 
 function DPersonaReader() {
     const reader = new FingerprintReader();

@@ -23,6 +23,16 @@ export async function deleteRole(id: any) {
     return response;
 }
 
+export async function getRolesByData(
+    queryString: string,
+    page: number = 1,
+    perPage: number = 20
+  ) {
+    const params = `page=${page}&perPage=${perPage}&queryString=${queryString}`;
+    const response = await roles.get("/roles/?" + params);
+    return response;
+  }
+  
 
 
 
