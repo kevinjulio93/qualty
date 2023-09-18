@@ -7,6 +7,7 @@ import {
   createUser,
   deleteUser,
   getUserList,
+  getUsersByData,
   updateUser,
 } from "../../services/user.service";
 import { Table, TableRow, TableCell } from "../../components/table/table";
@@ -18,6 +19,9 @@ import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
 import { useDispatch } from "react-redux";
 import Search from "../../components/search/search";
+import Toast from "../../components/toast/toast";
+import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
+import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function Users() {
   const userRef = useRef(null);
@@ -27,6 +31,8 @@ function Users() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+
+  const [toastGetUsersError, setToastGetUsersError] = useState(false);
 
   useEffect(() => {
     getUsers();
@@ -91,9 +97,7 @@ function Users() {
     setOpenDialog(false);
   };
 
-  return isLoading ? (
-    <LoadingComponent></LoadingComponent>
-  ) : (
+  return (
     <div className="users-container">
       <div className="users-container__actions">
         <div className="content-page-title">
@@ -105,57 +109,77 @@ function Users() {
           </span>
         </div>
         <Modal
-            className="btn-create"
-            buttonText="Crear Usuarios"
-            title="Crear usuario"
-            ref={modalRef}
-            modalClose={onCloseModal}
-            saveMethod={currentUser ? updateData : saveData}
-          >
-            <UserForm currentUser={currentUser} ref={userRef}></UserForm>
-          </Modal>
+          className="btn-create"
+          buttonText="Crear Usuarios"
+          title="Crear usuario"
+          ref={modalRef}
+          modalClose={onCloseModal}
+          saveMethod={currentUser ? updateData : saveData}
+        >
+          <UserForm currentUser={currentUser} ref={userRef}></UserForm>
+        </Modal>
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
           Listado de usuarios
           <Search
-          label="Buscar usuario"
-          buttonText="Buscar"
-          searchFunction={(data: any) => {
-            alert(data);
-          }}
-        />
+            label="Buscar usuario"
+            searchFunction={async (data: string) => {
+              try {
+                const { result } = await getUsersByData(data);
+                const { data: users } = result;
+                setUsers(users);
+              } catch (err) {
+                setToastGetUsersError(true);
+              }
+            }}
+            voidInputFunction={getUsers}
+          />
+          <Toast
+            open={toastGetUsersError}
+            message={ERROR_MESSAGES.GET_USERS_ERROR}
+            severity={SEVERITY_TOAST.ERROR}
+            handleClose={() => setToastGetUsersError(false)}
+          />
         </div>
-        <Table>
-          <TableRow header>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Role</TableCell>
-            <TableCell>Acciones</TableCell>
-          </TableRow>
-          {users.length > 0 &&
-            users.map((user: any, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role.role}</TableCell>
-                  <TableCell>
-                    <Stack className="actions-cell" direction="row" spacing={2}>
-                      <EditIcon
-                        className="action-item-icon action-item-icon-edit"
-                        onClick={() => handleEditAction(user)}
-                      ></EditIcon>
-                      <ClearIcon
-                        className="action-item-icon action-item-icon-delete"
-                        onClick={() => handleDeleteAction(user)}
-                      ></ClearIcon>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-        </Table>
+        {isLoading ? (
+          <LoadingComponent></LoadingComponent>
+        ) : (
+          <Table>
+            <TableRow header>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+            {users.length > 0 &&
+              users.map((user: any, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role.role}</TableCell>
+                    <TableCell>
+                      <Stack
+                        className="actions-cell"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <EditIcon
+                          className="action-item-icon action-item-icon-edit"
+                          onClick={() => handleEditAction(user)}
+                        ></EditIcon>
+                        <ClearIcon
+                          className="action-item-icon action-item-icon-delete"
+                          onClick={() => handleDeleteAction(user)}
+                        ></ClearIcon>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </Table>
+        )}
       </div>
 
       {openDialog && (
