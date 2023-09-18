@@ -86,4 +86,15 @@ export const sectionList = [
             action: ["read"]
         }
     },
+    {
+        key: "asistencia",
+        name: "Asistencia",
+        path: ROUTES.ASSISTANCE,
+        icon: "checklist",
+        hasChilds: false,
+        permission: {
+            subject: SECTIONS.ASSISTANCE,
+            action: [PERMISSIONS.CREATE]
+        }
+    },
 ];

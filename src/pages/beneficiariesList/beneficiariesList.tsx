@@ -40,6 +40,7 @@ function BeneficiariesList() {
     }
   };
 
+
   const handleClickOpen = (id?: string) => {
     const redirectTo = id
       ? `${ROUTES.DASHBOARD}/${ROUTES.BENEFICIARIES}/${id}`

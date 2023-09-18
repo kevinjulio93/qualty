@@ -5,6 +5,7 @@ export class FecthRequestModel {
     
     constructor() {
         this.url = 'http://localhost:3000'
+        //this.url = 'http://192.168.1.8:3000'
     }
 
 

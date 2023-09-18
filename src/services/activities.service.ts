@@ -12,7 +12,7 @@ export async function updateActivities(activities:any) {
     return response;
 }
 
-export async function getAllActivitiess() {
+export async function getAllActivities() {
     const response = await activity.get('/activities');
     return response;
 }

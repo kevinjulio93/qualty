@@ -7,6 +7,7 @@ const Search = ({ label, searchFunction, voidInputFunction }: any) => {
   const [inputValue, setInputValue] = useState("");
   let data: string = "";
 
+const Search = ({ label, searchFunction, width = 500 }: any) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
@@ -29,7 +30,7 @@ const Search = ({ label, searchFunction, voidInputFunction }: any) => {
     <Paper
       component="form"
       onSubmit={handleSubmit}
-      sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 400 }}
+      sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: width }}
     >
       <InputBase
         sx={{ ml: 1, flex: 1 }}
