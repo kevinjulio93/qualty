@@ -32,6 +32,12 @@ function Beneficiaries() {
     { label: "B-", value: "B-" },
     { label: "AB-", value: "AB-" },
   ];
+  const optionsRegimenHealth=[
+    {label:"Subsidiado",value:"Subsidiado"},  
+    {label:"Contributivo",value:"Contributivo"},  
+    {label:"Cotizante",value:"Cotizante"},  
+    {label:"Cotizante Beneficiario",value:"Cotizante Beneficiario"},  
+  ]
   const comuna = useSelector(
     (state: RootState) => state.references.references?.communities
   );
@@ -236,6 +242,19 @@ function Beneficiaries() {
               </div>
 
               <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                <TextField
+                  id="departamentoresidencia"
+                  className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                  name="departamentoresidencia"
+                  placeholder="Norte de Santander"
+                  type="text"
+                  label="Departamento de Residencia"
+                  onChange={(e) => formHanlder("residence_department", e)}
+                  value={(beneficiarie as any)?.residence_department || ""}
+                />
+              </div>
+
+              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                 <SelectDropdown
                   selectValue={(beneficiarie as any)?.municipality}
                   label="Municipios"
@@ -272,6 +291,19 @@ function Beneficiaries() {
               </div>
 
               <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                <TextField
+                  id="departamentosisben"
+                  className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                  name="departamentosisben"
+                  placeholder="Norte de Santander"
+                  type="text"
+                  label="Departamento de SISBEN"
+                  onChange={(e) => formHanlder("sisben_department", e)}
+                  value={(beneficiarie as any)?.sisben_department || ""}
+                />
+              </div>
+
+              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                 <SelectDropdown
                   selectValue={(beneficiarie as any)?.eps}
                   label="EPS"
@@ -297,6 +329,17 @@ function Beneficiaries() {
                   value={(beneficiarie as any)?.sisben_score || ""}
                 />
               </div>
+
+              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                <SelectDropdown
+                  selectValue={(beneficiarie as any)?.health_regimen}
+                  label="Régimen de Salud"
+                  options={optionsRegimenHealth}
+                  targetKey="health_regimen"
+                  handleValue={formHanlder}
+                />
+              </div>
+
             </form>
 
             <Button
