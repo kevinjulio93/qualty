@@ -8,13 +8,11 @@ ENV NODE_ENV production
 WORKDIR /app
 
 # Installing dependencies
-COPY ./package.json ./
+COPY . /app
+
 RUN npm install -g typescript
 
 RUN npm ci --force
-
-# Copying all the files in our project
-COPY . .
 
 # Building our application
 RUN npm run build
