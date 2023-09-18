@@ -9,7 +9,9 @@ WORKDIR /app
 
 # Installing dependencies
 COPY ./package.json ./
-RUN npm install --force
+RUN npm install -g typescript
+
+RUN npm ci --force
 
 # Copying all the files in our project
 COPY . .
