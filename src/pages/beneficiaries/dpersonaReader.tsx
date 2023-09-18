@@ -17,7 +17,7 @@ function DPersonaReader() {
         setDeviceState('disconnected');
     };
 
-    const onSamplesAcquired = async (event: SampleAquired) => {
+    const onSamplesAcquired = async (event: any) => {
         console.log(event);
         //injectImage(event.samples[0])
         setDeviceState('acquired');

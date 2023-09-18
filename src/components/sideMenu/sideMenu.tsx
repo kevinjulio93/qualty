@@ -18,7 +18,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 
 function SideMenu(props) {
-    const abilities = useSelector((state: RootState) => state.auth.user.abilities);
+    const abilities = useSelector((state: any) => state.auth.user.abilities);
     const availableSections = sectionList.filter(section => checkPermissions(section.permission, abilities));
     const [selectedSection, setSelectedSection] = useState(availableSections[0].key);
     const [open, setOpen] = useState(false);
