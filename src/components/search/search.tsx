@@ -3,11 +3,10 @@ import { IconButton, InputBase, Paper } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 
-const Search = ({ label, searchFunction, voidInputFunction }: any) => {
+const Search = ({ label, searchFunction, voidInputFunction, width = 500}: any) => {
   const [inputValue, setInputValue] = useState("");
   let data: string = "";
 
-const Search = ({ label, searchFunction, width = 500 }: any) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
