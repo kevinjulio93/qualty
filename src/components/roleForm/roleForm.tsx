@@ -7,7 +7,13 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { useState, forwardRef, useImperativeHandle, useEffect } from "react";
+import {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+  Fragment,
+} from "react";
 import { arrayPermissions, arraySections } from "../../constants/resources";
 
 const RoleForm = forwardRef((props: any, ref) => {
@@ -87,9 +93,9 @@ const RoleForm = forwardRef((props: any, ref) => {
           key="role-input"
         />
         <FormControl component="fieldset" key="permissions-section">
-          {arraySections.map((section) => {
+          {arraySections.map((section, index) => {
             return (
-              <>
+              <Fragment key={index}>
                 <FormLabel component="legend" key={section.key + "-section"}>
                   {section.value}
                 </FormLabel>
@@ -114,7 +120,7 @@ const RoleForm = forwardRef((props: any, ref) => {
                     );
                   })}
                 </FormGroup>
-              </>
+              </Fragment>
             );
           })}
         </FormControl>

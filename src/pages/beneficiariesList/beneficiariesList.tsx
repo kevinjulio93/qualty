@@ -19,6 +19,7 @@ import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function BeneficiariesList() {
   const [benfs, setBenfs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [toastGetBeneficiariesError, setToastGetBeneficiariesError] =
     useState(false);
   const navigate = useNavigate();
@@ -28,9 +29,15 @@ function BeneficiariesList() {
   }, []);
 
   const getBenfs = async () => {
-    const response = await getBeneficiariesList();
-    const dataList = response.result.data;
-    setBenfs(dataList);
+    setIsLoading(true);
+    try {
+      const response = await getBeneficiariesList();
+      const dataList = response.result.data;
+      setBenfs(dataList);
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+    }
   };
 
   const handleClickOpen = (id?: string) => {
@@ -52,7 +59,7 @@ function BeneficiariesList() {
     }
   };
 
-  return benfs.length > 0 ? (
+  return (
     <div className="users-container">
       <div className="users-container__actions">
         <div className="content-page-title">
@@ -91,55 +98,57 @@ function BeneficiariesList() {
             handleClose={() => setToastGetBeneficiariesError(false)}
           />
         </div>
-        <Table>
-          <TableRow header>
-            <TableCell>Foto</TableCell>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Cedula</TableCell>
-            <TableCell>Asociación</TableCell>
-            <TableCell>EPS</TableCell>
-            <TableCell>Acciones</TableCell>
-          </TableRow>
-          {benfs.map((beneficiary: any) => {
-            return (
-              <TableRow key={beneficiary._id}>
-                <TableCell>
-                  <img
-                    className="ben-foto"
-                    src={beneficiary.photo_url}
-                    alt="foto"
-                  />
-                </TableCell>
-                <TableCell>
-                  {beneficiary?.first_name} {beneficiary.second_name}{" "}
-                  {beneficiary.first_last_name} {beneficiary.second_last_name}
-                </TableCell>
-                <TableCell>{beneficiary?.identification}</TableCell>
-                <TableCell>{beneficiary?.association?.name}</TableCell>
-                <TableCell>{beneficiary?.eps?.name}</TableCell>
-                <TableCell>
-                  <Stack direction="row" spacing={2}>
-                    <EditIcon
-                      onClick={() => handleClickOpen(beneficiary?._id)}
-                      className="action-item-icon action-item-icon-edit"
-                    ></EditIcon>
+        {isLoading ? (
+          <LoadingComponent></LoadingComponent>
+        ) : (
+          <Table>
+            <TableRow header>
+              <TableCell>Foto</TableCell>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Cedula</TableCell>
+              <TableCell>Asociación</TableCell>
+              <TableCell>EPS</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+            {benfs.map((beneficiary: any) => {
+              return (
+                <TableRow key={beneficiary._id}>
+                  <TableCell>
+                    <img
+                      className="ben-foto"
+                      src={beneficiary.photo_url}
+                      alt="foto"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {beneficiary?.first_name} {beneficiary.second_name}{" "}
+                    {beneficiary.first_last_name} {beneficiary.second_last_name}
+                  </TableCell>
+                  <TableCell>{beneficiary?.identification}</TableCell>
+                  <TableCell>{beneficiary?.association?.name}</TableCell>
+                  <TableCell>{beneficiary?.eps?.name}</TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={2}>
+                      <EditIcon
+                        onClick={() => handleClickOpen(beneficiary?._id)}
+                        className="action-item-icon action-item-icon-edit"
+                      ></EditIcon>
 
-                    <ClearIcon
-                      onClick={() =>
-                        deleteBeneficiaryFromList(beneficiary?._id)
-                      }
-                      className="action-item-icon action-item-icon-delete"
-                    ></ClearIcon>
-                  </Stack>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </Table>
+                      <ClearIcon
+                        onClick={() =>
+                          deleteBeneficiaryFromList(beneficiary?._id)
+                        }
+                        className="action-item-icon action-item-icon-delete"
+                      ></ClearIcon>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </Table>
+        )}
       </div>
     </div>
-  ) : (
-    <LoadingComponent></LoadingComponent>
   );
 }
 

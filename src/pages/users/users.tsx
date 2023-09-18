@@ -39,9 +39,15 @@ function Users() {
   }, []);
 
   const getUsers = async () => {
-    const response = await getUserList();
-    const userList = response.result.data;
-    setUsers(userList);
+    setIsLoading(true);
+    try {
+      const response = await getUserList();
+      const userList = response.result.data;
+      setUsers(userList);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   const saveData = async () => {
@@ -90,7 +96,7 @@ function Users() {
     setOpenDialog(false);
   };
 
-  return users.length > 0 ? (
+  return (
     <div className="users-container">
       <div className="users-container__actions">
         <div className="content-page-title">
@@ -135,39 +141,44 @@ function Users() {
             handleClose={() => setToastGetUsersError(false)}
           />
         </div>
-        <Table>
-          <TableRow header>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Role</TableCell>
-            <TableCell>Acciones</TableCell>
-          </TableRow>
-          {users.length > 0 ? (
-            users.map((user: any, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role.role}</TableCell>
-                  <TableCell>
-                    <Stack className="actions-cell" direction="row" spacing={2}>
-                      <EditIcon
-                        className="action-item-icon action-item-icon-edit"
-                        onClick={() => handleEditAction(user)}
-                      ></EditIcon>
-                      <ClearIcon
-                        className="action-item-icon action-item-icon-delete"
-                        onClick={() => handleDeleteAction(user)}
-                      ></ClearIcon>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          ) : (
-            <LoadingComponent></LoadingComponent>
-          )}
-        </Table>
+        {isLoading ? (
+          <LoadingComponent></LoadingComponent>
+        ) : (
+          <Table>
+            <TableRow header>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+            {users.length > 0 &&
+              users.map((user: any, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.role.role}</TableCell>
+                    <TableCell>
+                      <Stack
+                        className="actions-cell"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <EditIcon
+                          className="action-item-icon action-item-icon-edit"
+                          onClick={() => handleEditAction(user)}
+                        ></EditIcon>
+                        <ClearIcon
+                          className="action-item-icon action-item-icon-delete"
+                          onClick={() => handleDeleteAction(user)}
+                        ></ClearIcon>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </Table>
+        )}
       </div>
 
       {openDialog && (
@@ -182,8 +193,6 @@ function Users() {
         ></SimpleDialog>
       )}
     </div>
-  ) : (
-    <LoadingComponent></LoadingComponent>
   );
 }
 

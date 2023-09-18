@@ -90,9 +90,7 @@ function Roles() {
     setOpenDialog(false);
   };
 
-  return isLoading ? (
-    <LoadingComponent></LoadingComponent>
-  ) : (
+  return (
     <div className="roles-container">
       <div className="roles-container__actions">
         <div className="content-page-title">
@@ -137,36 +135,44 @@ function Roles() {
             handleClose={() => setToastGetRolesError(false)}
           />
         </div>
-        <Table>
-          <TableRow header>
-            <TableCell>Role</TableCell>
-            <TableCell>Permisos</TableCell>
-            <TableCell>Acciones</TableCell>
-          </TableRow>
-          {roles.length > 0 &&
-            roles.map((role: any, index) => {
-              return (
-                <TableRow key={index}>
-                  <TableCell>{role.role}</TableCell>
-                  <TableCell>
-                    {role.permissions.map((per) => per.section).toString()}
-                  </TableCell>
-                  <TableCell>
-                    <Stack className="actions-cell" direction="row" spacing={2}>
-                      <EditIcon
-                        className="action-item-icon action-item-icon-edit"
-                        onClick={() => handleEditAction(role)}
-                      ></EditIcon>
-                      <ClearIcon
-                        className="action-item-icon action-item-icon-delete"
-                        onClick={() => handleDeleteAction(role)}
-                      ></ClearIcon>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-        </Table>
+        {isLoading ? (
+          <LoadingComponent></LoadingComponent>
+        ) : (
+          <Table>
+            <TableRow header>
+              <TableCell>Role</TableCell>
+              <TableCell>Permisos</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+            {roles.length > 0 &&
+              roles.map((role: any, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell>{role.role}</TableCell>
+                    <TableCell>
+                      {role.permissions.map((per) => per.section).toString()}
+                    </TableCell>
+                    <TableCell>
+                      <Stack
+                        className="actions-cell"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <EditIcon
+                          className="action-item-icon action-item-icon-edit"
+                          onClick={() => handleEditAction(role)}
+                        ></EditIcon>
+                        <ClearIcon
+                          className="action-item-icon action-item-icon-delete"
+                          onClick={() => handleDeleteAction(role)}
+                        ></ClearIcon>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </Table>
+        )}
       </div>
 
       {openDialog && (
