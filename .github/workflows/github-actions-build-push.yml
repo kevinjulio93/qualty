@@ -31,6 +31,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: appleboy/ssh-action@v1.0.0
+      name: Remove qualty_web container
+      with:
+        host: 193.203.167.80
+        username: ${{ secrets.DEPLOY_USERNAME }}
+        key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        script: docker rm -f qualty_web
+        
     - uses: chaplyk/docker-compose-remote-action@v1.1
       name: Docker-Stack Remote Deployment
       with:
@@ -39,5 +47,5 @@ jobs:
         ssh_user: ${{ secrets.DEPLOY_USERNAME }}
         compose_file: docker-compose.yaml
         pull: true
-        build: true
+        force_recreate: true
       
