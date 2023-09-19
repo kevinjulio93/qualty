@@ -74,12 +74,12 @@ function ActivityDetail() {
                         </div>
                     </div>
                     <div className='activities-container__form-section__assitants'>
-                        <Typography variant="h6">Agregar asociaciones asistentes</Typography>
+                        <Typography className='activities-container__form-section__assitants__title' variant="h6">Agregar asociaciones asistentes</Typography>
                         <div className='activities-container__form-section__assitants__form'>
-                            <div className="beneficiaries-container__form-section__assitants__form__field">
+                            <div className="activities-container__form-section__assitants__form__field">
                                 <TextField
                                     id="actiivtyName"
-                                    className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                                    className="activities-container__form-section__beneficiarie__form__field__input"
                                     name='actiivtyName'
                                     placeholder='Nombre de la actividad'
                                     type='text'
@@ -88,10 +88,10 @@ function ActivityDetail() {
                                 // value={(beneficiarie as any)?.identification || ''}
                                 />
                             </div>
-                            <div className="beneficiaries-container__form-section__assitants__form__field">
+                            <div className="activities-container__form-section__assitants__form__field">
                                 <TextField
                                     id="description"
-                                    className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                                    className="activities-container__form-section__beneficiarie__form__field__input"
                                     name='description'
                                     placeholder='Esta es una activida'
                                     type='text'
@@ -100,10 +100,10 @@ function ActivityDetail() {
                                 //value={(beneficiarie as any)?.identification || ''}
                                 />
                             </div>
-                            <div className="beneficiaries-container__form-section__assitants__form__field">
+                            <div className="activities-container__form-section__assitants__form__field">
                                 <TextField
                                     id="date"
-                                    className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                                    className="activities-container__form-section__beneficiarie__form__field__input"
                                     name='date'
                                     placeholder='02-12-2023'
                                     type='text'
@@ -112,10 +112,10 @@ function ActivityDetail() {
                                 //value={(beneficiarie as any)?.identification || ''}
                                 />
                             </div>
-                            <div className="beneficiaries-container__form-section__assitants__form__field">
+                            <div className="activities-container__form-section__assitants__form__field">
                                 <TextField
                                     id="aforo"
-                                    className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                                    className="activities-container__form-section__beneficiarie__form__field__input"
                                     name='aforo'
                                     placeholder='112233445'
                                     type='number'
