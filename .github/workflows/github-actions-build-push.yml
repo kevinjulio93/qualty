@@ -29,6 +29,9 @@ jobs:
       -
         name: Build and push
         uses: docker/build-push-action@v5
+        env:
+          VITE_PROD_API_URL: http://${{ secrets.PUBLIC_IP }}:3000
+          VITE_NODE_ENV: production
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/qualty-web:latest
