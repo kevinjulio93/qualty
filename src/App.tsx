@@ -21,6 +21,7 @@ import { SECTIONS } from './constants/sections';
 import { PERMISSIONS } from './constants/permissions';
 import Permissions from './pages/permissions/permissions';
 import Assistance from './pages/assistance/assistance';
+import Associations from './pages/associations/associations';
 
 
 function App() {
@@ -66,6 +67,9 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSISTANCE, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.ASSISTANCE} element={<Assistance />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
+                  <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
                 </Route>
               </Route>
             </Route>

@@ -1,46 +1,48 @@
 import { useEffect, useRef, useState } from "react";
-import "./roles.scss";
-import {
-  createRole,
-  deleteRole,
-  getAllroles,
-  updateRole,
-} from "../../services/roles.service";
 import { Pagination, Stack, Typography } from "@mui/material";
 import Modal from "../../components/modal/modal";
-import { Table, TableCell, TableRow } from "../../components/table/table";
+import {
+  createUser,
+  deleteUser,
+  getUserList,
+  updateUser,
+} from "../../services/user.service";
+import { Table, TableRow, TableCell } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import LoadingComponent from "../../components/loading/loading";
-import RoleForm from "../../components/roleForm/roleForm";
 import { SimpleDialog } from "../../components/dialog/dialog";
+import { useDispatch } from "react-redux";
 import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
+import AssociationForm from "../../components/associationForm/associationForm";
 
-function Roles() {
-  const roleRef = useRef(null);
-  const [roles, setRoles] = useState([]);
+function Associations() {
+  const associationRef = useRef(null);
+  const dispatch = useDispatch();
+  const modalRef = useRef(null);
+  const [associations, setAssociations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentRole, setCurrentRole] = useState(null);
+  const [currentAssociation, setCurrentAssociation] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [toastGetRolesError, setToastGetRolesError] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
 
-  const modalRef = useRef(null);
+  const [toastGetAssociationsError, setToastGetAssociationsError] =
+    useState(false);
 
   useEffect(() => {
-    getRoles();
+    getAssociations();
   }, []);
 
-  const getRoles = async () => {
+  const getAssociations = async () => {
     setIsLoading(true);
     try {
-      const { result } = await getAllroles();
-      const { data: rolList, totalPages } = result;
-      setRoles(rolList);
+      const { result } = await getUserList();
+      const { data: associationList, totalPages } = result;
+      setAssociations(associationList);
       setTotalPages(totalPages);
       setIsLoading(false);
     } catch (error) {
@@ -48,96 +50,100 @@ function Roles() {
     }
   };
 
-  const onCloseModal = () => {
-    setCurrentRole(null);
+  const saveData = async () => {
+    if (associationRef.current !== null) {
+      const association = (associationRef.current as any).getUser();
+      await createUser(association);
+      setIsLoading(true);
+      getAssociations();
+    }
+    setCurrentAssociation(null);
   };
 
   const updateData = async () => {
-    if (roleRef.current !== null) {
-      await updateRole(currentRole);
+    if (associationRef.current !== null) {
+      const association = (associationRef.current as any).getUser();
+      await updateUser(association);
       setIsLoading(true);
-      getRoles();
+      getAssociations();
     }
-    setCurrentRole(null);
+    setCurrentAssociation(null);
   };
 
-  const saveData = async () => {
-    if (roleRef.current !== null) {
-      const role = (roleRef.current as any).getRole();
-      await createRole(role);
-      setIsLoading(true);
-      getRoles();
-    }
-    setCurrentRole(null);
+  const onCloseModal = () => {
+    setCurrentAssociation(null);
   };
 
-  const handleEditAction = (role) => {
-    setCurrentRole(role);
+  const handleEditAction = (association) => {
+    setCurrentAssociation(association);
     (modalRef as any).current.handleClickOpen();
   };
 
-  const handleDeleteAction = (role) => {
-    setCurrentRole(role);
+  const handleDeleteAction = (association) => {
+    setCurrentAssociation(association);
     setOpenDialog(true);
   };
 
   const confirmDelete = async () => {
     setIsLoading(true);
     setOpenDialog(false);
-    await deleteRole((currentRole as any)._id);
-    setCurrentRole(null);
-    getRoles();
+    await deleteUser((currentAssociation as any)._id);
+    setCurrentAssociation(null);
+    getAssociations();
   };
 
   const cancelDelete = () => {
-    setCurrentRole(null);
+    setCurrentAssociation(null);
     setOpenDialog(false);
   };
 
   return (
-    <div className="roles-container">
-      <div className="roles-container__actions">
+    <div className="users-container">
+      <div className="users-container__actions">
         <div className="content-page-title">
           <Typography variant="h5" className="page-header">
-            Administrar Roles
+            Administrar asociaciones
           </Typography>
           <span className="page-subtitle">
-            Aqui podras gestionar los roles de usuarios del sistema.
+            Aqui podras gestionar las asociaciones del sistema.
           </span>
         </div>
         <Modal
           className="btn-create"
-          buttonText="Crear Roles"
-          title="Crear role"
+          buttonText="Crear Asociacion"
+          title="Crear asociacion"
           ref={modalRef}
           modalClose={onCloseModal}
-          saveMethod={currentRole ? updateData : saveData}
+          saveMethod={currentAssociation ? updateData : saveData}
         >
-          <RoleForm currentRole={currentRole} ref={roleRef}></RoleForm>
+          <AssociationForm
+            currentAssociation={currentAssociation}
+            ref={associationRef}
+          ></AssociationForm>
         </Modal>
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
-          Listado de roles
+          Listado de asociaciones
           <Search
-            label="Buscar rol"
+            label="Buscar asociacion"
             searchFunction={async (data: string) => {
               try {
-                const { result } = await getAllroles(data);
+                const { result } = await getUserList(data);
                 setDataLastSearch(data);
-                const { data: roles } = result;
-                setRoles(roles);
+                const { data: associations } = result;
+                setAssociations(associations);
               } catch (err) {
-                setToastGetRolesError(true);
+                setToastGetAssociationsError(true);
               }
             }}
-            voidInputFunction={getRoles}
+            voidInputFunction={getAssociations}
           />
           <Toast
-            open={toastGetRolesError}
-            message={ERROR_MESSAGES.GET_ROLES_ERROR}
+            open={toastGetAssociationsError}
+            message={ERROR_MESSAGES.GET_ASSOCIATIONS_ERROR}
             severity={SEVERITY_TOAST.ERROR}
-            handleClose={() => setToastGetRolesError(false)}
+            handleClose={() => setToastGetAssociationsError(false)}
           />
         </div>
         {isLoading ? (
@@ -146,18 +152,18 @@ function Roles() {
           <>
             <Table>
               <TableRow header>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Email</TableCell>
                 <TableCell>Role</TableCell>
-                <TableCell>Permisos</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
-              {roles.length > 0 &&
-                roles.map((role: any, index) => {
+              {associations.length > 0 &&
+                associations.map((association: any, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableCell>{role.role}</TableCell>
-                      <TableCell>
-                        {role.permissions.map((per) => per.section).toString()}
-                      </TableCell>
+                      <TableCell>{association.name}</TableCell>
+                      <TableCell>{association.email}</TableCell>
+                      <TableCell>{association.role.role}</TableCell>
                       <TableCell>
                         <Stack
                           className="actions-cell"
@@ -166,11 +172,11 @@ function Roles() {
                         >
                           <EditIcon
                             className="action-item-icon action-item-icon-edit"
-                            onClick={() => handleEditAction(role)}
+                            onClick={() => handleEditAction(association)}
                           ></EditIcon>
                           <ClearIcon
                             className="action-item-icon action-item-icon-delete"
-                            onClick={() => handleDeleteAction(role)}
+                            onClick={() => handleDeleteAction(association)}
                           ></ClearIcon>
                         </Stack>
                       </TableCell>
@@ -182,12 +188,12 @@ function Roles() {
               count={totalPages}
               onChange={async (_, page) => {
                 try {
-                  const { result } = await getr(dataLastSearch, page);
-                  const { data: users, totalPages } = result;
-                  setUsers(users);
+                  const { result } = await getUserList(dataLastSearch, page);
+                  const { data: associations, totalPages } = result;
+                  setAssociations(associations);
                   setTotalPages(totalPages);
                 } catch (err) {
-                  setToastGetUsersError(true);
+                  setToastGetAssociationsError(true);
                 }
               }}
             />
@@ -197,8 +203,8 @@ function Roles() {
 
       {openDialog && (
         <SimpleDialog
-          title="Eliminar usuaro"
-          bodyContent="¿Está seguro que desea eliminar este usuario?"
+          title="Eliminar asociacion"
+          bodyContent="¿Está seguro que desea eliminar esta asociacion?"
           mainBtnText="Confirmar"
           secondBtnText="Cancelar"
           mainBtnHandler={confirmDelete}
@@ -210,4 +216,4 @@ function Roles() {
   );
 }
 
-export default Roles;
+export default Associations;
