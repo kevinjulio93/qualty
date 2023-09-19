@@ -43,15 +43,15 @@ function ActivityList() {
       <div className='users-container'>
         <div className="users-container__actions">
           <div className="content-page-title">
-            <Typography variant="h5" className="page-header">Administrar Talleres</Typography>
-            <span className="page-subtitle">Aqui podras gestionar los talleres del sistema.</span>
+            <Typography variant="h5" className="page-header">Administrar Actividades</Typography>
+            <span className="page-subtitle">Aqui podras gestionar los actividades del sistema.</span>
           </div>
         </div>
 
         <div className="main-center-container">
-          <div className="panel-heading"> Listado de talleres
+          <div className="panel-heading"> Listado de Actividades
             <Button className="btn-create" onClick={() => handleClickOpen()}>
-              Crear taller
+              Crear Actividad
             </Button>
           </div>
           <Table>

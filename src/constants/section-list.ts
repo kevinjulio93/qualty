@@ -26,8 +26,8 @@ export const sectionList = [
         }
     },
     {
-        key: "talleres",
-        name: "Talleres",
+        key: "actividades",
+        name: "Actividades",
         path: ROUTES.ACTIVITIES_LIST,
         icon: "beneficiaries",
         hasChilds: false,
