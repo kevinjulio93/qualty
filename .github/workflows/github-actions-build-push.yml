@@ -38,7 +38,7 @@ jobs:
         username: ${{ secrets.DEPLOY_USERNAME }}
         key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         script: docker rm -f qualty_web
-        
+
     - uses: chaplyk/docker-compose-remote-action@v1.1
       name: Docker-Stack Remote Deployment
       with:
@@ -47,5 +47,4 @@ jobs:
         ssh_user: ${{ secrets.DEPLOY_USERNAME }}
         compose_file: docker-compose.yaml
         pull: true
-        force_recreate: true
       
