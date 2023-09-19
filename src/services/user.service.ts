@@ -13,22 +13,19 @@ export async function updateUser(user: AppUser) {
   return response;
 }
 
-export async function getUserList() {
-  const response = await userRequest.get("/users");
+export async function getUserList(
+  queryString?: string,
+  page: number = 1,
+  perPage: number = 20
+) {
+  const params = `page=${page}&perPage=${perPage}${
+    queryString ? `&queryString=${queryString}` : ""
+  }`;
+  const response = await userRequest.get("/users/?" + params);
   return response;
 }
 
 export async function deleteUser(id: string) {
   const response = await userRequest.delete("/users/" + id);
-  return response;
-}
-
-export async function getUsersByData(
-  queryString: string,
-  page: number = 1,
-  perPage: number = 20
-) {
-  const params = `page=${page}&perPage=${perPage}&queryString=${queryString}`;
-  const response = await userRequest.get("/users/?" + params);
   return response;
 }

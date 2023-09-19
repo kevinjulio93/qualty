@@ -4,10 +4,9 @@ import {
   createRole,
   deleteRole,
   getAllroles,
-  getRolesByData,
   updateRole,
 } from "../../services/roles.service";
-import { Stack, Typography } from "@mui/material";
+import { Pagination, Stack, Typography } from "@mui/material";
 import Modal from "../../components/modal/modal";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,6 +26,9 @@ function Roles() {
   const [currentRole, setCurrentRole] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [toastGetRolesError, setToastGetRolesError] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [dataLastSearch, setDataLastSearch] = useState("");
+
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -36,14 +38,14 @@ function Roles() {
   const getRoles = async () => {
     setIsLoading(true);
     try {
-      const response = await getAllroles();
-      if (response.status === 200) {
-        setRoles(response.result.data);
-      }
+      const { result } = await getAllroles();
+      const { data: rolList, totalPages } = result;
+      setRoles(rolList);
+      setTotalPages(totalPages);
+      setIsLoading(false);
     } catch (error) {
-      console.error(error);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const onCloseModal = () => {
@@ -122,7 +124,8 @@ function Roles() {
             label="Buscar rol"
             searchFunction={async (data: string) => {
               try {
-                const { result } = await getRolesByData(data);
+                const { result } = await getAllroles(data);
+                setDataLastSearch(data);
                 const { data: roles } = result;
                 setRoles(roles);
               } catch (err) {
@@ -141,40 +144,55 @@ function Roles() {
         {isLoading ? (
           <LoadingComponent></LoadingComponent>
         ) : (
-          <Table>
-            <TableRow header>
-              <TableCell>Role</TableCell>
-              <TableCell>Permisos</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-            {roles.length > 0 &&
-              roles.map((role: any, index) => {
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{role.role}</TableCell>
-                    <TableCell>
-                      {role.permissions.map((per) => per.section).toString()}
-                    </TableCell>
-                    <TableCell>
-                      <Stack
-                        className="actions-cell"
-                        direction="row"
-                        spacing={2}
-                      >
-                        <EditIcon
-                          className="action-item-icon action-item-icon-edit"
-                          onClick={() => handleEditAction(role)}
-                        ></EditIcon>
-                        <ClearIcon
-                          className="action-item-icon action-item-icon-delete"
-                          onClick={() => handleDeleteAction(role)}
-                        ></ClearIcon>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </Table>
+          <>
+            <Table>
+              <TableRow header>
+                <TableCell>Role</TableCell>
+                <TableCell>Permisos</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+              {roles.length > 0 &&
+                roles.map((role: any, index) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{role.role}</TableCell>
+                      <TableCell>
+                        {role.permissions.map((per) => per.section).toString()}
+                      </TableCell>
+                      <TableCell>
+                        <Stack
+                          className="actions-cell"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <EditIcon
+                            className="action-item-icon action-item-icon-edit"
+                            onClick={() => handleEditAction(role)}
+                          ></EditIcon>
+                          <ClearIcon
+                            className="action-item-icon action-item-icon-delete"
+                            onClick={() => handleDeleteAction(role)}
+                          ></ClearIcon>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </Table>
+            <Pagination
+              count={totalPages}
+              onChange={async (_, page) => {
+                try {
+                  const { result } = await getr(dataLastSearch, page);
+                  const { data: users, totalPages } = result;
+                  setUsers(users);
+                  setTotalPages(totalPages);
+                } catch (err) {
+                  setToastGetUsersError(true);
+                }
+              }}
+            />
+          </>
         )}
       </div>
 
