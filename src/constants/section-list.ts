@@ -28,12 +28,12 @@ export const sectionList = [
     {
         key: "talleres",
         name: "Talleres",
-        path: ROUTES.ACTIVITIES,
+        path: ROUTES.ACTIVITIES_LIST,
         icon: "beneficiaries",
         hasChilds: false,
         permission: {
-            subject: "unknown",
-            action: ["read"]
+            subject: SECTIONS.ACTIVITY,
+            action: [PERMISSIONS.READ]
         }
     },
     {

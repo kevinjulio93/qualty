@@ -6,6 +6,7 @@ export const ROUTES = {
     INVENTORY: 'inventory',
     BENEFICIARIES: 'beneficiaries',
     BEN_LIST: 'ben_list',
+    ACTIVITIES_LIST: 'activities-list',
     ACTIVITIES: 'activities',
     ROLES: 'roles',
     PERMISSIONS: 'permissions',

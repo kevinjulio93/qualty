@@ -20,6 +20,7 @@ import Unauthorized from './pages/unauthorized/unauthorized';
 import { SECTIONS } from './constants/sections';
 import { PERMISSIONS } from './constants/permissions';
 import Permissions from './pages/permissions/permissions';
+import ActivityDetail from './pages/activitiyDetail/activityDetail';
 
 
 function App() {
@@ -44,7 +45,12 @@ function App() {
                   <Route path={ROUTES.USERS} element={<Users />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ACTIVITY, action: [PERMISSIONS.READ] }} />}>
-                  <Route path={ROUTES.ACTIVITIES} element={<Activities />} />
+                  <Route path={ROUTES.ACTIVITIES_LIST} element={<Activities />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ACTIVITY, action: [PERMISSIONS.CREATE] }} />}>
+                  <Route path={ROUTES.ACTIVITIES} element={<ActivityDetail />}>
+                    <Route path=':activityId' element={<Beneficiaries />} />
+                  </Route>
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.INVENTORY} element={<Inventory />} />
@@ -54,7 +60,7 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.BENEFICIARY, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.BENEFICIARIES} element={<Beneficiaries />}>
-                    <Route path=':beneficiarieId' element={<Beneficiaries/>} />
+                    <Route path=':beneficiarieId' element={<Beneficiaries />} />
                   </Route>
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>

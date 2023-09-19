@@ -1,0 +1,202 @@
+.beneficiaries-container {
+
+    &__form-section {
+        background-color: #fff;
+        height: 100vh;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+
+        &__resources {
+            width: 100%;
+            height: auto;
+            padding: 20px 0;
+            box-sizing: border-box;
+            display: flex;
+            border-bottom: 2px solid #f0f3f5;
+
+            &__foto {
+                width: 50%;
+                height: 200px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                &__image {
+                    width: 200px;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    box-sizing: border-box;
+                    border: 4px solid #a8aaae;
+                    border-radius: 5px;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+
+                .btn-image {
+                    width: 250px;
+
+                    &--capture {
+                        background-color: #03a9f4;
+                        color: #fff;
+
+                        &:hover {
+                            background-color: #03a9f4;
+                        }
+                    }
+
+                    &--delete {
+                        background-color: #f1f1f2;
+                        color: #a8aaae;
+                    }
+                }
+            }
+        }
+
+        &__beneficiarie {
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: calc(100% - 280px);
+            gap: 20px;
+
+            &__form {
+                display: grid;
+                width: 100%;
+                grid-template-columns: repeat(3, calc((100% - 20px) / 3));
+                gap: 10px;
+                overflow: auto;
+                padding: 10px 0;
+
+                &__field {
+                    width: 100%;
+
+                    &__input {
+                        width: 100%;
+                    }
+                }
+            }
+
+            .btn-save-beneficiarie {
+                background-color: #03a9f4;
+                color: #fff;
+                width: 200px;
+
+                &:hover {
+                    background-color: #03a9f4;
+                }
+            }
+        }
+    }
+
+
+
+}
+
+@keyframes camera {
+    0% {
+        transform: scaleY(0);
+    }
+
+    50% {
+        transform: scaleY(0.5);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+
+.content-webcam {
+    position: fixed;
+    cursor: pointer;
+    background: rgb(255 255 255 / 94%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 135;
+    align-items: center;
+    justify-content: center;
+    transition: display 2s;
+
+
+    & video {
+        width: 30%;
+        border-radius: 10px;
+        box-sizing: border-box;
+        border: 11px solid #deedff9c;
+        transition-timing-function: cubic-bezier(.42, 0, .58, 1);
+        animation-duration: 1s;
+        animation-name: camera;
+
+
+    }
+}
+
+
+.content-image {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: center;
+
+
+    &__borde-image {
+        border: 10px solid #f1f1f2;
+        border-radius: 4px;
+        width: 200px;
+        height: 200px;
+    }
+
+    &__image {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    &__buttons {
+        display: flex;
+        gap: 10px;
+    }
+}
+
+.connected-border {
+    border-color: rgb(3, 231, 235);
+    border-style: dashed;
+    border-width: 4px;
+}
+
+.disconnected-border {
+    border-color: rgb(254, 129, 129);
+    border-width: 4px;
+
+    // border-style: dashed;
+    /* Change this to the color you want for disconnected devices */
+}
+
+.acquired-border {
+    border-color: rgb(57, 253, 57);
+    border-style: dashed;
+    border-width: 4px;
+
+    /* Change this to the color you want when samples are acquired */
+}
+
+.fingerprint-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}   

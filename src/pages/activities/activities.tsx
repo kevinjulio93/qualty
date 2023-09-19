@@ -1,72 +1,93 @@
-import './activities.scss'
-import { useEffect, useRef, useState } from 'react';
-import { createRole, getAllroles } from '../../services/roles.service';
-import { Stack, Typography } from '@mui/material';
-import Modal from '../../components/modal/modal';
-import UserForm from '../../components/userForm/userForm';
+import { Button, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import "./activities.scss";
+import { ROUTES } from '../../constants/routes';
 import { Table, TableCell, TableRow } from '../../components/table/table';
 import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useEffect, useState } from 'react';
+import LoadingComponent from '../../components/loading/loading';
+import { getAllActivitiess } from '../../services/activities.service';
 
-function Activities() {
-    const userRef = useRef(null)
-    const [roles, setRoles] = useState([{name: 'admin', email:'email', role:'role'}]);
 
-    useEffect(() => {
-        getRoles()
-    }, [])
+function ActivityList() {
+  const [actitivies, setActivities] = useState([]);
+  const navigate = useNavigate();
 
-    const getRoles = async () => {
-        try {
-            const response = await getAllroles();
-            if (response.status === 200) {
-                setRoles(response.result);
-            }
-        } catch (error) {
+  useEffect(() => {
+    getActivitiesList();
+  }, [])
 
-        }
-    }
-
-    const saveData = async () => {
-        if (userRef.current !== null) {
-          const user = (userRef.current as any).getUser()
-          await createRole(user)
-        }
+  const getActivitiesList = async () => {
+    try {
+      const response = await getAllActivitiess();
+      if (response.status === 200) {
+        const dataList = response.result.data;
+        setActivities(dataList);
+      } else {
+        setActivities([]);
       }
+    } catch (error) {
 
-    return (
-        <div className='users-container'>
-      <div className='users-container__actions'>
-        <Typography variant="h5">Listado de Talleres</Typography>
-        <Modal buttonText="Crear Talleres" saveUser={saveData}>
-          <UserForm ref={userRef} ></UserForm>
-        </Modal>
-      </div>
-      <Table>
-        <TableRow header>
-          <TableCell>Nombre</TableCell>
-          <TableCell>Email</TableCell>
-          <TableCell>Role</TableCell>
-          <TableCell>Acciones</TableCell>
-        </TableRow>
-        {Boolean(roles.length) && roles.map((user: any, index) => {
-          return (
-            <TableRow key={index}>
-              <TableCell>{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.role}</TableCell>
-              <TableCell>
-                <Stack direction="row" spacing={2}>
-                  <EditIcon></EditIcon>
-                  <ClearIcon></ClearIcon>
-                </Stack>
-              </TableCell>
+    }
+  }
+
+  const handleClickOpen = (id?: string) => {
+    const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}`
+    navigate(redirectTo);
+  };
+
+
+  return (
+    actitivies.length > 0 ?
+      <div className='users-container'>
+        <div className="users-container__actions">
+          <div className="content-page-title">
+            <Typography variant="h5" className="page-header">Administrar Talleres</Typography>
+            <span className="page-subtitle">Aqui podras gestionar los talleres del sistema.</span>
+          </div>
+        </div>
+
+        <div className="main-center-container">
+          <div className="panel-heading"> Listado de talleres
+            <Button className="btn-create" onClick={() => handleClickOpen()}>
+              Crear taller
+            </Button>
+          </div>
+          <Table>
+            <TableRow header>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Descripción</TableCell>
+              <TableCell>Acciones</TableCell>
             </TableRow>
-          );
-        })}
-      </Table>
-    </div>
-    )
+            {actitivies.map((activity: any) => {
+              return (
+                <TableRow key={activity._id}>
+                  <TableCell>{activity?.name}</TableCell>
+                  <TableCell>{activity?.description}</TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={2}>
+                      <EditIcon
+                        onClick={() => handleClickOpen(activity?._id)}
+                        className="action-item-icon action-item-icon-edit">
+                      </EditIcon>
+
+                      <ClearIcon
+                        onClick={() => console.log('borrar')}
+                        className="action-item-icon action-item-icon-delete">
+                      </ClearIcon>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </Table>
+        </div>
+      </div>
+
+      : <LoadingComponent></LoadingComponent>
+
+  );
 }
 
-export default Activities
+export default ActivityList;

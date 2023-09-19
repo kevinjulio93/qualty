@@ -74,12 +74,12 @@ const  RoleForm = forwardRef((props: any, ref) => {
                     key="role-input"
                 />
                 <FormControl component="fieldset" key="permissions-section">
-                    {arraySections.map((section) => {
+                    {arraySections.map((section, index) => {
                         return (
-                            <>
+                            <div key={`${section}${index}`}>
                             <FormLabel component="legend" key={section.key + '-section'}>{section.value}</FormLabel>
                             <FormGroup aria-label="position" key={section.key + '-legend'} row>
-                                {arrayPermissions.map((permission, index) => {
+                                {arrayPermissions.map((permission) => {
                                     return (
                                         <FormControlLabel
                                             value={permission.key}
@@ -93,7 +93,7 @@ const  RoleForm = forwardRef((props: any, ref) => {
                                     );
                                 })}
                             </FormGroup>
-                            </>
+                            </div>
                         );
                     })}
                 </FormControl>

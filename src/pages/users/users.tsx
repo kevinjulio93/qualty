@@ -14,13 +14,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import LoadingComponent from "../../components/loading/loading";
 import { SimpleDialog } from "../../components/dialog/dialog";
-import { getReferences } from "../../services/references.service";
-import { setReference } from "../../features/referencesSlice";
 import { useDispatch } from "react-redux";
 
 function Users() {
   const userRef = useRef(null);
-  const dispatch = useDispatch();
   const modalRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -67,12 +64,12 @@ function Users() {
     setCurrentUser(null);
   };
 
-  const handleEditAction = (user) => {
+  const handleEditAction = (user:any) => {
     setCurrentUser(user);
     (modalRef as any).current.handleClickOpen();
   };
 
-  const handleDeleteAction = (user) => {
+  const handleDeleteAction = (user:any) => {
     setCurrentUser(user);
     setOpenDialog(true);
   };
