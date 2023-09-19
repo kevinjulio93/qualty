@@ -1,6 +1,6 @@
 version: '2'
 services:
-  api:
+  web:
     container_name: qualty_web
     image: hclareth7/qualty-web:latest
     networks:
