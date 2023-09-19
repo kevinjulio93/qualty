@@ -114,8 +114,8 @@ function Beneficiaries() {
   const sisbenRegex = /^(A[1-5]|B[1-7]|C[1-18]|D[1-21])$/;
 
   useEffect(() => {
-    getBeneficiary();
-    getOptionsEps();
+    //getBeneficiary();
+    //getOptionsEps();
   }, []);
 
   const getOptionsEps=()=>{

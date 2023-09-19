@@ -8,8 +8,8 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       input: {
-        'index.js': 'src/modules/WebSdk/index.js',
         'main': 'index.html',
+        'index.js': 'src/modules/WebSdk/index.js',
       },
     },
   },
