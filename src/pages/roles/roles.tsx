@@ -182,12 +182,12 @@ function Roles() {
               count={totalPages}
               onChange={async (_, page) => {
                 try {
-                  const { result } = await getr(dataLastSearch, page);
-                  const { data: users, totalPages } = result;
-                  setUsers(users);
+                  const { result } = await getAllroles(dataLastSearch, page);
+                  const { data: roles, totalPages } = result;
+                  setRoles(roles);
                   setTotalPages(totalPages);
                 } catch (err) {
-                  setToastGetUsersError(true);
+                  setToastGetRolesError(true);
                 }
               }}
             />
