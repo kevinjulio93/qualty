@@ -9,7 +9,8 @@ export const arraySections = [
     {key: SECTIONS.ASSISTANCE, value: "Asistencia"},
     {key: SECTIONS.RATINGS, value: "Valoraciones"},
     {key: SECTIONS.EVENTS, value: "Eventos"},
-    {key: SECTIONS.INVENTORY, value: "Inventario"}
+    {key: SECTIONS.INVENTORY, value: "Inventario"},
+    {key: SECTIONS.ASSOCIATIONS, value: "Asociaciones"}
 ];
 
 export const arrayPermissions = [
