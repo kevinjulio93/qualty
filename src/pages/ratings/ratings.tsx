@@ -6,12 +6,11 @@ import { Table, TableCell, TableRow } from "../../components/table/table";
 import ClearIcon from "@mui/icons-material/Clear";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
-import "./assistance.scss";
+import "./ratings.scss";
 import { getBeneficiariesByData, getBeneficiariesList } from "../../services/beneficiaries.service";
-import SelectDropdown from "../../components/select";
 
 
-function Assistance () {
+function Ratings () {
     const [activities, setActivities] = useState([]);
     const [actArray, setActArray] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -85,15 +84,15 @@ function Assistance () {
         <LoadingComponent></LoadingComponent>
       ) : (
         <>
-            <section className='assistance-container'>
-                <header className="assistance-container__actions">
+            <section className='ratings-container'>
+                <header className="ratings-container__actions">
                     <div className="content-page-title">
-                        <Typography variant="h5" className="page-header">Asistencia a talleres</Typography>
-                        <span className="page-subtitle">Generar asistencia de beneficiarios a los talleres.</span>
+                        <Typography variant="h5" className="page-header">Asistencia a valoraciones</Typography>
+                        <span className="page-subtitle">Generar asistencia de beneficiarios a las valoraciones.</span>
                     </div>
                 </header>
 
-                <Paper elevation={1} className="assistance-container__form-section">
+                <Paper elevation={1} className="ratings-container__form-section">
                     <Stack direction="row" spacing={4}>
                         <Autocomplete
                             disablePortal
@@ -104,18 +103,21 @@ function Assistance () {
                             onChange={onSelectActivity}
                         />
                         <FormControl sx={{width: 300}}>
-                            <InputLabel id="demo-simple-select-label">Taller</InputLabel>
+                            <InputLabel id="demo-simple-select-label">Valoración</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                label="Taller a realizar"
+                                label="Valoración a realizar"
                                 onChange={(e) => onSelectedWorkshop()}
                             >
-                                <MenuItem key={"taller_no_1"} value="Taller de cuidado personal">
-                                    Taller de cuidado personal
+                                <MenuItem key={"taller_no_1"} value="Fisioterapia">
+                                    Fisioterapia
                                 </MenuItem>
-                                <MenuItem key={"taller_no_2"} value="Taller de salud oral">
-                                    Taller de salud oral
+                                <MenuItem key={"taller_no_2"} value="Psicología">
+                                    Psicología
+                                </MenuItem>
+                                <MenuItem key={"taller_no_2"} value="Optometría">
+                                    Optometría
                                 </MenuItem>
                             </Select>
                         </FormControl>
@@ -128,7 +130,7 @@ function Assistance () {
                         />
                     </Stack>
                     {selectedAct &&
-                    <div className="assistance-container__form-section__table">
+                    <div className="ratings-container__form-section__table">
                         <div className="panel-heading"> 
                             Resultados de la busqueda
                         </div>
@@ -174,7 +176,7 @@ function Assistance () {
                     </div>
                     }
                     {selectedAct &&
-                    <div className="assistance-container__form-section__table">
+                    <div className="ratings-container__form-section__table">
                         <div className="panel-heading"> 
                             Listado de asistencia
                         </div>
@@ -223,4 +225,4 @@ function Assistance () {
     );
 }
 
-export default Assistance;
+export default Ratings;

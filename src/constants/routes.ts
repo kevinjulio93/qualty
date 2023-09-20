@@ -11,4 +11,5 @@ export const ROUTES = {
     PERMISSIONS: 'permissions',
     UNAUTHORIZED: 'unauthorized',
     ASSISTANCE: 'assistance',
+    RATINGS: 'ratings',
 }

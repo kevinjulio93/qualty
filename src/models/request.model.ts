@@ -4,8 +4,8 @@ export class FecthRequestModel {
     private url:string;
     
     constructor() {
-        this.url = 'http://localhost:3000'
-        //this.url = 'http://192.168.1.8:3000'
+        //this.url = 'http://localhost:3000'
+        this.url = 'http://192.168.1.12:3000'
     }
 
 

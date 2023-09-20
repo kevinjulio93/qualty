@@ -40,41 +40,24 @@ export const sectionList = [
         key: "roles",
         name: "Roles",
         path: ROUTES.ROLES,
-        icon: "beneficiaries",
+        icon: "draft",
         hasChilds: false,
         permission: {
             subject: SECTIONS.ROLE,
             action: [PERMISSIONS.READ]
         }
     },
-    // {
-    //     key: "valoraciones",
-    //     name: "Valoraciones",
-    //     path: "/valoraciones",
-    //     icon: "book",
-    //     hasChilds: true,
-    //     childrens: [
-    //         {
-    //             key: "fisio",
-    //             name: "Fisioterapia",
-    //             path: "/fisioterapia",
-    //             icon: "assist",
-
-    //         },
-    //         {
-    //             key: "odontologia",
-    //             name: "Odontologia",
-    //             path: "/odontologia",
-    //             icon: "smile",
-    //         },
-    //         {
-    //             key: "oftamologia",
-    //             name: "Oftamologia",
-    //             path: "/oftamologia",
-    //             icon: "eye",
-    //         }
-    //     ]
-    // },
+    {
+        key: "valoraciones",
+        name: "Valoraciones",
+        path: ROUTES.RATINGS,
+        icon: "book",
+        hasChilds: false,
+        permission: {
+            subject: SECTIONS.RATINGS,
+            action: [PERMISSIONS.CREATE]
+        }
+    },
     {
         key: "inventario",
         name: "Inventario",

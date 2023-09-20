@@ -52,8 +52,7 @@ function Roles() {
 
   const updateData = async () => {
     if (roleRef.current !== null) {
-      const role = (roleRef.current as any).getRole();
-      await updateRole(role);
+      await updateRole(currentRole);
       setIsLoading(true);
       getRoles();
     }

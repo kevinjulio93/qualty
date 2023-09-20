@@ -12,6 +12,11 @@ export async function updateActivities(activities:any) {
     return response;
 }
 
+export async function updateAttendance(id: string, info :any) {
+    const response = await activity.put('/activities/' + id, info);
+    return response;
+}
+
 export async function getAllActivities() {
     const response = await activity.get('/activities');
     return response;
