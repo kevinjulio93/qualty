@@ -1,6 +1,8 @@
-node_modules
-npm-debug.log
+README.md
 build
+dist
+node_modules
+LICENSE
+package-lock.json
 .git
-*.md
-.gitignore
+.DS_Store

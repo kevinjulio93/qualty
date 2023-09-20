@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Pagination, Stack, Typography } from "@mui/material";
 import "./users.scss";
 import Modal from "../../components/modal/modal";
 import UserForm from "../../components/userForm/userForm";
@@ -7,7 +7,6 @@ import {
   createUser,
   deleteUser,
   getUserList,
-  getUsersByData,
   updateUser,
 } from "../../services/user.service";
 import { Table, TableRow, TableCell } from "../../components/table/table";
@@ -31,6 +30,8 @@ function Users() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [dataLastSearch, setDataLastSearch] = useState("");
 
   const [toastGetUsersError, setToastGetUsersError] = useState(false);
 
@@ -41,9 +42,10 @@ function Users() {
   const getUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await getUserList();
-      const userList = response.result.data;
+      const { result } = await getUserList();
+      const { data: userList, totalPages } = result;
       setUsers(userList);
+      setTotalPages(totalPages);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -126,7 +128,8 @@ function Users() {
             label="Buscar usuario"
             searchFunction={async (data: string) => {
               try {
-                const { result } = await getUsersByData(data);
+                const { result } = await getUserList(data);
+                setDataLastSearch(data);
                 const { data: users } = result;
                 setUsers(users);
               } catch (err) {
@@ -145,40 +148,55 @@ function Users() {
         {isLoading ? (
           <LoadingComponent></LoadingComponent>
         ) : (
-          <Table>
-            <TableRow header>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-            {users.length > 0 &&
-              users.map((user: any, index) => {
-                return (
-                  <TableRow key={index}>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.role.role}</TableCell>
-                    <TableCell>
-                      <Stack
-                        className="actions-cell"
-                        direction="row"
-                        spacing={2}
-                      >
-                        <EditIcon
-                          className="action-item-icon action-item-icon-edit"
-                          onClick={() => handleEditAction(user)}
-                        ></EditIcon>
-                        <ClearIcon
-                          className="action-item-icon action-item-icon-delete"
-                          onClick={() => handleDeleteAction(user)}
-                        ></ClearIcon>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </Table>
+          <>
+            <Table>
+              <TableRow header>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+              {users.length > 0 &&
+                users.map((user: any, index) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{user.name}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.role.role}</TableCell>
+                      <TableCell>
+                        <Stack
+                          className="actions-cell"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <EditIcon
+                            className="action-item-icon action-item-icon-edit"
+                            onClick={() => handleEditAction(user)}
+                          ></EditIcon>
+                          <ClearIcon
+                            className="action-item-icon action-item-icon-delete"
+                            onClick={() => handleDeleteAction(user)}
+                          ></ClearIcon>
+                        </Stack>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </Table>
+            <Pagination
+              count={totalPages}
+              onChange={async (_, page) => {
+                try {
+                  const { result } = await getUserList(dataLastSearch, page);
+                  const { data: users, totalPages } = result;
+                  setUsers(users);
+                  setTotalPages(totalPages);
+                } catch (err) {
+                  setToastGetUsersError(true);
+                }
+              }}
+            />
+          </>
         )}
       </div>
 

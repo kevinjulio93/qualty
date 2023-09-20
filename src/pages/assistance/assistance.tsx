@@ -7,8 +7,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import "./assistance.scss";
-import { getBeneficiariesByData, getBeneficiariesList } from "../../services/beneficiaries.service";
-import SelectDropdown from "../../components/select";
+import { getBeneficiariesList } from "../../services/beneficiaries.service";
 
 
 function Assistance () {
@@ -51,7 +50,7 @@ function Assistance () {
 
     const searchBeneficiaries = async (data) => {
         try {
-            const { result } = await getBeneficiariesByData(data);
+            const { result } = await getBeneficiariesList(data);
             const { data: beneficiaries } = result;
             setBens(beneficiaries);
         } catch (err) {

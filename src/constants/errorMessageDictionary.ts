@@ -5,4 +5,5 @@ export const ERROR_MESSAGES = {
   GET_USERS_ERROR: ocurrioUnErrorAl + " obtener los usuarios",
   GET_BENEFICIARIES_ERROR: ocurrioUnErrorAl + " obtener los beneficiarios",
   GET_ROLES_ERROR: ocurrioUnErrorAl + " obtener los roles",
+  GET_ASSOCIATIONS_ERROR: ocurrioUnErrorAl + " obtener las asociaciones",
 };

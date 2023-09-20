@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Pagination, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./beneficiariesList.scss";
 import { ROUTES } from "../../constants/routes";
@@ -8,7 +8,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useEffect, useState } from "react";
 import {
   deleteBeneficiary,
-  getBeneficiariesByData,
   getBeneficiariesList,
 } from "../../services/beneficiaries.service";
 import LoadingComponent from "../../components/loading/loading";
@@ -22,6 +21,9 @@ function BeneficiariesList() {
   const [isLoading, setIsLoading] = useState(true);
   const [toastGetBeneficiariesError, setToastGetBeneficiariesError] =
     useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [dataLastSearch, setDataLastSearch] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,15 +33,15 @@ function BeneficiariesList() {
   const getBenfs = async () => {
     setIsLoading(true);
     try {
-      const response = await getBeneficiariesList();
-      const dataList = response.result.data;
-      setBenfs(dataList);
+      const { result } = await getBeneficiariesList();
+      const { data: benfsList, totalPages } = result;
+      setBenfs(benfsList);
+      setTotalPages(totalPages);
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
     }
   };
-
 
   const handleClickOpen = (id?: string) => {
     const redirectTo = id
@@ -83,7 +85,8 @@ function BeneficiariesList() {
             label="Buscar beneficiario"
             searchFunction={async (data: string) => {
               try {
-                const { result } = await getBeneficiariesByData(data);
+                const { result } = await getBeneficiariesList(data);
+                setDataLastSearch(data);
                 const { data: beneficiaries } = result;
                 setBenfs(beneficiaries);
               } catch (err) {
@@ -102,51 +105,70 @@ function BeneficiariesList() {
         {isLoading ? (
           <LoadingComponent></LoadingComponent>
         ) : (
-          <Table>
-            <TableRow header>
-              <TableCell>Foto</TableCell>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Cedula</TableCell>
-              <TableCell>Asociación</TableCell>
-              <TableCell>EPS</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-            {benfs.map((beneficiary: any) => {
-              return (
-                <TableRow key={beneficiary._id}>
-                  <TableCell>
-                    <img
-                      className="ben-foto"
-                      src={beneficiary.photo_url}
-                      alt="foto"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {beneficiary?.first_name} {beneficiary.second_name}{" "}
-                    {beneficiary.first_last_name} {beneficiary.second_last_name}
-                  </TableCell>
-                  <TableCell>{beneficiary?.identification}</TableCell>
-                  <TableCell>{beneficiary?.association?.name}</TableCell>
-                  <TableCell>{beneficiary?.eps?.name}</TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={2}>
-                      <EditIcon
-                        onClick={() => handleClickOpen(beneficiary?._id)}
-                        className="action-item-icon action-item-icon-edit"
-                      ></EditIcon>
+          <>
+            <Table>
+              <TableRow header>
+                <TableCell>Foto</TableCell>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Cedula</TableCell>
+                <TableCell>Asociación</TableCell>
+                <TableCell>EPS</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+              {benfs.map((beneficiary: any) => {
+                return (
+                  <TableRow key={beneficiary._id}>
+                    <TableCell>
+                      <img
+                        className="ben-foto"
+                        src={beneficiary.photo_url}
+                        alt="foto"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {beneficiary?.first_name} {beneficiary.second_name}{" "}
+                      {beneficiary.first_last_name}{" "}
+                      {beneficiary.second_last_name}
+                    </TableCell>
+                    <TableCell>{beneficiary?.identification}</TableCell>
+                    <TableCell>{beneficiary?.association?.name}</TableCell>
+                    <TableCell>{beneficiary?.eps?.name}</TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={2}>
+                        <EditIcon
+                          onClick={() => handleClickOpen(beneficiary?._id)}
+                          className="action-item-icon action-item-icon-edit"
+                        ></EditIcon>
 
-                      <ClearIcon
-                        onClick={() =>
-                          deleteBeneficiaryFromList(beneficiary?._id)
-                        }
-                        className="action-item-icon action-item-icon-delete"
-                      ></ClearIcon>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </Table>
+                        <ClearIcon
+                          onClick={() =>
+                            deleteBeneficiaryFromList(beneficiary?._id)
+                          }
+                          className="action-item-icon action-item-icon-delete"
+                        ></ClearIcon>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </Table>
+            <Pagination
+              count={totalPages}
+              onChange={async (_, page) => {
+                try {
+                  const { result } = await getBeneficiariesList(
+                    dataLastSearch,
+                    page
+                  );
+                  const { data: benfs, totalPages } = result;
+                  setBenfs(benfs);
+                  setTotalPages(totalPages);
+                } catch (err) {
+                  setToastGetBeneficiariesError(true);
+                }
+              }}
+            />
+          </>
         )}
       </div>
     </div>

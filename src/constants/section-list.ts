@@ -3,39 +3,39 @@ import { SECTIONS } from "./sections";
 import { ROUTES } from "./routes";
 
 export const sectionList = [
-    {
-        key: "usuarios",
-        name: "Usuarios",
-        path: ROUTES.USERS,
-        icon: "person",
-        hasChilds: false,
-        permission: {
-            subject: SECTIONS.USER,
-            action: [PERMISSIONS.READ]
-        }
+  {
+    key: "usuarios",
+    name: "Usuarios",
+    path: ROUTES.USERS,
+    icon: "person",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.USER,
+      action: [PERMISSIONS.READ],
     },
-    {
-        key: "ben_list",
-        name: "Beneficiarios",
-        path: ROUTES.BEN_LIST,
-        icon: "beneficiaries",
-        hasChilds: false,
-        permission: {
-            subject: SECTIONS.BENEFICIARY,
-            action: [PERMISSIONS.READ]
-        }
+  },
+  {
+    key: "ben_list",
+    name: "Beneficiarios",
+    path: ROUTES.BEN_LIST,
+    icon: "beneficiaries",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.BENEFICIARY,
+      action: [PERMISSIONS.READ],
     },
-    {
-        key: "talleres",
-        name: "Talleres",
-        path: ROUTES.ACTIVITIES,
-        icon: "beneficiaries",
-        hasChilds: false,
-        permission: {
-            subject: "unknown",
-            action: ["read"]
-        }
+  },
+  {
+    key: "talleres",
+    name: "Talleres",
+    path: ROUTES.ACTIVITIES,
+    icon: "beneficiaries",
+    hasChilds: false,
+    permission: {
+      subject: "unknown",
+      action: ["read"],
     },
+  },
     {
         key: "roles",
         name: "Roles",
@@ -68,16 +68,50 @@ export const sectionList = [
             subject: "unknown",
             action: ["read"]
         }
+  },
+  {
+    key: "roles",
+    name: "Roles",
+    path: ROUTES.ROLES,
+    icon: "beneficiaries",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.ROLE,
+      action: [PERMISSIONS.READ],
     },
-    {
-        key: "asistencia",
-        name: "Asistencia",
-        path: ROUTES.ASSISTANCE,
-        icon: "checklist",
-        hasChilds: false,
-        permission: {
-            subject: SECTIONS.ASSISTANCE,
-            action: [PERMISSIONS.CREATE]
-        }
+  },
+  {
+    key: "inventario",
+    name: "Inventario",
+    path: ROUTES.INVENTORY,
+    icon: "draft",
+    hasChilds: false,
+    permission: {
+      subject: "unknown",
+      action: ["read"],
     },
+  },
+  {
+    key: "asistencia",
+    name: "Asistencia",
+    path: ROUTES.ASSISTANCE,
+    icon: "checklist",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.ASSISTANCE,
+      action: [PERMISSIONS.CREATE],
+    },
+  },
+  {
+    key: "asociaciones",
+    name: "Asociaciones",
+    path: ROUTES.ASSOCIATIONS,
+    icon: "AssistWalker",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.ASSOCIATIONS,
+      action: [PERMISSIONS.CREATE],
+    },
+  },
 ];
+// import AssistWalkerIcon from '@mui/icons-material/AssistWalker';

@@ -7,7 +7,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import "./ratings.scss";
-import { getBeneficiariesByData, getBeneficiariesList } from "../../services/beneficiaries.service";
+import { getBeneficiariesList } from "../../services/beneficiaries.service";
 
 
 function Ratings () {
@@ -50,7 +50,7 @@ function Ratings () {
 
     const searchBeneficiaries = async (data) => {
         try {
-            const { result } = await getBeneficiariesByData(data);
+            const { result } = await getBeneficiariesList(data);
             const { data: beneficiaries } = result;
             setBens(beneficiaries);
         } catch (err) {
