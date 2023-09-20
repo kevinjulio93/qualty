@@ -1,0 +1,13 @@
+version: '2'
+services:
+  web:
+    container_name: qualty_web
+    image: hclareth7/qualty-web:latest
+    networks:
+      qualty:
+        ipv4_address: 10.0.0.11
+    ports:
+      - "80:80"
+networks:
+  qualty:
+    external: true
