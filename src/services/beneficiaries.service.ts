@@ -30,8 +30,16 @@ export async function updateBeneficiary(file: any, data: any) {
   return response;
 }
 
-export async function getBeneficiariesList() {
-  const response = await requestInstance.get("/beneficiaries");
+export async function getBeneficiariesList(
+  queryString?: string,
+  page: number = 1,
+  perPage: number = 20
+
+) {
+  const params = `page=${page}&perPage=${perPage}${
+    queryString ? `&queryString=${queryString}` : ""
+  }`;
+  const response = await requestInstance.get("/beneficiaries/?" + params);
   return response;
 }
 
@@ -45,12 +53,3 @@ export async function deleteBeneficiary(id: string | undefined) {
   return response;
 }
 
-export async function getBeneficiariesByData(
-  queryString: string,
-  page: number = 1,
-  perPage: number = 20
-) {
-  const params = `page=${page}&perPage=${perPage}&queryString=${queryString}`;
-  const response = await requestInstance.get("/beneficiaries/?" + params);
-  return response;
-}
