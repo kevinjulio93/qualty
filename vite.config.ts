@@ -1,18 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+
 import sass from 'sass'
 
 export default defineConfig({
   plugins: [react()],
-  build: {
-    manifest: true,
-    rollupOptions: {
-      input: {
-        'main': 'index.html',
-        'index.js': 'src/modules/WebSdk/index.js',
-      },
-    },
-  },
   define: {
     'process.env': {
       NODE_ENV: process.env.NODE_ENV,
