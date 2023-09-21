@@ -20,15 +20,15 @@ RUN npm run build
 FROM nginx:stable-alpine
 
 #!/bin/sh
-
+COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
 ## Remove default nginx index page
 RUN rm -rf /usr/share/nginx/html/*
 
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
-RUN mkdir /usr/share/nginx/html/dist/assets -p 
+RUN mkdir /usr/share/nginx/html/dist/assets -p
 RUN cp /usr/share/nginx/html/assets/index.js /usr/share/nginx/html/dist/assets/index.js
 
 
-EXPOSE 443 
+EXPOSE 443
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
