@@ -15,6 +15,9 @@ services:
       - /etc/qualty/certbot/conf/:/etc/nginx/ssl/:ro
   certbot:
     image: certbot/certbot:latest
+    networks:
+      qualty:
+        ipv4_address: 10.0.0.11
     volumes:
       - /etc/qualty/certbot/www/:/var/www/certbot/:rw
       - /etc/qualty/certbot/conf/:/etc/letsencrypt/:rw
