@@ -8,19 +8,11 @@ services:
         ipv4_address: 10.0.0.11
     ports:
       - "443:443"
+      - "80:80"
     restart: "always"
     volumes:
-      - /etc/qualty/nginx/conf/:/etc/nginx/conf.d/:ro
-      - /etc/qualty/certbot/www:/var/www/certbot/:ro
-      - /etc/qualty/certbot/conf/:/etc/nginx/ssl/:ro
-  certbot:
-    image: certbot/certbot:latest
-    networks:
-      qualty:
-        ipv4_address: 10.0.0.11
-    volumes:
-      - /etc/qualty/certbot/www/:/var/www/certbot/:rw
-      - /etc/qualty/certbot/conf/:/etc/letsencrypt/:rw
+      - /var/www/certbot/:/var/www/certbot/:ro
+      - /etc/letsencrypt/:/etc/nginx/ssl/:ro
 networks:
   qualty:
     external: true
