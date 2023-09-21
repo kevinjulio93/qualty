@@ -14,7 +14,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import LoadingComponent from "../../components/loading/loading";
 import { SimpleDialog } from "../../components/dialog/dialog";
-import { useDispatch } from "react-redux";
 
 function Users() {
   const userRef = useRef(null);
