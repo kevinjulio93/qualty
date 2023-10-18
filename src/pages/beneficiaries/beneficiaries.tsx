@@ -276,6 +276,39 @@ function Beneficiaries() {
               </div>
 
               <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                <Autocomplete style={{width:"100%"}}
+                  disablePortal
+                  id="sex"
+                  options={["M", "F"]}
+                  onChange={(e:any,data:any)=>formHanlder("sex",e,data)}
+                  renderInput={(params) => <TextField  {...params} label="Sexo" />}
+                />
+              </div>
+
+              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                <TextField
+                  id="fechanacimiento"
+                  className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                  name="fechanacimiento"
+                  placeholder="01-02-2023"
+                  type="text"
+                  label="Fecha de Nacimiento"
+                  onChange={(e) => formHanlder("birthday", e)}
+                  value={(beneficiarie as any)?.birthday || ""}
+                />
+              </div>
+
+              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                <Autocomplete style={{width:"100%"}}
+                  disablePortal
+                  id="blody_type"
+                  options={["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]}
+                  onChange={(e:any,data:any)=>formHanlder("blody_type",e,data)}
+                  renderInput={(params) => <TextField  {...params} label="Tipo de sangre" />}
+                />
+              </div>
+
+              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                 <TextField
                   id="telefono"
                   className="beneficiaries-container__form-section__beneficiarie__form__field__input"
@@ -317,22 +350,9 @@ function Beneficiaries() {
               <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                 <SelectDropdown
                   selectValue={(beneficiarie as any)?.gender}
-                  label="Sexo"
-                  options={[
-                    { label: "Masculino", value: "Masculino" },
-                    { label: "Femenino", value: "Femenino" },
-                  ]}
-                  targetKey="gender"
-                  handleValue={formHanlder}
-                />
-              </div>
-
-              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                <SelectDropdown
-                  selectValue={(beneficiarie as any)?.sex}
                   label="Género"
                   options={optionsGender}
-                  targetKey="sex"
+                  targetKey="gender"
                   handleValue={formHanlder}
                 />
               </div>
@@ -344,19 +364,6 @@ function Beneficiaries() {
                   options={optionsCivilStatus}
                   targetKey="civil_status"
                   handleValue={formHanlder}
-                />
-              </div>
-
-              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                <TextField
-                  id="fechanacimiento"
-                  className="beneficiaries-container__form-section__beneficiarie__form__field__input"
-                  name="fechanacimiento"
-                  placeholder="01-02-2023"
-                  type="text"
-                  label="Fecha de Nacimiento"
-                  onChange={(e) => formHanlder("birthday", e)}
-                  value={(beneficiarie as any)?.birthday || ""}
                 />
               </div>
 
@@ -399,17 +406,6 @@ function Beneficiaries() {
                   handleValue={formHanlder}
                 />
               </div>
-
-              <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                <SelectDropdown
-                  selectValue={(beneficiarie as any)?.blood_type}
-                  label="Tipo de Sangre"
-                  options={bloodTypes}
-                  targetKey="blood_type"
-                  handleValue={formHanlder}
-                />
-              </div>
-
 
               <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                 <SelectDropdown

@@ -26,27 +26,16 @@ export const sectionList = [
     },
   },
   {
-    key: "talleres",
-    name: "Talleres",
+    key: "actividades",
+    name: "Actividades",
     path: ROUTES.ACTIVITIES,
     icon: "beneficiaries",
     hasChilds: false,
     permission: {
-      subject: "unknown",
-      action: ["read"],
+      subject: SECTIONS.ACTIVITY,
+      action: [PERMISSIONS.READ],
     },
   },
-    {
-        key: "roles",
-        name: "Roles",
-        path: ROUTES.ROLES,
-        icon: "draft",
-        hasChilds: false,
-        permission: {
-            subject: SECTIONS.ROLE,
-            action: [PERMISSIONS.READ]
-        }
-    },
     {
         key: "valoraciones",
         name: "Valoraciones",
@@ -65,8 +54,8 @@ export const sectionList = [
         icon: "draft",
         hasChilds: false,
         permission: {
-            subject: "unknown",
-            action: ["read"]
+            subject: SECTIONS.INVENTORY,
+            action: [PERMISSIONS.READ]
         }
   },
   {
@@ -81,19 +70,8 @@ export const sectionList = [
     },
   },
   {
-    key: "inventario",
-    name: "Inventario",
-    path: ROUTES.INVENTORY,
-    icon: "draft",
-    hasChilds: false,
-    permission: {
-      subject: "unknown",
-      action: ["read"],
-    },
-  },
-  {
-    key: "asistencia",
-    name: "Asistencia",
+    key: "talleres",
+    name: "Talleres",
     path: ROUTES.ASSISTANCE,
     icon: "checklist",
     hasChilds: false,

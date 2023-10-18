@@ -3,9 +3,9 @@ export const enum SECTIONS {
   ROLE = "role",
   BENEFICIARY = "beneficiary",
   ACTIVITY = "activity",
-  ASSISTANCE = "assistance",
-  EVENTS = "events",
-  RATINGS = "ratings",
+  ASSISTANCE = "workshop",
+  EVENTS = "event",
+  RATINGS = "rating",
   INVENTORY = "inventory",
-  ASSOCIATIONS = "associations",
+  ASSOCIATIONS = "association",
 }

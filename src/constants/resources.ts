@@ -3,10 +3,10 @@ import { SECTIONS } from "./sections";
 
 export const arraySections = [
     {key: SECTIONS.BENEFICIARY, value: "Beneficiarios"},
-    {key: SECTIONS.ACTIVITY, value: "Talleres"},
+    {key: SECTIONS.ACTIVITY, value: "Actividades"},
     {key: SECTIONS.USER, value: "Usuarios"},
     {key: SECTIONS.ROLE, value: "Roles"},
-    {key: SECTIONS.ASSISTANCE, value: "Asistencia"},
+    {key: SECTIONS.ASSISTANCE, value: "Talleres"},
     {key: SECTIONS.RATINGS, value: "Valoraciones"},
     {key: SECTIONS.EVENTS, value: "Eventos"},
     {key: SECTIONS.INVENTORY, value: "Inventario"},
