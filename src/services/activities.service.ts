@@ -7,8 +7,13 @@ export async function createActivities(activities:any) {
     return response;
 }
 
-export async function updateActivities(activities:any) {
-    const response = await activity.put('/activities', activities);
+export async function getActivitybyId(activityId: any) {
+    const response = await activity.get(`/activities/${activityId}`);
+    return response;
+}
+
+export async function updateActivities(activityId:string, activities:any) {
+    const response = await activity.put(`/activities/${activityId}`, activities);
     return response;
 }
 

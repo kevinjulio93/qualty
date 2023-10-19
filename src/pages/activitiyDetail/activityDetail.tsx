@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button, Paper, Stack, TextField, Typography } from '@mui/material';
 import { Table, TableCell, TableRow } from '../../components/table/table';
 import SelectDropdown from '../../components/select';
-import { createActivities, getAssociationsByCommunity, getComunaByMunicipie, getDepartments, getMunicipies } from '../../services/activities.service';
+import { createActivities, getActivitybyId, getAssociationsByCommunity, getComunaByMunicipie, getDepartments, getMunicipies, updateActivities } from '../../services/activities.service';
 import ClearIcon from "@mui/icons-material/Clear";
 
 
@@ -12,20 +12,37 @@ function ActivityDetail() {
     const { activityId } = useParams();
     const [title, setTitle] = useState('Crear');
     const [activity, setActivity] = useState({});
-    const [departments, setDepartments] = useState([]);
-    const [municipies, setMunicipies] = useState([]);
-    const [asociaciones, setAsociaciones] = useState([]);
-    const [community, setCommunity] = useState([]);
-    const [associations, setAssociations] = useState([]);
+    const [departmentsList, setDepartmentsList] = useState([]);
+    const [municipiesList, setMunicipiesList] = useState([]);
+    const [communityList, setCommunityList] = useState([]);
+    const [associationsList, setAssociations] = useState([]);
+    const [activitiesAssociations, setActivitiesAssociations] = useState<any[]>([]);
+    const [selectedAssociations, setSelectedAssociations] = useState<any[]>([])
 
-    useEffect(() => {
-        if (activityId) setTitle('Editar');
+    useEffect( () => {
+        if (activityId) {
+            setTitle('Editar');
+            getCurrentActivity()
+        };
         getDepartamentsList()
     }, [])
 
+    const getCurrentActivity = async () => {
+        const currentActivity = await getActivitybyId(activityId)
+        setActivity(currentActivity.result.data);
+        setActivitiesAssociations(currentActivity.result.data.participatingAssociations);
+        
+    }
+
     const formHanlder = (target: string, e: any) => {
-        const value = e.target.value;
-        setActivity({ ...activity, [target]: value });
+        const value = e.target ? e.target.value : e;
+        if (target === 'participatingAssociations') {
+            const updateSelectedAssciotions = [...selectedAssociations]
+            updateSelectedAssciotions.push(value as any);
+            setSelectedAssociations([...updateSelectedAssciotions]);
+        } else {
+            setActivity({ ...activity, [target]: value });
+        }
 
         if (target === 'department') {
             getMunicipiesList(value);
@@ -46,60 +63,92 @@ function ActivityDetail() {
         try {
             const response = await getDepartments();
             if (response && response.length > 0) {
-                setDepartments(response)
+                setDepartmentsList(response)
             }
         } catch (error) {
-            setDepartments([]);
+            setDepartmentsList([]);
 
         }
     }
 
-    const getMunicipiesList = async (departmentId: string) => {
+    const getMunicipiesList = async (department: any) => {
         try {
-            const response = await getMunicipies(departmentId);
+            const response = await getMunicipies(department?.id);
             if (response && response.length > 0) {
-                setMunicipies(response)
+                setMunicipiesList(response)
             }
         } catch (error) {
-            setDepartments([]);
+            setDepartmentsList([]);
 
         }
     }
 
-    const getCommunities = async (municipalityId: string) => {
+    const getCommunities = async (municipality: any) => {
         try {
-            const response = await getComunaByMunicipie(municipalityId);
+            const response = await getComunaByMunicipie(municipality?.id);
             if (response.status === 200) {
-                setCommunity(response.result.data)
-                console.log('community',community);
-                
+                setCommunityList(response.result.data)
             }
         } catch (error) {
-            setDepartments([]);
+            setDepartmentsList([]);
 
         }
     }
 
-    const getAssociations = async (communityId: string) => {
+    const getAssociations = async (community: any) => {
         try {
-            const response = await getAssociationsByCommunity(communityId);
+            const response = await getAssociationsByCommunity(community?.id);
             if (response.status === 200) {
                 setAssociations(response.result.data)
-                console.log('community',community);
-                
             }
         } catch (error) {
-            setDepartments([]);
+            setDepartmentsList([]);
 
         }
     }
 
+    const addAssociationToActivity = () => {
+        debugger
+        const associationsData = {
+            department: (activity as any).department,
+            municipality: (activity as any).municipality,
+            community: (activity as any).community,
+            association: (activity as any).association,
+        }
+        const exist = activitiesAssociations.length ? activitiesAssociations.some(asso => associationsData.association.id === asso.association.id) : false;
+        if (exist) return;
+        const associacions = [...activitiesAssociations]
+        associacions.push(associationsData)
+        setActivitiesAssociations(associacions);
+    }
 
+    const removeSelectedAssociation = (association: any) => {
+        const updateAssociations = activitiesAssociations.filter(asso => association.association.id !== asso.association.id);
+        setActivitiesAssociations(updateAssociations);
+    }
+
+    const saveActivity = (payload) => {
+        const saveWhen = {
+            create: async () => await createActivities(payload),
+            edit: async () => await updateActivities((activityId as string), payload)
+        }
+
+        return activityId ? saveWhen.edit() : saveWhen.create();
+    }
 
     const createActivity = async () => {
+        debugger
+        const payload = {
+            name: (activity as any)?.name,
+            description: (activity as any)?.description,
+            execution_date: (activity as any)?.execution_date,
+            estimate_attendance: (activity as any)?.estimate_attendance,
+            participatingAssociations: activitiesAssociations.map(asso => asso?.association?.id ?? asso._id)
+        }
+
         try {
-            //const response = await createActivities(activity);
-            console.log('actividad creada', activity);
+            const response = await saveActivity(payload);
+            console.log('actividad creada', response.result);
         } catch (error) {
             console.log('no se creó la asociacion');
         }
@@ -155,7 +204,7 @@ function ActivityDetail() {
                             type='number'
                             onChange={(e) => formHanlder('estimate_attendance', e)}
                             label="Aforo estimado"
-                            value={(activity as any)?.aforo || ''}
+                            value={(activity as any)?.estimate_attendance || ''}
                         />
                     </div>
                     <div className='activities-container__form-section__assitants'>
@@ -165,9 +214,9 @@ function ActivityDetail() {
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.department}
+                                    selectValue={(activity as any)?.department?.id}
                                     label="Departamento"
-                                    options={departments}
+                                    options={departmentsList}
                                     keyLabel='name'
                                     keyValue='id'
                                     targetKey='department'
@@ -176,9 +225,9 @@ function ActivityDetail() {
                             </div>
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.municipality}
+                                    selectValue={(activity as any)?.municipality?.id}
                                     label="Municipio"
-                                    options={municipies}
+                                    options={municipiesList}
                                     keyLabel='name'
                                     keyValue='id'
                                     targetKey='municipality'
@@ -188,9 +237,9 @@ function ActivityDetail() {
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.community}
+                                    selectValue={(activity as any)?.community?.id}
                                     label="Comuna"
-                                    options={community}
+                                    options={communityList}
                                     keyLabel='name'
                                     keyValue='_id'
                                     targetKey='community'
@@ -200,17 +249,17 @@ function ActivityDetail() {
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.participatingAssociations}
+                                    selectValue={(activity as any)?.association?.id}
                                     label="Asociacion"
-                                    options={associations}
+                                    options={associationsList}
                                     keyLabel='name'
                                     keyValue='_id'
-                                    targetKey='participatingAssociations'
+                                    targetKey='association'
                                     handleValue={formHanlder}
                                 />
                             </div>
 
-                            <Button className='btn-save'>Agregar</Button>
+                            <Button className='btn-save' onClick={() => addAssociationToActivity()}>Agregar</Button>
                         </form>
 
                         <section className="activities-container__form-section__assitants__table">
@@ -221,18 +270,19 @@ function ActivityDetail() {
                                     <TableCell>Comuna</TableCell>
                                     <TableCell>Nombre de Asociación</TableCell>
                                 </TableRow>
-                                {asociaciones.length > 0 &&
-                                    asociaciones.map((user: any, index) => {
+                                {activitiesAssociations.length > 0 &&
+                                    activitiesAssociations.map((asso: any, index) => {
                                         return (
                                             <TableRow key={index}>
-                                                <TableCell>{user.name}</TableCell>
-                                                <TableCell>{user.email}</TableCell>
-                                                <TableCell>{user.role.role}</TableCell>
+                                                <TableCell>{asso?.department?.label ?? asso?.department}</TableCell>
+                                                <TableCell>{asso?.municipality?.label ?? asso?.municipality}</TableCell>
+                                                <TableCell>{asso?.community?.label ?? asso?.community}</TableCell>
+                                                <TableCell>{asso?.association?.label ?? asso?.name}</TableCell>
                                                 <TableCell>
                                                     <Stack className="actions-cell" direction="row" spacing={2}>
                                                         <ClearIcon
                                                             className="action-item-icon action-item-icon-delete"
-                                                        // onClick={() => handleDeleteAction(user)}
+                                                            onClick={() => removeSelectedAssociation(asso)}
                                                         ></ClearIcon>
                                                     </Stack>
                                                 </TableCell>
@@ -243,7 +293,7 @@ function ActivityDetail() {
 
                             </Table>
                             {
-                                asociaciones.length === 0 &&
+                                activitiesAssociations.length === 0 &&
                                 <div className='activities-container__form-section__assitants__table__empty'>
                                     <span>No hay asociaciones agregadas a esta actividad</span>
                                 </div>
