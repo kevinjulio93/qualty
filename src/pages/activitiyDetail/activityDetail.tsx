@@ -108,7 +108,6 @@ function ActivityDetail() {
     }
 
     const addAssociationToActivity = () => {
-        debugger
         const associationsData = {
             department: (activity as any).department,
             municipality: (activity as any).municipality,
@@ -137,7 +136,6 @@ function ActivityDetail() {
     }
 
     const createActivity = async () => {
-        debugger
         const payload = {
             name: (activity as any)?.name,
             description: (activity as any)?.description,
