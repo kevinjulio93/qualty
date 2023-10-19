@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Pagination, Stack, Typography } from "@mui/material";
 import Modal from "../../components/modal/modal";
-import {
-  createUser,
-  deleteUser,
-  getUserList,
-  updateUser,
-} from "../../services/user.service";
 import { Table, TableRow, TableCell } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -18,6 +12,7 @@ import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
 import AssociationForm from "../../components/associationForm/associationForm";
+import { createAssociation, deleteAssociation, getAssociationsList, updateAssociation } from "../../services/associations.service";
 
 function Associations() {
   const associationRef = useRef(null);
@@ -40,8 +35,10 @@ function Associations() {
   const getAssociations = async () => {
     setIsLoading(true);
     try {
-      const { result } = await getUserList();
-      const { data: associationList, totalPages } = result;
+      const {
+        result: { data },
+      } = await getAssociationsList();
+      const { data: associationList, totalPages } = data;
       setAssociations(associationList);
       setTotalPages(totalPages);
       setIsLoading(false);
@@ -52,8 +49,8 @@ function Associations() {
 
   const saveData = async () => {
     if (associationRef.current !== null) {
-      const association = (associationRef.current as any).getUser();
-      await createUser(association);
+      const association = (associationRef.current as any).getAssociation();
+      await createAssociation(association);
       setIsLoading(true);
       getAssociations();
     }
@@ -62,8 +59,8 @@ function Associations() {
 
   const updateData = async () => {
     if (associationRef.current !== null) {
-      const association = (associationRef.current as any).getUser();
-      await updateUser(association);
+      const association = (associationRef.current as any).getAssociation();
+      await updateAssociation(association);
       setIsLoading(true);
       getAssociations();
     }
@@ -87,7 +84,7 @@ function Associations() {
   const confirmDelete = async () => {
     setIsLoading(true);
     setOpenDialog(false);
-    await deleteUser((currentAssociation as any)._id);
+    await deleteAssociation((currentAssociation as any)._id);
     setCurrentAssociation(null);
     getAssociations();
   };
@@ -129,7 +126,7 @@ function Associations() {
             label="Buscar asociacion"
             searchFunction={async (data: string) => {
               try {
-                const { result } = await getUserList(data);
+                const { result } = await getAssociationsList(data);
                 setDataLastSearch(data);
                 const { data: associations } = result;
                 setAssociations(associations);
@@ -153,8 +150,8 @@ function Associations() {
             <Table>
               <TableRow header>
                 <TableCell>Nombre</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Role</TableCell>
+                <TableCell>Coordinador</TableCell>
+                <TableCell>Miembros</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
               {associations.length > 0 &&
@@ -162,8 +159,8 @@ function Associations() {
                   return (
                     <TableRow key={index}>
                       <TableCell>{association.name}</TableCell>
-                      <TableCell>{association.email}</TableCell>
-                      <TableCell>{association.role.role}</TableCell>
+                      <TableCell>{association.coordinator_name}</TableCell>
+                      <TableCell>{association.membersCount}</TableCell>
                       <TableCell>
                         <Stack
                           className="actions-cell"
