@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
-import { getAllActivitiess } from '../../services/activities.service';
+import { getAllActivities } from '../../services/activities.service';
 
 
 function ActivityList() {
@@ -20,7 +20,7 @@ function ActivityList() {
 
   const getActivitiesList = async () => {
     try {
-      const response = await getAllActivitiess();
+      const response = await getAllActivities();
       if (response.status === 200) {
         const dataList = response.result.data;
         setActivities(dataList);
