@@ -6,20 +6,22 @@ import {
   TextField,
 } from "@mui/material";
 import { useState, forwardRef, useImperativeHandle, useEffect } from "react";
-import { getAllroles } from "../../services/roles.service";
+import { getReferences } from "../../services/references.service";
 
 const AssociationForm = forwardRef((props: any, ref) => {
-  const [association, setAssociation] = useState({
+  const [association, setAssociation] = useState<any>({
     name: "",
-    typeAssociation: "",
-    municipality: "",
-    commune: "",
-    presidentName: "",
+    type: "",
     address: "",
-    phone: "",
-    integrantNumber: "",
+    coordinator_name: "",
+    phones: "",
+    department: "",
+    municipality: "",
+    community: "",
+    membersCount: "",
   });
-  const [typesAssociation, setTypesAssociation] = useState([]);
+  const [communities, setCommunities] = useState([]);
+  const typesAssociation = [{ type: "Centro de vida" }, { type: "Asociacion" }];
   // ["Centro de vida","Centro de bienestar","Municipio","Asociación"]
 
   useImperativeHandle(ref, () => {
@@ -33,37 +35,36 @@ const AssociationForm = forwardRef((props: any, ref) => {
   };
 
   useEffect(() => {
-    getRoles();
+    setCurrentAssociation();
   }, []);
 
   useEffect(() => {
-    setCurrentAssociation();
+    getCommunities();
   }, []);
 
   const setCurrentAssociation = () => {
     if (props.currentAssociation)
       setAssociation({
         ...props.currentAssociation,
-        role: props.currentAssociation.role._id,
+        role: props.currentAssociation._id,
       });
   };
 
-  const getRoles = async () => {
-    const response = await getAllroles();
-    const rolList = response.result.data;
-    setTypesAssociation(rolList);
+  const getCommunities = async () => {
+    setCommunities(await getReferences().then((v) => v.result.communities));
   };
 
   const formHanlder = (
     target:
       | "name"
-      | "typeAssociation"
-      | "municipality"
-      | "commune"
-      | "presidentName"
+      | "type"
       | "address"
-      | "phone"
-      | "integrantNumber",
+      | "coordinator_name"
+      | "phones"
+      | "department"
+      | "municipality"
+      | "community"
+      | "membersCount",
     e: any
   ) => {
     const value = e.target.value;
@@ -91,49 +92,19 @@ const AssociationForm = forwardRef((props: any, ref) => {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             label="Tipo de asociacion"
-            onChange={(e) => formHanlder("typeAssociation", e)}
-            value={association.typeAssociation || ""}
+            onChange={(e) => formHanlder("type", e)}
+            value={association.type || ""}
           >
             {typesAssociation.length > 0 &&
-              typesAssociation.map((type: any) => {
+              typesAssociation.map((type: any, i: number) => {
                 return (
-                  <MenuItem key={type._id} value={type._id}>
-                    {type.role}
+                  <MenuItem key={i} value={type.type}>
+                    {type.type}
                   </MenuItem>
                 );
               })}
           </Select>
         </FormControl>
-        <TextField
-          className="login-view__login-form__form-container__input"
-          id="municipality"
-          name="municipality"
-          placeholder="Municipio"
-          type="text"
-          label="Municipio"
-          onChange={(e) => formHanlder("municipality", e)}
-          value={association.municipality || ""}
-        />
-        <TextField
-          className="login-view__login-form__form-container__input"
-          id="commune"
-          name="commune"
-          placeholder="Comuna"
-          type="text"
-          label="Comuna"
-          onChange={(e) => formHanlder("commune", e)}
-          value={association.commune || ""}
-        />
-        <TextField
-          className="login-view__login-form__form-container__input"
-          id="presidentName"
-          name="presidentName"
-          placeholder="Nombre del presidente"
-          type="text"
-          label="Nombre del presidente"
-          onChange={(e) => formHanlder("presidentName", e)}
-          value={association.presidentName || ""}
-        />
         <TextField
           className="login-view__login-form__form-container__input"
           id="address"
@@ -146,23 +117,78 @@ const AssociationForm = forwardRef((props: any, ref) => {
         />
         <TextField
           className="login-view__login-form__form-container__input"
-          id="phone"
-          name="phone"
-          placeholder="Telefono"
+          id="coordinator_name"
+          name="coordinator_name"
+          placeholder="Nombre del presidente"
           type="text"
-          label="Telefono"
-          onChange={(e) => formHanlder("phone", e)}
-          value={association.phone || ""}
+          label="Nombre del presidente"
+          onChange={(e) => formHanlder("coordinator_name", e)}
+          value={association.coordinator_name || ""}
         />
         <TextField
           className="login-view__login-form__form-container__input"
-          id="integrantNumber"
-          name="integrantNumber"
+          id="phones"
+          name="phones"
+          placeholder="Telefono"
+          type="text"
+          label="Telefono"
+          onChange={(e) => formHanlder("phones", e)}
+          value={association.phones || ""}
+        />
+        <TextField
+          className="login-view__login-form__form-container__input"
+          id="department"
+          name="department"
+          placeholder="Departamento"
+          type="text"
+          label="Departamento"
+          onChange={(e) => formHanlder("department", e)}
+          value={association.department || ""}
+        />
+        <TextField
+          className="login-view__login-form__form-container__input"
+          id="municipality"
+          name="municipality"
+          placeholder="Municipio"
+          type="text"
+          label="Municipio"
+          onChange={(e) => formHanlder("municipality", e)}
+          value={association.municipality || ""}
+        />
+        <FormControl>
+          <InputLabel id="demo-simple-select-label">Comuna</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Comuna"
+            onChange={(e) => formHanlder("community", e)}
+            value={association.community._id || ""}
+          >
+            {communities.length > 0 &&
+              communities
+                .sort(({ municipality: a }, { municipality: b }) => {
+                  if (a > b) return 1;
+                  if (a < b) return -1;
+                  return 0;
+                })
+                .map(({ _id, municipality }: any, i: number) => {
+                  return (
+                    <MenuItem key={i} value={_id}>
+                      {municipality}
+                    </MenuItem>
+                  );
+                })}
+          </Select>
+        </FormControl>
+        <TextField
+          className="login-view__login-form__form-container__input"
+          id="membersCount"
+          name="membersCount"
           placeholder="Numero de integrantes"
           type="text"
           label="Numero de integrantes"
-          onChange={(e) => formHanlder("integrantNumber", e)}
-          value={association.integrantNumber || ""}
+          onChange={(e) => formHanlder("membersCount", e)}
+          value={association.membersCount || ""}
         />
       </form>
     </>
