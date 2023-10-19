@@ -1,4 +1,5 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import { useEffect } from 'react';
 
 interface IProp {
     label?: string,
@@ -8,12 +9,20 @@ interface IProp {
     keyValue?: string,
     handleValue?: any,
     targetKey?: string
-    selectValue?:string;
+    selectValue?: string;
 
 }
 
 function SelectDropdown(props: IProp) {
-    const value = props.keyValue ? props.keyValue : 'value';
+
+
+
+    const selectValue = (e: any) => {
+        const selectedItem = props.options?.find(item => item[props.keyValue as string] === e.target.value)
+        const selectedValue = { id: selectedItem[props.keyValue as string], label: selectedItem[props.keyLabel as string] }
+        props.handleValue(props.targetKey, selectedValue)
+    }
+
     return (
         <FormControl style={{ width: '100%' }}>
             <InputLabel id={props.value}>{props.label}</InputLabel>
@@ -21,7 +30,7 @@ function SelectDropdown(props: IProp) {
                 labelId={props.value}
                 id={props.label}
                 label={props.label}
-                onChange={(e)=> props.handleValue(props.targetKey, e)}
+                onChange={(e) => selectValue(e)}
                 value={props.selectValue || ''}
             >
                 {props.options?.length && props.options.map((option: any, index: number) => {
@@ -29,8 +38,8 @@ function SelectDropdown(props: IProp) {
                         <MenuItem
                             key={index}
                             defaultValue={''}
-                            value={option[`${value}`]}>
-                            {props.keyLabel ? option[props.keyLabel] : option.label}
+                            value={option[props.keyValue as string]}>
+                            {props.keyLabel ? option[props.keyLabel as string] : option.label}
                         </MenuItem>
                     )
                 })}
