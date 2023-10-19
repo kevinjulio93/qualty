@@ -159,7 +159,7 @@ function Associations() {
                   return (
                     <TableRow key={index}>
                       <TableCell>{association.name}</TableCell>
-                      <TableCell>{association.coordinator}</TableCell>
+                      <TableCell>{association.coordinator_name}</TableCell>
                       <TableCell>{association.membersCount}</TableCell>
                       <TableCell>
                         <Stack
