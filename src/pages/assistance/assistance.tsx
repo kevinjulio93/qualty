@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllActivities, updateAttendance } from "../../services/activities.service";
-import { Autocomplete, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -8,6 +8,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import "./assistance.scss";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
+import { createWorkshop } from "../../services/workshop.service";
 
 
 function Assistance () {
@@ -16,6 +17,8 @@ function Assistance () {
     const [isLoading, setIsLoading] = useState(true);
     const [bens, setBens] = useState([]);
     const [selectedAct, setSelectedAct] = useState(null);
+    const [selectedWork, setSelectedWork] = useState(null);
+    const [assistList, setAssistList] = useState([]);
 
     useEffect(() => {
         getActivities();
@@ -64,20 +67,24 @@ function Assistance () {
     }
 
     const handleAddAction = async(item) => {
-        const actId = selectedAct._id;
-        const assisList = item._id;
-        await updateAttendance(actId, {...selectedAct, attendees: [...selectedAct.attendees, assisList]});
+        setAssistList([...assistList, item]);
     }
 
-    const handleRemoveAction = async(item) => {
-        const actId = item._id;
-        const assisList = selectedAct.attendees.filter(element => element._id !== actId);
-        console.log(assisList);
-        await updateAttendance(actId, {...selectedAct, attendees: assisList});
+    const handleRemoveAction = async(index) => {
+        setAssistList(assistList.splice(index, 1));
     }
 
-    const onSelectedWorkshop = () => {
-        console.log("seleccionado");
+    const onSelectedWorkshop = (e) => {
+        setSelectedWork(e.target.value);
+    }
+
+    const saveWorkshop = async() => {
+        const workshop = {
+            name: selectedWork,
+            activity: selectedAct._id,
+            attendees: assistList.map(item => item._id)
+        }
+        await createWorkshop(workshop);
     }
 
     return isLoading ? (
@@ -108,7 +115,7 @@ function Assistance () {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label="Taller a realizar"
-                                onChange={(e) => onSelectedWorkshop()}
+                                onChange={(e) => onSelectedWorkshop(e)}
                             >
                                 <MenuItem key={"taller_no_1"} value="Taller de cuidado personal">
                                     Taller de cuidado personal
@@ -126,7 +133,7 @@ function Assistance () {
                             voidInputFunction={getBens}
                         />
                     </Stack>
-                    {selectedAct &&
+                    {selectedAct && selectedWork &&
                     <div className="assistance-container__form-section__table">
                         <div className="panel-heading"> 
                             Resultados de la busqueda
@@ -172,7 +179,7 @@ function Assistance () {
                         </Table>
                     </div>
                     }
-                    {selectedAct &&
+                    {selectedAct && selectedWork &&
                     <div className="assistance-container__form-section__table">
                         <div className="panel-heading"> 
                             Listado de asistencia
@@ -185,8 +192,8 @@ function Assistance () {
                                 <TableCell>Asociación</TableCell>
                                 <TableCell>Acciones</TableCell>
                             </TableRow>
-                            { selectedAct && (selectedAct as any).attendees.length > 0 &&
-                            (selectedAct as any).attendees.map((beneficiary: any, index) => {
+                            {
+                            assistList.map((beneficiary: any, index) => {
                                 return (
                                 <TableRow key={index}>
                                     <TableCell>
@@ -206,7 +213,7 @@ function Assistance () {
                                     <Stack className="actions-cell" direction="row" spacing={2}>
                                         <ClearIcon
                                         className="action-item-icon action-item-icon-delete"
-                                        onClick={() => handleRemoveAction(beneficiary)}
+                                        onClick={() => handleRemoveAction(index)}
                                         ></ClearIcon>
                                     </Stack>
                                     </TableCell>
@@ -216,6 +223,12 @@ function Assistance () {
                         </Table>
                     </div>
                     }
+                    <Button
+                    className="btn-save-workshop"
+                    onClick={() => saveWorkshop()}
+                    >
+                    Generar asistencia
+                    </Button>
                 </Paper>
             </section>
         </>
