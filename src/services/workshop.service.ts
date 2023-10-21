@@ -22,3 +22,9 @@ export async function deleteWorkshop(item: any) {
     const response = await workshop.delete(`/workshops/${item.id}`);
     return response;
 }
+
+export const getFilePdfAttendeesWorkshop=async (idWorkshop:string)=>{
+    //Esta respuesta devuelve un Blob
+    const response = await workshop.getBlob('/workshops/pdf/'+idWorkshop);
+    return response;
+}
