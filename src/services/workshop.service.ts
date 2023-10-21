@@ -12,14 +12,22 @@ export async function updateWorkshop(item:any) {
     return response;
 }
 
-export async function getAllWorkshops() {
-    const response = await workshop.get('/workshops');
+export async function getAllWorkshops(
+    queryString?: string,
+    page: number = 1,
+    perPage: number = 20
+  
+  ) {
+    const params = `page=${page}&perPage=${perPage}${
+      queryString ? `&queryString=${queryString}` : ""
+    }`;
+    const response = await workshop.get("/workshops/?" + params);
     return response;
-}
+  }
 
 
-export async function deleteWorkshop(item: any) {
-    const response = await workshop.delete(`/workshops/${item.id}`);
+export async function deleteWorkshop(id: string) {
+    const response = await workshop.delete(`/workshops/${id}`);
     return response;
 }
 

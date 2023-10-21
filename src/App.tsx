@@ -20,10 +20,12 @@ import Unauthorized from './pages/unauthorized/unauthorized';
 import { SECTIONS } from './constants/sections';
 import { PERMISSIONS } from './constants/permissions';
 import Permissions from './pages/permissions/permissions';
-import Assistance from './pages/assistance/assistance';
 import Ratings from './pages/ratings/ratings';
 import Associations from './pages/associations/associations';
 import ActivityDetail from './pages/activitiyDetail/activityDetail';
+import WorkshopsList from './pages/assistance/workshops';
+import Assistance from './pages/assistance/assistance';
+import RatingList from './pages/ratings/ratingList';
 
 
 function App() {
@@ -72,16 +74,22 @@ function App() {
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.PERMISSIONS} element={<Permissions />} />
                 </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSISTANCE, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.WORKSHOP} element={<WorkshopsList />} />
+                </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSISTANCE, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.ASSISTANCE} element={<Assistance />} />
                 </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RATINGS, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.RATING_LIST} element={<RatingList />} />
+                </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RATINGS, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.RATINGS} element={<Ratings />} />
+                </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
                 </Route>
               </Route>
-            </Route>
             </Route>
           </Routes>
         </BrowserRouter>

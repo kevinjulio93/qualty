@@ -28,12 +28,12 @@ export const sectionList = [
   {
     key: "valoraciones",
     name: "Valoraciones",
-    path: ROUTES.RATINGS,
+    path: ROUTES.RATING_LIST,
     icon: "book",
     hasChilds: false,
     permission: {
       subject: SECTIONS.RATINGS,
-      action: [PERMISSIONS.CREATE]
+      action: [PERMISSIONS.READ]
     }
   },
   {
@@ -58,34 +58,6 @@ export const sectionList = [
       action: [PERMISSIONS.READ]
     }
   },
-  // {
-  //     key: "valoraciones",
-  //     name: "Valoraciones",
-  //     path: "/valoraciones",
-  //     icon: "book",
-  //     hasChilds: true,
-  //     childrens: [
-  //         {
-  //             key: "fisio",
-  //             name: "Fisioterapia",
-  //             path: "/fisioterapia",
-  //             icon: "assist",
-
-  //         },
-  //         {
-  //             key: "odontologia",
-  //             name: "Odontologia",
-  //             path: "/odontologia",
-  //             icon: "smile",
-  //         },
-  //         {
-  //             key: "oftamologia",
-  //             name: "Oftamologia",
-  //             path: "/oftamologia",
-  //             icon: "eye",
-  //         }
-  //     ]
-  // },
   {
     key: "inventario",
     name: "Inventario",
@@ -100,12 +72,12 @@ export const sectionList = [
   {
     key: "talleres",
     name: "Talleres",
-    path: ROUTES.ASSISTANCE,
+    path: ROUTES.WORKSHOP,
     icon: "checklist",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ASSISTANCE,
-      action: [PERMISSIONS.CREATE],
+      action: [PERMISSIONS.READ],
     },
   },
   {
