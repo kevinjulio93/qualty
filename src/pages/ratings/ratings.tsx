@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Card, CardContent, CardMedia, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, CardMedia, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -47,6 +47,10 @@ function Ratings () {
 
     const onSelectRating = (e) => {
         setSelectedRating(e.target.value);
+    }
+
+    const saveRatings = () => {
+        console.log("guardando");
     }
 
     return isLoading ? (
@@ -161,16 +165,22 @@ function Ratings () {
                                     </Box>
                                 </Card>
                                 <TextField
-                                    id="filled-multiline-flexible"
+                                    id="filled-multiline-static"
                                     label="Observaciones"
                                     multiline
-                                    maxRows={4}
+                                    rows={6}
                                     variant="filled"
                                     sx={{width: 1000}}
                                 />
                             </Stack>
                         </div>
                     }
+                    <Button
+                    className="btn-save-ratings"
+                    onClick={() => saveRatings()}
+                    >
+                    Generar asistencia
+                    </Button>
                 </Paper>
             </section>
         </>

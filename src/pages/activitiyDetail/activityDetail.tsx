@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './activityDetail.scss';
 import { useEffect, useState } from 'react';
 import { Button, Paper, Stack, TextField, Typography } from '@mui/material';
@@ -6,6 +6,7 @@ import { Table, TableCell, TableRow } from '../../components/table/table';
 import SelectDropdown from '../../components/select';
 import { createActivities, getActivitybyId, getAssociationsByCommunity, getComunaByMunicipie, getDepartments, getMunicipies, updateActivities } from '../../services/activities.service';
 import ClearIcon from "@mui/icons-material/Clear";
+import { ROUTES } from '../../constants/routes';
 
 
 function ActivityDetail() {
@@ -17,14 +18,19 @@ function ActivityDetail() {
     const [communityList, setCommunityList] = useState([]);
     const [associationsList, setAssociations] = useState([]);
     const [activitiesAssociations, setActivitiesAssociations] = useState<any[]>([]);
-    const [selectedAssociations, setSelectedAssociations] = useState<any[]>([])
+    const [selectedAssociations, setSelectedAssociations] = useState<any[]>([]);
+    const [selectedDep, setSelectedDep] = useState(null);
+    const [selectedMun, setSelectedMun] = useState(null);
+    const [selectedCom, setSelectedCom] = useState(null);
+    const [selectedAso, setSelectedAso] = useState(null);
+    const navigate = useNavigate();
 
     useEffect( () => {
         if (activityId) {
             setTitle('Editar');
             getCurrentActivity()
-        };
-        getDepartamentsList()
+        }
+        getDepartamentsList();
     }, [])
 
     const getCurrentActivity = async () => {
@@ -43,27 +49,13 @@ function ActivityDetail() {
         } else {
             setActivity({ ...activity, [target]: value });
         }
-
-        if (target === 'department') {
-            getMunicipiesList(value);
-            ((activity as any).municipality) && formHanlder('municipality', '')
-        }
-
-        if (target === 'municipality') {
-            getCommunities(value);
-            ((activity as any).municipality) && formHanlder('community', '')
-        }
-
-        if (target === 'community') {
-            getAssociations(value);
-        }
     }
 
     const getDepartamentsList = async () => {
         try {
             const response = await getDepartments();
             if (response && response.length > 0) {
-                setDepartmentsList(response)
+                setDepartmentsList(response);
             }
         } catch (error) {
             setDepartmentsList([]);
@@ -73,9 +65,13 @@ function ActivityDetail() {
 
     const getMunicipiesList = async (department: any) => {
         try {
+            setSelectedDep(department);
             const response = await getMunicipies(department?.id);
             if (response && response.length > 0) {
-                setMunicipiesList(response)
+                setMunicipiesList(response);
+                setSelectedMun(null);
+                setSelectedCom(null);
+                setSelectedAso(null);
             }
         } catch (error) {
             setDepartmentsList([]);
@@ -85,9 +81,12 @@ function ActivityDetail() {
 
     const getCommunities = async (municipality: any) => {
         try {
+            setSelectedMun(municipality);
             const response = await getComunaByMunicipie(municipality?.id);
             if (response.status === 200) {
-                setCommunityList(response.result.data)
+                setCommunityList(response.result.data);
+                setSelectedCom(null);
+                setSelectedAso(null);
             }
         } catch (error) {
             setDepartmentsList([]);
@@ -97,9 +96,11 @@ function ActivityDetail() {
 
     const getAssociations = async (community: any) => {
         try {
+            setSelectedCom(community);
             const response = await getAssociationsByCommunity(community?.id);
             if (response.status === 200) {
-                setAssociations(response.result.data)
+                setAssociations(response.result.data);
+                setSelectedAso(null);
             }
         } catch (error) {
             setDepartmentsList([]);
@@ -108,11 +109,12 @@ function ActivityDetail() {
     }
 
     const addAssociationToActivity = () => {
+        console.log(selectedAso);
         const associationsData = {
-            department: (activity as any).department,
-            municipality: (activity as any).municipality,
-            community: (activity as any).community,
-            association: (activity as any).association,
+            department: selectedDep,
+            municipality: selectedMun,
+            community: selectedCom,
+            association: selectedAso,
         }
         const exist = activitiesAssociations.length ? activitiesAssociations.some(asso => associationsData.association.id === asso.association.id) : false;
         if (exist) return;
@@ -147,6 +149,8 @@ function ActivityDetail() {
         try {
             const response = await saveActivity(payload);
             console.log('actividad creada', response.result);
+            navigate(`${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES_LIST}`);
+            
         } catch (error) {
             console.log('no se creó la asociacion');
         }
@@ -212,48 +216,48 @@ function ActivityDetail() {
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.department?.id}
+                                    selectValue={selectedDep?.id}
                                     label="Departamento"
                                     options={departmentsList}
                                     keyLabel='name'
                                     keyValue='id'
                                     targetKey='department'
-                                    handleValue={formHanlder}
+                                    handleValue={(e, value) => getMunicipiesList(value)}
                                 />
                             </div>
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.municipality?.id}
+                                    selectValue={selectedMun?.id}
                                     label="Municipio"
                                     options={municipiesList}
                                     keyLabel='name'
                                     keyValue='id'
                                     targetKey='municipality'
-                                    handleValue={formHanlder}
+                                    handleValue={(e, value) => getCommunities(value)}
                                 />
                             </div>
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.community?.id}
+                                    selectValue={selectedCom?.id}
                                     label="Comuna"
                                     options={communityList}
                                     keyLabel='name'
                                     keyValue='_id'
                                     targetKey='community'
-                                    handleValue={formHanlder}
+                                    handleValue={(e, value) => getAssociations(value)}
                                 />
                             </div>
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={(activity as any)?.association?.id}
+                                    selectValue={selectedAso?.id}
                                     label="Asociacion"
                                     options={associationsList}
                                     keyLabel='name'
                                     keyValue='_id'
                                     targetKey='association'
-                                    handleValue={formHanlder}
+                                    handleValue={(e, value) => setSelectedAso(value)}
                                 />
                             </div>
 
