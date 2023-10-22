@@ -19,17 +19,23 @@ import { useState } from "react";
 import { Checklist, ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import "./sideMenu.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { RootState } from "../../app/store";
+import { setCurrentSection } from "../../features/generalSlice";
 
 function SideMenu(props) {
     const abilities = useSelector((state: any) => state.auth.user.abilities);
+    const currentSection = useSelector((state: RootState) => state.general.currentSection);
+    console.log(currentSection);
     const availableSections = sectionList.filter(section => checkPermissions(section.permission, abilities)).sort((a,b) => (a.key > b.key) ? 1 : ((b.key > a.key) ? -1 : 0));
-    const [selectedSection, setSelectedSection] = useState(availableSections[0].key);
+    const [selectedSection, setSelectedSection] = useState(currentSection || availableSections[0].key);
     const [open, setOpen] = useState(false);
+    const dispatch = useDispatch();
 
   const handleSectionChange = (section: string) => {
+    dispatch(setCurrentSection(section));
     setSelectedSection(section);
   };
 

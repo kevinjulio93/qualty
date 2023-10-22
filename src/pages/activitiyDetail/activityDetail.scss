@@ -67,12 +67,12 @@
                     width: 175px;
                     float: right;
                     height: 56px;
+                    position: absolute;
+                    bottom: 0;
 
                     &:hover {
                         background-color: #03a9f4;
                     }
-
-                    ;
                 }
             }
         }
