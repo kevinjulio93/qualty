@@ -12,5 +12,22 @@
             overflow: scroll;
             margin-top: 20px;
         }
+        &__info {
+            height: 250px;
+            overflow: scroll;
+            margin-top: 20px;
+        }
+    }
+
+    .btn-save-ratings {
+        background-color: #03a9f4;
+        color: #fff;
+        width: 200px;
+        position: absolute;
+        bottom: 0;
+
+        &:hover {
+            background-color: #03a9f4;
+        }
     }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllActivities, updateAttendance } from "../../services/activities.service";
+import { getAllActivities } from "../../services/activities.service";
 import { Autocomplete, Button, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
@@ -9,6 +9,8 @@ import Search from "../../components/search/search";
 import "./assistance.scss";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import { createWorkshop } from "../../services/workshop.service";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../constants/routes";
 
 
 function Assistance () {
@@ -19,6 +21,7 @@ function Assistance () {
     const [selectedAct, setSelectedAct] = useState(null);
     const [selectedWork, setSelectedWork] = useState(null);
     const [assistList, setAssistList] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getActivities();
@@ -85,6 +88,7 @@ function Assistance () {
             attendees: assistList.map(item => item._id)
         }
         await createWorkshop(workshop);
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.WORKSHOP}`);
     }
 
     return isLoading ? (

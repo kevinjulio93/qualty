@@ -1,50 +1,38 @@
 import { useEffect, useState } from "react";
-import { getAllActivities, updateAttendance } from "../../services/activities.service";
-import { Autocomplete, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, CardMedia, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
-import ClearIcon from "@mui/icons-material/Clear";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import "./ratings.scss";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
+import { useNavigate } from "react-router-dom";
+import { createRatings } from "../../services/rating.service";
+import { ROUTES } from "../../constants/routes";
 
 
 function Ratings () {
-    const [activities, setActivities] = useState([]);
-    const [actArray, setActArray] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [bens, setBens] = useState([]);
-    const [selectedAct, setSelectedAct] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [selectedRating, setSelectedRating] = useState(null);
+    const [selectedBen, setSelectedBen] = useState(null);
+    const [notes, setNotes] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
-        getActivities();
         getBens();
     }, [])
 
-    
-    const getActivities = async () => {
-        setIsLoading(true);
-        try {
-            const response = await getAllActivities();
-            if (response.status === 200) {
-                const dataList = response.result.data.map((item) => item.name);
-                setActivities(dataList);
-                setActArray(response.result.data);
-            }
-        } catch (error) {
-          console.error(error);
-        }
-        setIsLoading(false);
-    }
-
     const getBens = async () => {
+        setIsLoading(true);
         try {
           const response = await getBeneficiariesList();
           const benList = response.result.data;
           setBens(benList);
+          setIsLoading(false);
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     };
 
@@ -58,26 +46,26 @@ function Ratings () {
         }
     }
 
-    const onSelectActivity = (_, selected) => {
-        const currentAct = actArray.find(item => item.name === selected);
-        setSelectedAct(currentAct);
-    }
-
     const handleAddAction = async(item) => {
-        const actId = selectedAct._id;
-        const assisList = item._id;
-        await updateAttendance(actId, {...selectedAct, attendees: [...selectedAct.attendees, assisList]});
+        setSelectedBen(item);
     }
 
-    const handleRemoveAction = async(item) => {
-        const actId = item._id;
-        const assisList = selectedAct.attendees.filter(element => element._id !== actId);
-        console.log(assisList);
-        await updateAttendance(actId, {...selectedAct, attendees: assisList});
+    const onSelectRating = (e) => {
+        setSelectedRating(e.target.value);
     }
 
-    const onSelectedWorkshop = () => {
-        console.log("seleccionado");
+    const handleText = (e) => {
+        setNotes(e.target.value);
+    }
+
+    const saveRatings = async () => {
+        const rating = {
+            rating_type: selectedRating,
+            observations: notes,
+            attendee: selectedBen._id,
+        }
+        await createRatings(rating);
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
     }
 
     return isLoading ? (
@@ -87,36 +75,28 @@ function Ratings () {
             <section className='ratings-container'>
                 <header className="ratings-container__actions">
                     <div className="content-page-title">
-                        <Typography variant="h5" className="page-header">Asistencia a valoraciones</Typography>
-                        <span className="page-subtitle">Generar asistencia de beneficiarios a las valoraciones.</span>
+                        <Typography variant="h5" className="page-header">Generar valoración</Typography>
+                        <span className="page-subtitle">Generar valoración a un beneficiario.</span>
                     </div>
                 </header>
 
                 <Paper elevation={1} className="ratings-container__form-section">
                     <Stack direction="row" spacing={4}>
-                        <Autocomplete
-                            disablePortal
-                            id="combo-box-demo"
-                            options={activities}
-                            sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Actividad" />}
-                            onChange={onSelectActivity}
-                        />
                         <FormControl sx={{width: 300}}>
                             <InputLabel id="demo-simple-select-label">Valoración</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label="Valoración a realizar"
-                                onChange={(e) => onSelectedWorkshop()}
+                                onChange={(e) => onSelectRating(e)}
                             >
-                                <MenuItem key={"taller_no_1"} value="Fisioterapia">
+                                <MenuItem key={"fisio"} value="Fisioterapia">
                                     Fisioterapia
                                 </MenuItem>
-                                <MenuItem key={"taller_no_2"} value="Psicología">
+                                <MenuItem key={"psico"} value="Psicología">
                                     Psicología
                                 </MenuItem>
-                                <MenuItem key={"taller_no_2"} value="Optometría">
+                                <MenuItem key={"opto"} value="Optometría">
                                     Optometría
                                 </MenuItem>
                             </Select>
@@ -129,7 +109,7 @@ function Ratings () {
                             voidInputFunction={getBens}
                         />
                     </Stack>
-                    {selectedAct &&
+                    {selectedRating &&
                     <div className="ratings-container__form-section__table">
                         <div className="panel-heading"> 
                             Resultados de la busqueda
@@ -175,50 +155,49 @@ function Ratings () {
                         </Table>
                     </div>
                     }
-                    {selectedAct &&
-                    <div className="ratings-container__form-section__table">
-                        <div className="panel-heading"> 
-                            Listado de asistencia
+                    {selectedBen &&
+                        <div className="ratings-container__form-section__info">
+                            <div className="panel-heading"> 
+                                Información del beneficiario
+                            </div>
+                            <Stack direction="row" spacing={4}>
+                                <Card sx={{ display: 'flex' }}>
+                                    <CardMedia
+                                        component="img"
+                                        sx={{ width: 151 }}
+                                        image={selectedBen.photo_url}
+                                        alt=""
+                                    />
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        <CardContent sx={{ flex: '1 0 auto' }}>
+                                            <Typography component="div" variant="h5">
+                                                {selectedBen.first_name} {selectedBen.first_last_name} {selectedBen.second_last_name}
+                                            </Typography>
+                                            <Typography variant="subtitle1" color="text.secondary" component="div">
+                                                C.C. {selectedBen.identification}
+                                            </Typography>
+                                        </CardContent>
+                                    </Box>
+                                </Card>
+                                <TextField
+                                    id="filled-multiline-static"
+                                    label="Observaciones"
+                                    multiline
+                                    rows={6}
+                                    variant="filled"
+                                    sx={{width: 1000}}
+                                    onChange={(e) => handleText(e)}
+                                    value={notes}
+                                />
+                            </Stack>
                         </div>
-                        <Table>
-                            <TableRow header>
-                                <TableCell>Foto</TableCell>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>Cedula</TableCell>
-                                <TableCell>Asociación</TableCell>
-                                <TableCell>Acciones</TableCell>
-                            </TableRow>
-                            { selectedAct && (selectedAct as any).attendees.length > 0 &&
-                            (selectedAct as any).attendees.map((beneficiary: any, index) => {
-                                return (
-                                <TableRow key={index}>
-                                    <TableCell>
-                                        <img
-                                        className="ben-foto"
-                                        src={beneficiary.photo_url}
-                                        alt="foto"
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        {beneficiary?.first_name} {beneficiary.second_name}{" "}
-                                        {beneficiary.first_last_name} {beneficiary.second_last_name}
-                                    </TableCell>
-                                    <TableCell>{beneficiary?.identification}</TableCell>
-                                    <TableCell>{beneficiary?.association?.name}</TableCell>
-                                    <TableCell>
-                                    <Stack className="actions-cell" direction="row" spacing={2}>
-                                        <ClearIcon
-                                        className="action-item-icon action-item-icon-delete"
-                                        onClick={() => handleRemoveAction(beneficiary)}
-                                        ></ClearIcon>
-                                    </Stack>
-                                    </TableCell>
-                                </TableRow>
-                                );
-                            })}
-                        </Table>
-                    </div>
                     }
+                    <Button
+                    className="btn-save-ratings"
+                    onClick={() => saveRatings()}
+                    >
+                    Generar asistencia
+                    </Button>
                 </Paper>
             </section>
         </>

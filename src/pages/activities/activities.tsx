@@ -28,7 +28,7 @@ function ActivityList() {
         setActivities([]);
       }
     } catch (error) {
-
+      console.log(error);
     }
   }
 

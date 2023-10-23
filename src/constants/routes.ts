@@ -14,6 +14,8 @@ export const ROUTES = {
     PERMISSIONS: 'permissions',
     UNAUTHORIZED: 'unauthorized',
     ASSISTANCE: 'assistance',
+    WORKSHOP: 'workshop-list',
     RATINGS: 'ratings',
+    RATING_LIST: 'rating-list',
     ASSOCIATIONS: "associations",
 }
