@@ -7,6 +7,8 @@ export const ROUTES = {
     BENEFICIARIES: 'beneficiaries',
     BEN_LIST: 'ben_list',
     ACTIVITIES_LIST: 'activities-list',
+    WINERIES_LIST: 'wineries-list',
+    WINERIES: 'wineries',
     ACTIVITIES: 'activities',
     ROLES: 'roles',
     PERMISSIONS: 'permissions',

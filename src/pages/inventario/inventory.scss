@@ -1,0 +1,14 @@
+.inventary-container {
+    height: calc(100% - 47px);
+    width: 100%;
+    box-sizing: border-box;
+
+    &__actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    
+}

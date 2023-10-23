@@ -23,6 +23,8 @@ import Permissions from './pages/permissions/permissions';
 import Ratings from './pages/ratings/ratings';
 import Associations from './pages/associations/associations';
 import ActivityDetail from './pages/activitiyDetail/activityDetail';
+import WineriesList from './pages/wineriesList/wineriesList';
+import Wineries from './pages/wineries/wineries';
 import WorkshopsList from './pages/assistance/workshops';
 import Assistance from './pages/assistance/assistance';
 import RatingList from './pages/ratings/ratingList';
@@ -59,6 +61,13 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.INVENTORY} element={<Inventory />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.WINERIES_LIST} element={<WineriesList/>} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.WINERIES} element={<Wineries/>} />
+                  <Route path='wineries/:winerieId' element={<Wineries />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.BENEFICIARY, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.BEN_LIST} element={<BeneficiariesList />} />
