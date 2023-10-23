@@ -98,6 +98,17 @@ export const sectionList = [
     }
   },
   {
+    key: "bodegas",
+    name: "Bodegas",
+    path: ROUTES.WINERIES_LIST,
+    icon: "draft",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.WINERIES,
+      action: [PERMISSIONS.READ]
+    }
+  },
+  {
     key: "talleres",
     name: "Talleres",
     path: ROUTES.ASSISTANCE,
