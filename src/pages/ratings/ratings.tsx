@@ -6,6 +6,9 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import "./ratings.scss";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
+import { useNavigate } from "react-router-dom";
+import { createRatings } from "../../services/rating.service";
+import { ROUTES } from "../../constants/routes";
 
 
 function Ratings () {
@@ -13,6 +16,8 @@ function Ratings () {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedRating, setSelectedRating] = useState(null);
     const [selectedBen, setSelectedBen] = useState(null);
+    const [notes, setNotes] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         getBens();
@@ -49,8 +54,18 @@ function Ratings () {
         setSelectedRating(e.target.value);
     }
 
-    const saveRatings = () => {
-        console.log("guardando");
+    const handleText = (e) => {
+        setNotes(e.target.value);
+    }
+
+    const saveRatings = async () => {
+        const rating = {
+            rating_type: selectedRating,
+            observations: notes,
+            attendee: selectedBen._id,
+        }
+        await createRatings(rating);
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
     }
 
     return isLoading ? (
@@ -75,13 +90,13 @@ function Ratings () {
                                 label="Valoración a realizar"
                                 onChange={(e) => onSelectRating(e)}
                             >
-                                <MenuItem key={"taller_no_1"} value="Fisioterapia">
+                                <MenuItem key={"fisio"} value="Fisioterapia">
                                     Fisioterapia
                                 </MenuItem>
-                                <MenuItem key={"taller_no_2"} value="Psicología">
+                                <MenuItem key={"psico"} value="Psicología">
                                     Psicología
                                 </MenuItem>
-                                <MenuItem key={"taller_no_2"} value="Optometría">
+                                <MenuItem key={"opto"} value="Optometría">
                                     Optometría
                                 </MenuItem>
                             </Select>
@@ -171,6 +186,8 @@ function Ratings () {
                                     rows={6}
                                     variant="filled"
                                     sx={{width: 1000}}
+                                    onChange={(e) => handleText(e)}
+                                    value={notes}
                                 />
                             </Stack>
                         </div>
