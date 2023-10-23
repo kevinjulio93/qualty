@@ -40,7 +40,7 @@ export const sectionList = [
     key: "actividades",
     name: "Actividades",
     path: ROUTES.ACTIVITIES_LIST,
-    icon: "beneficiaries",
+    icon: "activity",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ACTIVITY,
@@ -51,7 +51,7 @@ export const sectionList = [
     key: "roles",
     name: "Roles",
     path: ROUTES.ROLES,
-    icon: "beneficiaries",
+    icon: "role",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ROLE,
@@ -84,7 +84,7 @@ export const sectionList = [
     key: "asociaciones",
     name: "Asociaciones",
     path: ROUTES.ASSOCIATIONS,
-    icon: "AssistWalker",
+    icon: "groups",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ASSOCIATIONS,
