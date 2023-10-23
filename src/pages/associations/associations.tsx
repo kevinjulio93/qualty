@@ -18,6 +18,7 @@ import {
   getAssociationsList,
   updateAssociation,
 } from "../../services/associations.service";
+import { getUserList } from "../../services/user.service";
 
 function Associations() {
   const associationRef = useRef(null);

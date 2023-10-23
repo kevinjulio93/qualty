@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import { useState, forwardRef, useImperativeHandle, useEffect } from "react";
 import SelectDropdown from "../select";
-import Department from "../../../../war-backend/src/models/references/department";
 import {
   getComunaByMunicipie,
   getDepartments,
