@@ -60,7 +60,7 @@ export const sectionList = [
   },
   {
     key: "inventario",
-    name: "Inventario",
+    name: "Articulos",
     path: ROUTES.INVENTORY,
     icon: "draft",
     hasChilds: false,
@@ -100,6 +100,17 @@ export const sectionList = [
     permission: {
       subject: SECTIONS.ASSOCIATIONS,
       action: [PERMISSIONS.CREATE],
+    },
+  },
+  {
+    key: "bodegas",
+    name: "Bodegas",
+    path: ROUTES.WINERIES_LIST,
+    icon: "storage",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.WINERIES,
+      action: [PERMISSIONS.READ],
     },
   },
 ];

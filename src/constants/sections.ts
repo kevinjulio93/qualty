@@ -6,7 +6,7 @@ export const enum SECTIONS {
   ASSISTANCE = "workshop",
   EVENTS = "event",
   RATINGS = "rating",
-  INVENTORY = "inventory",
+  INVENTORY = "item",
   ASSOCIATIONS = "association",
   DELIVERY = "delivery",
   WINERIES="winerie"

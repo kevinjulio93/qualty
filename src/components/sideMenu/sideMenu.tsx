@@ -28,6 +28,7 @@ import Diversity3Icon from '@mui/icons-material/Diversity3';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 
 function SideMenu(props) {
     const abilities = useSelector((state: any) => state.auth.user.abilities);
@@ -58,7 +59,8 @@ function SideMenu(props) {
     groups: <Diversity3Icon />,
     activity: <VolunteerActivismIcon />,
     role: <PsychologyIcon />,
-    event: <EmojiEventsIcon />
+    event: <EmojiEventsIcon />,
+    storage: <WarehouseIcon />
   };
 
   const getIcon = (icon: string) => {
@@ -87,6 +89,8 @@ function SideMenu(props) {
         return iconList.role;
       case "event":
         return iconList.event;
+      case "storage":
+        return iconList.storage;
       default:
         return iconList.draft;
     }
