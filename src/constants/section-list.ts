@@ -91,5 +91,16 @@ export const sectionList = [
       action: [PERMISSIONS.CREATE],
     },
   },
+  {
+    key: "entregas",
+    name: "Entregas",
+    path: ROUTES.ASSOCIATIONS,
+    icon: "groups",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.ASSOCIATIONS,
+      action: [PERMISSIONS.CREATE],
+    },
+  },
 ];
 // import AssistWalkerIcon from '@mui/icons-material/AssistWalker';
