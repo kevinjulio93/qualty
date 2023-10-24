@@ -4,8 +4,8 @@ export class FecthRequestModel {
     private url:string;
     
     constructor() {
-        this.url = import.meta.env.VITE_NODE_ENV === 'production'? import.meta.env.VITE_PROD_API_URL:import.meta.env.VITE_DEV_API_URL;
-        //this.url = "http://localhost:3000";
+        //this.url = import.meta.env.VITE_NODE_ENV === 'production'? import.meta.env.VITE_PROD_API_URL:import.meta.env.VITE_DEV_API_URL;
+        this.url = "http://localhost:3000";
         console.log(import.meta.env.NODE_ENV);
     }
 

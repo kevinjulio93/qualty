@@ -24,6 +24,7 @@ import Assistance from './pages/assistance/assistance';
 import Ratings from './pages/ratings/ratings';
 import Associations from './pages/associations/associations';
 import ActivityDetail from './pages/activitiyDetail/activityDetail';
+import EventList from './pages/events/events';
 
 
 function App() {
@@ -77,11 +78,14 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RATINGS, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.RATINGS} element={<Ratings />} />
-                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
-                  <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
+                  <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
+                    <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
+                  </Route>
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ACTIVITY, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.EVENTS} element={<EventList />} />
                 </Route>
               </Route>
-            </Route>
             </Route>
           </Routes>
         </BrowserRouter>

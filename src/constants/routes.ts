@@ -14,4 +14,5 @@ export const ROUTES = {
     ASSISTANCE: 'assistance',
     RATINGS: 'ratings',
     ASSOCIATIONS: "associations",
+    EVENTS: 'events'
 }
