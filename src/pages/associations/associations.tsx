@@ -12,7 +12,13 @@ import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
 import AssociationForm from "../../components/associationForm/associationForm";
-import { createAssociation, deleteAssociation, getAssociationsList, updateAssociation } from "../../services/associations.service";
+import {
+  createAssociation,
+  deleteAssociation,
+  getAssociationsList,
+  updateAssociation,
+} from "../../services/associations.service";
+import { getUserList } from "../../services/user.service";
 
 function Associations() {
   const associationRef = useRef(null);
@@ -49,7 +55,14 @@ function Associations() {
 
   const saveData = async () => {
     if (associationRef.current !== null) {
-      const association = (associationRef.current as any).getAssociation();
+      let association = (associationRef.current as any).getAssociation();
+      const { department, municipality, community } = association;
+      association = {
+        ...association,
+        department: department.label,
+        municipality: municipality.label,
+        community: community.id,
+      };
       await createAssociation(association);
       setIsLoading(true);
       getAssociations();
@@ -59,7 +72,11 @@ function Associations() {
 
   const updateData = async () => {
     if (associationRef.current !== null) {
-      const association = (associationRef.current as any).getAssociation();
+      let association = (associationRef.current as any).getAssociation();
+      const { community } = association;
+      association = { ...association, community: community._id ?? community.id };
+      console.log(association);
+
       await updateAssociation(association);
       setIsLoading(true);
       getAssociations();

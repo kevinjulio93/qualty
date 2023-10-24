@@ -6,7 +6,12 @@ import {
   TextField,
 } from "@mui/material";
 import { useState, forwardRef, useImperativeHandle, useEffect } from "react";
-import { getReferences } from "../../services/references.service";
+import SelectDropdown from "../select";
+import {
+  getComunaByMunicipie,
+  getDepartments,
+  getMunicipies,
+} from "../../services/activities.service";
 
 const AssociationForm = forwardRef((props: any, ref) => {
   const [association, setAssociation] = useState<any>({
@@ -20,14 +25,18 @@ const AssociationForm = forwardRef((props: any, ref) => {
     community: "",
     membersCount: "",
   });
-  const [communities, setCommunities] = useState([]);
-  const typesAssociation = [{ type: "Centro de vida" }, { type: "Asociacion" }];
+  const [departmentsList, setDepartmentsList] = useState([]);
+  const [municipiesList, setMunicipiesList] = useState([]);
+  const [communityList, setCommunityList] = useState([]);
+  const typesAssociation = [
+    "Centro de vida",
+    "Centro de bienestar",
+    "Municipio y Asociación",
+  ];
   // ["Centro de vida","Centro de bienestar","Municipio","Asociación"]
 
   useImperativeHandle(ref, () => {
-    return {
-      getAssociation,
-    };
+    return { getAssociation };
   });
 
   const getAssociation = () => {
@@ -39,19 +48,61 @@ const AssociationForm = forwardRef((props: any, ref) => {
   }, []);
 
   useEffect(() => {
-    getCommunities();
+    getDepartamentsList();
   }, []);
 
   const setCurrentAssociation = () => {
-    if (props.currentAssociation)
+    if (props.currentAssociation) {
       setAssociation({
         ...props.currentAssociation,
         role: props.currentAssociation._id,
       });
+    }
   };
 
-  const getCommunities = async () => {
-    setCommunities(await getReferences().then((v) => v.result.communities));
+  const getDepartamentsList = async () => {
+    try {
+      const response = await getDepartments();
+      if (response && response.length > 0) {
+        setDepartmentsList(response);
+        if (props.currentAssociation) {
+          getMunicipiesList(
+            response.find(
+              ({ name }: any) => name === props.currentAssociation.department
+            )
+          );
+        }
+      }
+    } catch (error) {
+      setDepartmentsList([]);
+    }
+  };
+  const getMunicipiesList = async (department: any) => {
+    try {
+      const response = await getMunicipies(department?.id);
+      if (response && response.length > 0) {
+        setMunicipiesList(response);
+        if (props.currentAssociation) {
+          getCommunitiesList(
+            response.find(
+              ({ name }: any) => name === props.currentAssociation.municipality
+            )
+          );
+        }
+      }
+    } catch (error) {
+      setDepartmentsList([]);
+    }
+  };
+  const getCommunitiesList = async (municipality: any) => {
+    try {
+      const response = await getComunaByMunicipie(municipality?.id);
+      if (response.status === 200) {
+        setCommunityList(response.result.data);
+      }
+    } catch (error) {
+      setDepartmentsList([]);
+    }
   };
 
   const formHanlder = (
@@ -67,8 +118,17 @@ const AssociationForm = forwardRef((props: any, ref) => {
       | "membersCount",
     e: any
   ) => {
-    const value = e.target.value;
+    const value = e.target ? e.target.value : e;
     setAssociation({ ...association, [target]: value });
+
+    if (target === "department") {
+      getMunicipiesList(value);
+      (association as any).municipality && formHanlder("municipality", "");
+    }
+    if (target === "municipality") {
+      getCommunitiesList(value);
+      (association as any).municipality && formHanlder("community", "");
+    }
   };
 
   return (
@@ -98,8 +158,8 @@ const AssociationForm = forwardRef((props: any, ref) => {
             {typesAssociation.length > 0 &&
               typesAssociation.map((type: any, i: number) => {
                 return (
-                  <MenuItem key={i} value={type.type}>
-                    {type.type}
+                  <MenuItem key={i} value={type}>
+                    {type}
                   </MenuItem>
                 );
               })}
@@ -135,51 +195,69 @@ const AssociationForm = forwardRef((props: any, ref) => {
           onChange={(e) => formHanlder("phones", e)}
           value={association.phones || ""}
         />
-        <TextField
-          className="login-view__login-form__form-container__input"
-          id="department"
-          name="department"
-          placeholder="Departamento"
-          type="text"
-          label="Departamento"
-          onChange={(e) => formHanlder("department", e)}
-          value={association.department || ""}
-        />
-        <TextField
-          className="login-view__login-form__form-container__input"
-          id="municipality"
-          name="municipality"
-          placeholder="Municipio"
-          type="text"
-          label="Municipio"
-          onChange={(e) => formHanlder("municipality", e)}
-          value={association.municipality || ""}
-        />
-        <FormControl>
-          <InputLabel id="demo-simple-select-label">Comuna</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+
+        <div className="activities-container__form-section__assitants__form-2__field">
+          <SelectDropdown
+            selectValue={(() => {
+              return departmentsList.length
+                ? departmentsList.find(
+                    ({ name }) => name === association.department
+                  )?.id
+                : "";
+            })()}
+            label="Departamento"
+            options={departmentsList.sort(({ name: a }, { name: b }) => {
+              if (a > b) return 1;
+              if (a < b) return -1;
+              return 0;
+            })}
+            keyLabel="name"
+            keyValue="id"
+            targetKey="department"
+            handleValue={formHanlder}
+          />
+        </div>
+        <div className="activities-container__form-section__assitants__form-2__field">
+          <SelectDropdown
+            selectValue={(() => {
+              return municipiesList.length
+                ? municipiesList.find(
+                    ({ name }) => name === association.municipality
+                  )?.id
+                : "";
+            })()}
+            label="Municipio"
+            options={municipiesList.sort(({ name: a }, { name: b }) => {
+              if (a > b) return 1;
+              if (a < b) return -1;
+              return 0;
+            })}
+            keyLabel="name"
+            keyValue="id"
+            targetKey="municipality"
+            handleValue={formHanlder}
+          />
+        </div>
+        <div className="activities-container__form-section__assitants__form-2__field">
+          <SelectDropdown
+            selectValue={(() => {
+              const r = communityList.length
+                ? communityList.find(
+                    ({ _id }) => _id === association.community._id
+                  )?._id
+                : "";
+              console.log(r);
+              return r;
+            })()}
             label="Comuna"
-            onChange={(e) => formHanlder("community", e)}
-            value={association.community._id || ""}
-          >
-            {communities.length > 0 &&
-              communities
-                .sort(({ municipality: a }, { municipality: b }) => {
-                  if (a > b) return 1;
-                  if (a < b) return -1;
-                  return 0;
-                })
-                .map(({ _id, municipality }: any, i: number) => {
-                  return (
-                    <MenuItem key={i} value={_id}>
-                      {municipality}
-                    </MenuItem>
-                  );
-                })}
-          </Select>
-        </FormControl>
+            options={communityList}
+            keyLabel="name"
+            keyValue="_id"
+            targetKey="community"
+            handleValue={formHanlder}
+          />
+        </div>
+
         <TextField
           className="login-view__login-form__form-container__input"
           id="membersCount"
