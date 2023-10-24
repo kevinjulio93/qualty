@@ -26,69 +26,91 @@ export const sectionList = [
     },
   },
   {
+    key: "valoraciones",
+    name: "Valoraciones",
+    path: ROUTES.RATING_LIST,
+    icon: "book",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.RATINGS,
+      action: [PERMISSIONS.READ]
+    }
+  },
+  {
     key: "actividades",
     name: "Actividades",
-    path: ROUTES.ACTIVITIES,
-    icon: "beneficiaries",
+    path: ROUTES.ACTIVITIES_LIST,
+    icon: "activity",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ACTIVITY,
-      action: [PERMISSIONS.READ],
-    },
-  },
-    {
-        key: "valoraciones",
-        name: "Valoraciones",
-        path: ROUTES.RATINGS,
-        icon: "book",
-        hasChilds: false,
-        permission: {
-            subject: SECTIONS.RATINGS,
-            action: [PERMISSIONS.CREATE]
-        }
-    },
-    {
-        key: "inventario",
-        name: "Inventario",
-        path: ROUTES.INVENTORY,
-        icon: "draft",
-        hasChilds: false,
-        permission: {
-            subject: SECTIONS.INVENTORY,
-            action: [PERMISSIONS.READ]
-        }
+      action: [PERMISSIONS.READ]
+    }
   },
   {
     key: "roles",
     name: "Roles",
     path: ROUTES.ROLES,
-    icon: "beneficiaries",
+    icon: "role",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ROLE,
-      action: [PERMISSIONS.READ],
-    },
+      action: [PERMISSIONS.READ]
+    }
+  },
+  {
+    key: "inventario",
+    name: "Articulos",
+    path: ROUTES.INVENTORY,
+    icon: "draft",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.INVENTORY,
+      action: [PERMISSIONS.READ]
+    }
   },
   {
     key: "talleres",
     name: "Talleres",
-    path: ROUTES.ASSISTANCE,
+    path: ROUTES.WORKSHOP,
     icon: "checklist",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ASSISTANCE,
-      action: [PERMISSIONS.CREATE],
+      action: [PERMISSIONS.READ],
     },
   },
   {
     key: "asociaciones",
     name: "Asociaciones",
     path: ROUTES.ASSOCIATIONS,
-    icon: "AssistWalker",
+    icon: "groups",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ASSOCIATIONS,
       action: [PERMISSIONS.CREATE],
+    },
+  },
+  {
+    key: "entregas",
+    name: "Entregas",
+    path: ROUTES.ASSOCIATIONS,
+    icon: "groups",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.ASSOCIATIONS,
+      action: [PERMISSIONS.CREATE],
+    },
+  },
+  {
+    key: "bodegas",
+    name: "Bodegas",
+    path: ROUTES.WINERIES_LIST,
+    icon: "storage",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.WINERIES,
+      action: [PERMISSIONS.READ],
     },
   },
 ];

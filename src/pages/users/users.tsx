@@ -24,7 +24,6 @@ import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function Users() {
   const userRef = useRef(null);
-  const dispatch = useDispatch();
   const modalRef = useRef(null);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,12 +75,12 @@ function Users() {
     setCurrentUser(null);
   };
 
-  const handleEditAction = (user) => {
+  const handleEditAction = (user:any) => {
     setCurrentUser(user);
     (modalRef as any).current.handleClickOpen();
   };
 
-  const handleDeleteAction = (user) => {
+  const handleDeleteAction = (user:any) => {
     setCurrentUser(user);
     setOpenDialog(true);
   };

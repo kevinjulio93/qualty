@@ -1,4 +1,4 @@
-.assistance-container {
+.winerie-container {
 
     &__form-section {
         background-color: #fff;
@@ -14,12 +14,26 @@
         }
     }
 
-    .btn-save-workshop {
+    .btn-save-winerie {
+        background-color: #449d44 !important;
+        color: #fff;
+        width: 200px;
+        position: relative;
+        left: 20px;
+        bottom:80px;
+
+        &:hover {
+            background-color: #03a9f4;
+        }
+    }
+
+    .btn-cancel-winerie {
         background-color: #03a9f4;
         color: #fff;
         width: 200px;
-        position: absolute;
-        bottom: 0;
+        position: relative;
+        left: 20px;
+        bottom:80px;
 
         &:hover {
             background-color: #03a9f4;

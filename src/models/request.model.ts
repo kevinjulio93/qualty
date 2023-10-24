@@ -4,7 +4,7 @@ export class FecthRequestModel {
     private url:string;
     
     constructor() {
-        // this.url = import.meta.env.VITE_NODE_ENV === 'production'? import.meta.env.VITE_PROD_API_URL:import.meta.env.VITE_DEV_API_URL;
+        //this.url = import.meta.env.VITE_NODE_ENV === 'production'? import.meta.env.VITE_PROD_API_URL:import.meta.env.VITE_DEV_API_URL;
         this.url = "http://localhost:3000";
         console.log(import.meta.env.NODE_ENV);
     }
@@ -54,6 +54,29 @@ export class FecthRequestModel {
       }
       return response.json();
     }
+
+    private async handleResponseBlob(response: any) {
+      if (!response.ok) {
+        if (response.status === 400 || (response.status >= 400 && response.status < 500)) {
+          throw await response.blob();
+        } else {
+          throw this.statusError(response);
+        }
+      }
+      return response.blob();
+    }
+
+    private async callRequestBlob(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', body?: any, isPublic?:boolean, haveFormData?:boolean) {
+      try {
+        let options:any = { ...this.getOption(method, body, isPublic, haveFormData) };
+        const getResponse = await fetch(url, { ...options });
+        const result = await this.handleResponseBlob(getResponse);
+        result.name=getResponse.headers.get("NameFile");
+        return {result, status: getResponse.status};
+      } catch (error) {
+        throw this.handleError(error);
+      }
+    }
   
     private handleError(error: any) {
       throw { error: 'catch', message: error };
@@ -72,6 +95,11 @@ export class FecthRequestModel {
   
     private getCompleteURL(path:string) {
       return `${this.url}${path}`
+    }
+
+    getBlob(path:string,body?:any){
+      const url = this.getCompleteURL(path);
+      return this.callRequestBlob(url, 'POST',body);
     }
     
   
