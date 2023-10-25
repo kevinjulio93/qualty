@@ -70,9 +70,9 @@ function ListView(props: IListViewProp) {
 					<>
 						<Table>
 							<TableRow header>
-								{props.columnHeaders.map((column) => {
+								{props.columnHeaders.map((column, index) => {
 									return (
-										<TableCell>{column.label}</TableCell>
+										<TableCell key={column.label+index}>{column.label}</TableCell>
 									)
 								})}
 							</TableRow>
@@ -80,8 +80,8 @@ function ListView(props: IListViewProp) {
 								return (
 									<TableRow key={row._id}>
 										{
-											props.columnHeaders.map((column) => {
-												return (<TableCell>{row[column.rowKey]}</TableCell>)
+											props.columnHeaders.map((column, index) => {
+												return (<TableCell key={column.rowKey+index}>{row[column.rowKey]}</TableCell>)
 											})
 										}
 
