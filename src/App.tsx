@@ -30,6 +30,7 @@ import Assistance from './pages/assistance/assistance';
 import RatingList from './pages/ratings/ratingList';
 import DeliveryList from './pages/delivery/deliveryList';
 import Delivery from './pages/delivery/delivery';
+import EventList from './pages/events/events';
 
 
 function App() {
@@ -99,6 +100,12 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
+                  <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
+                    <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
+                  </Route>
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ACTIVITY, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.EVENTS} element={<EventList />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.DELIVERY_LIST} element={<DeliveryList />} />
