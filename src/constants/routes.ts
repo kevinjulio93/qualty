@@ -18,4 +18,6 @@ export const ROUTES = {
     RATINGS: 'ratings',
     RATING_LIST: 'rating-list',
     ASSOCIATIONS: "associations",
+    DELIVERY_LIST: "delivery-list",
+    DELIVERY: "delivery"
 }

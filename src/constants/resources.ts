@@ -11,7 +11,8 @@ export const arraySections = [
     {key: SECTIONS.EVENTS, value: "Eventos"},
     {key: SECTIONS.INVENTORY, value: "Articulos"},
     {key: SECTIONS.ASSOCIATIONS, value: "Asociaciones"},
-    {key: SECTIONS.WINERIES, value: "Bodegas"}
+    {key: SECTIONS.WINERIES, value: "Bodegas"},
+    {key: SECTIONS.DELIVERY, value: "Entregas"},
 ];
 
 export const arrayPermissions = [
