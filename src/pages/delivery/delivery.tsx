@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
-import { getAllActivities } from "../../services/activities.service";
-import { Autocomplete, Box, Button, Card, CardContent, CardMedia, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Card, FormLabel, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
-import { createWorkshop } from "../../services/workshop.service";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../constants/routes";
+//import { useNavigate } from "react-router-dom";
+//import { ROUTES } from "../../constants/routes";
+import { getAllEvents } from "../../services/events.service";
+import RemoveIcon from '@mui/icons-material/Remove';
+import AddIcon from '@mui/icons-material/Add';
+import './delivery.scss';
 
 
 function Delivery () {
-    const [activities, setActivities] = useState([]);
-    const [actArray, setActArray] = useState([]);
+    const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [bens, setBens] = useState([]);
-    const [selectedAct, setSelectedAct] = useState(null);
     const [selectedBen, setSelectedBen] = useState(null);
-    const navigate = useNavigate();
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [eventArray, setEventArray] = useState([]);
+    const [itemList, setItemList] = useState([]);
+    const [counters, setCounters] = useState([]);
+    const [forceRender, setForceRender] = useState(+ new Date())
+    //const navigate = useNavigate();
 
     useEffect(() => {
         getEvents();
@@ -29,11 +34,11 @@ function Delivery () {
     const getEvents = async () => {
         setIsLoading(true);
         try {
-            const response = await getAllActivities();
+            const response = await getAllEvents();
             if (response.status === 200) {
-                const dataList = response.result.data.map((item) => item.name);
-                setActivities(dataList);
-                setActArray(response.result.data);
+                const dataList = response.result.data.data.map((item) => item.name);
+                setEvents(dataList);
+                setEventArray(response.result.data.data);
             }
         } catch (error) {
           console.error(error);
@@ -61,22 +66,41 @@ function Delivery () {
         }
     }
 
-    const onSelectActivity = (_, selected) => {
-        const currentAct = actArray.find(item => item.name === selected);
-        setSelectedAct(currentAct);
+    const onSelectEvent = (_, selected) => {
+        const currentEvent = eventArray.find(item => item.name === selected);
+        setSelectedEvent(currentEvent);
+        //setItemList(currentEvent.associated_winery?.inventory);
+        const inventory = [
+            { name: "Silla de ruedas", code: "001", value: "$120.000" },
+            { name: "Bastones", code: "002", value: "$150.000" },
+            { name: "Protesis dentales", code: "003", value: "$20.000" },
+            { name: "Gafas", code: "004", value: "$12.000" },
+        ];
+        const newCounts = new Array(inventory.length).fill(0);
+        setCounters(newCounts);
+        setItemList(inventory);
     }
 
     const handleAddAction = async(item) => {
         setSelectedBen(item);
     }
 
-    const saveWorkshop = async () => {
-        const rating = {
-            rating_type: selectedAct,
-            beneficiary: selectedBen._id,
-        }
-        await createWorkshop(rating);
-        navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
+    const saveDelivery = async () => {
+        console.log(selectedEvent);
+    }
+
+    const addCounter = (i) => {
+        const counts = counters;
+        counts[i]++;
+        setCounters(counts);
+        setForceRender(+ new Date());
+    }
+
+    const removeCounter = (i) => {
+        const counts = counters;
+        counts[i]--;
+        setCounters(counters);
+        setForceRender(+ new Date());
     }
 
     return isLoading ? (
@@ -96,10 +120,10 @@ function Delivery () {
                         <Autocomplete
                             disablePortal
                             id="combo-box-demo"
-                            options={activities}
+                            options={events}
                             sx={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params} label="Actividad" />}
-                            onChange={onSelectActivity}
+                            renderInput={(params) => <TextField {...params} label="Evento" />}
+                            onChange={onSelectEvent}
                         />
                         <Search
                             label="Buscar beneficiario"
@@ -109,7 +133,7 @@ function Delivery () {
                             voidInputFunction={getBens}
                         />
                     </Stack>
-                    {selectedAct &&
+                    {selectedEvent &&
                     <div className="assistance-container__form-section__table">
                         <div className="panel-heading"> 
                             Resultados de la busqueda
@@ -156,38 +180,89 @@ function Delivery () {
                     </div>
                     }
                     {selectedBen &&
+                    <div className="assistance-container__form-section__table">
+                        <div className="panel-heading"> 
+                            Beneficiario seleccionado
+                        </div>
+                        <Table>
+                            <TableRow header>
+                                <TableCell>Foto</TableCell>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>Cedula</TableCell>
+                                <TableCell>Asociación</TableCell>
+                            </TableRow>
+                            <TableRow key={selectedBen.id}>
+                                    <TableCell>
+                                        <img
+                                        className="ben-foto-info"
+                                        src={selectedBen.photo_url}
+                                        alt="foto"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        {selectedBen?.first_name} {selectedBen.second_name}{" "}
+                                        {selectedBen.first_last_name} {selectedBen.second_last_name}
+                                    </TableCell>
+                                    <TableCell>{selectedBen?.identification}</TableCell>
+                                    <TableCell>{selectedBen?.association?.name}</TableCell>
+                                </TableRow>
+                        </Table>
+                    </div>
+                    }
+                    {selectedBen &&
                         <div className="ratings-container__form-section__info">
                             <div className="panel-heading"> 
-                                Información del beneficiario
+                                Articulos a entregar
                             </div>
-                            <Stack direction="row" spacing={4}>
-                                <Card sx={{ display: 'flex' }}>
-                                    <CardMedia
-                                        component="img"
-                                        sx={{ width: 151 }}
-                                        image={selectedBen.photo_url}
-                                        alt=""
-                                    />
-                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                        <CardContent sx={{ flex: '1 0 auto' }}>
-                                            <Typography component="div" variant="h5">
-                                                {selectedBen.first_name} {selectedBen.first_last_name} {selectedBen.second_last_name}
-                                            </Typography>
-                                            <Typography variant="subtitle1" color="text.secondary" component="div">
-                                                C.C. {selectedBen.identification}
-                                            </Typography>
-                                        </CardContent>
-                                    </Box>
+                                <Card sx={{ width: 500, padding: 2 }}>
+                                    <Stack direction={"column"}>
+                                        {itemList.map((item, i) => {
+                                            return (
+                                                <Grid container spacing={2} key={item.name + '_' + i}>
+                                                    <Grid item xs={5}>
+                                                        <FormLabel component="legend">{item.name}</FormLabel>
+                                                    </Grid>
+                                                    <Grid item xs={3}>
+                                                        <Button
+                                                            aria-label="reduce"
+                                                            className="btn-counter-action"
+                                                            onClick={() => removeCounter(i)}
+                                                            disabled={counters[i] === 0}
+                                                        >
+                                                            <RemoveIcon fontSize="small" />
+                                                        </Button>
+                                                    </Grid>
+                                                    <Grid item xs={1}>
+                                                        <Typography variant="overline" display="block" gutterBottom>
+                                                            {counters[i]}
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item xs={3}>
+                                                        <Button
+                                                            aria-label="increase"
+                                                            className="btn-counter-action"
+                                                            onClick={() => addCounter(i)}
+                                                            disabled={counters[i] === 1}
+                                                        >
+                                                            <AddIcon fontSize="small" />
+                                                        </Button>
+                                                    </Grid>
+                                              </Grid>
+                                            );
+                                        })}
+                                    </Stack>
                                 </Card>
-                            </Stack>
                         </div>
                     }
-                    <Button
-                    className="btn-save-workshop"
-                    onClick={() => saveWorkshop()}
-                    >
-                    Generar asistencia
-                    </Button>
+                    {selectedBen && 
+                        <Button
+                            className="btn-save-delivery"
+                            onClick={() => saveDelivery()}
+                            >
+                            Generar entrega
+                        </Button>
+                    }
+                    
                 </Paper>
             </section>
         </>
