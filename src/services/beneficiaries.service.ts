@@ -2,31 +2,57 @@ import { FecthRequestModel } from "../models/request.model";
 
 const requestInstance = FecthRequestModel.getInstance();
 
-export async function createBeneficiary(file: any, data: any) {
-  const beneficiary = JSON.stringify(data);
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("data", beneficiary);
+export async function createBeneficiary(formData: any, data: any) {
+  // const beneficiary = JSON.stringify(data);
+  // const formData = new FormData();
+  // formData.append("file", file);
+  // formData.append("data", beneficiary);
+  const beneficiary = data;
+  const bodyBen={data:{...beneficiary}};
   const response = await requestInstance.post(
     "/beneficiaries",
-    formData,
+    bodyBen,
     false,
-    true
+    false
   );
+  if(response.status===200){
+    if(formData){
+      const idben=response.result.data._id;
+      const responsePhoto = await requestInstance.post(
+        "/beneficiaries/resources/"+idben,
+        formData,
+        false,
+        true
+      );
+      return responsePhoto
+    }
+  }
   return response;
 }
 
-export async function updateBeneficiary(file: any, data: any) {
-  const beneficiary = JSON.stringify(data);
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("data", beneficiary);
+export async function updateBeneficiary(formData: any, data: any) {
+  // const beneficiary = JSON.stringify(data);
+  // const formData = new FormData();
+  // formData.append("file", file);
+  // formData.append("data", beneficiary);
   const response = await requestInstance.put(
     `/beneficiaries/${data._id}`,
-    formData,
+    data,
     false,
-    true
+    false
   );
+  if(response.status===200){
+    if(formData){
+      const idben=data._id;
+      const responsePhoto = await requestInstance.post(
+        "/beneficiaries/resources/"+idben,
+        formData,
+        false,
+        true
+      );
+      return responsePhoto
+    }
+  }
   return response;
 }
 

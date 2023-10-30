@@ -18,9 +18,9 @@ function SelectDropdown(props: IProp) {
 
 
     const selectValue = (e: any) => {
-        const selectedItem = props.options?.find(item => item[props.keyValue as string] === e.target.value)
-        const selectedValue = { id: selectedItem[props.keyValue as string], label: selectedItem[props.keyLabel as string] }
-        props.handleValue(props.targetKey, selectedValue)
+        const selectedItem = props.options?.find(item => item.value === e.target.value);
+        // const selectedValue = { id: selectedItem[props.keyValue as string], label: selectedItem[props.keyLabel as string] }
+        props.handleValue(props.targetKey, e);
     }
 
     return (
@@ -33,13 +33,13 @@ function SelectDropdown(props: IProp) {
                 onChange={(e) => selectValue(e)}
                 value={props.selectValue || ''}
             >
-                {props.options?.length && props.options.map((option: any, index: number) => {
+                {props.options?.length >0  && props.options.map((option: any, index: number) => {
                     return (
                         <MenuItem
                             key={index}
                             defaultValue={''}
-                            value={option[props.keyValue as string]}>
-                            {props.keyLabel ? option[props.keyLabel as string] : option.label}
+                            value={option.value}>
+                            {props.keyLabel ? option.label : option.label}
                         </MenuItem>
                     )
                 })}
