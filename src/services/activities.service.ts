@@ -33,7 +33,6 @@ export async function deleteActivities(activities: any) {
     return response;
 }
 
-
 export async function getDepartments() {
     const request = await fetch('https://api-colombia.com/api/v1/Department');
     const departments = await request.json()
@@ -56,6 +55,9 @@ export async function getAssociationsByCommunity(idcommunity:string) {
     const response = await activity.get(`/references/associations?community=${idcommunity}`);
     return response;
 }
+
+
+
 
 
 

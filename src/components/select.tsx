@@ -1,21 +1,18 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
-import { useEffect } from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useEffect, useState } from "react";
 
 interface IProp {
-    label?: string,
-    value?: string,
-    options?: Array<any>,
-    keyLabel?: string,
-    keyValue?: string,
-    handleValue?: any,
-    targetKey?: string
-    selectValue?: string;
-
+  label?: string;
+  value?: string;
+  options?: Array<any>;
+  keyLabel?: string;
+  keyValue?: string;
+  handleValue?: any;
+  targetKey?: string;
+  selectValue?: string;
 }
 
 function SelectDropdown(props: IProp) {
-
-
 
     const selectValue = (e: any) => {
         const selectedItem = props.options?.find(item => item.value === e.target.value);
@@ -48,4 +45,4 @@ function SelectDropdown(props: IProp) {
     )
 }
 
-export default SelectDropdown
+export default SelectDropdown;
