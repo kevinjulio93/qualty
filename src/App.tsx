@@ -90,7 +90,9 @@ function App() {
                   <Route path={ROUTES.WORKSHOP} element={<WorkshopsList />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSISTANCE, action: [PERMISSIONS.CREATE] }} />}>
-                  <Route path={ROUTES.ASSISTANCE} element={<Assistance />} />
+                  <Route path={ROUTES.ASSISTANCE} element={<Assistance />}>
+                    <Route path=':workshopId' element={<Beneficiaries />} />
+                  </Route>
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RATINGS, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.RATING_LIST} element={<RatingList />} />

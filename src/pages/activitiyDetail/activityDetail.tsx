@@ -7,6 +7,10 @@ import SelectDropdown from '../../components/select';
 import { createActivities, getActivitybyId, getAssociationsByCommunity, getComunaByMunicipie, getDepartments, getMunicipies, updateActivities } from '../../services/activities.service';
 import ClearIcon from "@mui/icons-material/Clear";
 import { ROUTES } from '../../constants/routes';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from "dayjs";
 
 
 function ActivityDetail() {
@@ -34,10 +38,9 @@ function ActivityDetail() {
     }, [])
 
     const getCurrentActivity = async () => {
-        const currentActivity = await getActivitybyId(activityId)
+        const currentActivity = await getActivitybyId(activityId);
         setActivity(currentActivity.result.data);
         setActivitiesAssociations(currentActivity.result.data.participatingAssociations);
-        
     }
 
     const formHanlder = (target: string, e: any) => {
@@ -188,16 +191,13 @@ function ActivityDetail() {
                             label="Descripción"
                             value={(activity as any)?.description || ''}
                         />
-                        <TextField
-                            className='activities-container__form-section__form-1__field'
-                            id="date"
-                            name='date'
-                            placeholder='02-12-2023'
-                            type='text'
-                            onChange={(e) => formHanlder('execution_date', e)}
-                            label="Fecha de realización"
-                            value={(activity as any)?.execution_date || ''}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker 
+                                onChange={(newDate: Dayjs) => formHanlder('execution_date', newDate.format())}
+                                value={(activity as any)?.execution_date ? dayjs((activity as any)?.execution_date) : null}
+                                label="Fecha de realización"
+                            />
+                        </LocalizationProvider>
                         <TextField
                             className='activities-container__form-section__form-1__field'
                             id="aforo"

@@ -12,7 +12,6 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import './delivery.scss';
 
-
 function Delivery () {
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +21,7 @@ function Delivery () {
     const [eventArray, setEventArray] = useState([]);
     const [itemList, setItemList] = useState([]);
     const [counters, setCounters] = useState([]);
-    const [forceRender, setForceRender] = useState(+ new Date())
+    const [forceRender, setForceRender] = useState(+ new Date());
     //const navigate = useNavigate();
 
     useEffect(() => {
@@ -262,7 +261,6 @@ function Delivery () {
                             Generar entrega
                         </Button>
                     }
-                    
                 </Paper>
             </section>
         </>
