@@ -34,7 +34,6 @@ function Assistance () {
 
     const getCurrentWorkshop = async () => {
         const currentWork = await getWorkshopById(workshopId);
-        console.log(currentWork);
         const { name, activity, attendees } = currentWork.result.data;
         setSelectedWork(name);
         setSelectedAct(activity);

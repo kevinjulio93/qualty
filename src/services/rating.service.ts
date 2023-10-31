@@ -32,6 +32,11 @@ export async function deleteRatings(id: string) {
     return response;
 }
 
+export async function getRatingsById(ratingId: any) {
+  const response = await ratings.get(`/ratings/${ratingId}`);
+  return response;
+}
+
 export const getFilePdfRatings=async (body:typeBodyRequestPdf)=>{
     //Esta respuesta devuelve un Blob
     const response = await ratings.getBlob('/ratings/pdf',body);

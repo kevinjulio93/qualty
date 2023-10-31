@@ -98,7 +98,9 @@ function App() {
                   <Route path={ROUTES.RATING_LIST} element={<RatingList />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RATINGS, action: [PERMISSIONS.CREATE] }} />}>
-                  <Route path={ROUTES.RATINGS} element={<Ratings />} />
+                  <Route path={ROUTES.RATINGS} element={<Ratings />} >
+                    <Route path=':ratingId' element={<Beneficiaries />} />
+                  </Route>
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />

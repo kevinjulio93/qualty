@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import { deleteWorkshop, getAllWorkshops } from '../../services/workshop.service';
 import Search from '../../components/search/search';
+import { SimpleDialog } from '../../components/dialog/dialog';
 
 
 function WorkshopsList() {
@@ -15,6 +16,8 @@ function WorkshopsList() {
     const [isLoading, setIsLoading] = useState(true);
     const [totalPages, setTotalPages] = useState(1);
     const [dataLastSearch, setDataLastSearch] = useState("");
+    const [currentWorkshop, setCurrentWorkshop] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,16 +42,22 @@ function WorkshopsList() {
         navigate(redirectTo);
     };
 
-    const deleteFromlist = async (id: string) => {
-      try {
-        const response = await deleteWorkshop(id);
-        if (response.status === 200) {
-          getWorkshopsList();
-          console.log("deleted successfully");
-        }
-      } catch (error) {
-        throw new Error("the beneficieary doesn't exist");
-      }
+    const deleteFromlist = async (work: string) => {
+      setCurrentWorkshop(work);
+      setOpenDialog(true);
+    };
+
+    const confirmDelete = async () => {
+      setIsLoading(true);
+      setOpenDialog(false);
+      await deleteWorkshop((currentWorkshop as any)._id);
+      setCurrentWorkshop(null);
+      getWorkshopsList();
+    };
+  
+    const cancelDelete = () => {
+      setCurrentWorkshop(null);
+      setOpenDialog(false);
     };
 
     return (
@@ -111,7 +120,7 @@ function WorkshopsList() {
     
                             <ClearIcon
                               onClick={() =>
-                                deleteFromlist(workshop?._id)
+                                deleteFromlist(workshop)
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
@@ -140,6 +149,17 @@ function WorkshopsList() {
               </>
             )}
           </div>
+          {openDialog && (
+        <SimpleDialog
+          title="Eliminar asociacion"
+          bodyContent="¿Está seguro que desea eliminar esta asociacion?"
+          mainBtnText="Confirmar"
+          secondBtnText="Cancelar"
+          mainBtnHandler={confirmDelete}
+          secondBtnHandler={cancelDelete}
+          open={openDialog}
+        ></SimpleDialog>
+      )}
         </div>
       );
 }
