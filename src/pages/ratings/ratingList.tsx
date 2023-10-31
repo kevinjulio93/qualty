@@ -1,4 +1,4 @@
-import { Button, Pagination, Stack, Typography } from '@mui/material';
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination, Stack, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
 import { Table, TableCell, TableRow } from '../../components/table/table';
@@ -7,9 +7,15 @@ import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
-import { deleteRatings, getAllRatings } from '../../services/rating.service';
+import { deleteRatings, getAllRatings, getFilePdfRatings } from '../../services/rating.service';
 import { SimpleDialog } from '../../components/dialog/dialog';
+import { typesRating } from '../../constants/ratings';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from "dayjs";
 
 function RatingList() {
     const [ratings, setRatings] = useState([]);
@@ -18,7 +24,9 @@ function RatingList() {
     const [dataLastSearch, setDataLastSearch] = useState("");
     const [currentRating, setCurrentRating] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const navigate = useNavigate();
+    const [filterRating,setFilterRating]=useState({startDate:"",endDate:"",valueTypeRating:""});
 
     useEffect(() => {
         getRatingsList();
@@ -60,6 +68,39 @@ function RatingList() {
       setOpenDialog(false);
     };
 
+    const handlerFilterRating=(target:string,value)=>{
+      setFilterRating({...filterRating,[target]:value});
+    }
+
+    const getFilePdf=async ()=>{
+      try {
+        const responseFile=await getFilePdfRatings(filterRating);
+        const blobPdf=responseFile.result;
+        blobPdf.name="Valoraciones-"+filterRating.valueTypeRating+"_"+Date.now()+".pdf";
+        const url = window.URL.createObjectURL(blobPdf);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = blobPdf.name;
+        a.style.display = "none";
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        handlerOpenDialogMessage();
+      }
+    }
+
+    const handlerOpenDialogMessage=()=>{
+      setOpenDialogMessage(!openDialogMessage);
+    }
+
+    useEffect(()=>{
+      console.log(filterRating);
+    },[filterRating])
+
     return (
         <div className="users-container">
           <div className="users-container__actions">
@@ -92,8 +133,37 @@ function RatingList() {
               }
             }}
             voidInputFunction={getRatingsList}
-          />
+            />
             </div>
+
+            <div className="panel-heading">
+              Generar reporte pdf
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker 
+                    onChange={(newDate: Dayjs) => handlerFilterRating('startDate', newDate.format())}
+                    label="Fecha inicial"
+                />
+              </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker 
+                    onChange={(newDate: Dayjs) => handlerFilterRating('endDate', newDate.format())}
+                    label="Fecha final"
+                />
+              </LocalizationProvider>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={typesRating}
+                sx={{ width: 200 }}
+                onChange={(e,data)=>handlerFilterRating("valueTypeRating",data)}
+                renderInput={(params) => <TextField {...params} label="Tipo de valoracion" />}
+              />
+              <PictureAsPdfRoundedIcon
+                onClick={() =>getFilePdf()}
+                className="action-item-icon action-item-icon-edit"
+              ></PictureAsPdfRoundedIcon>
+            </div>
+
             {isLoading ? (
               <LoadingComponent></LoadingComponent>
             ) : (
@@ -162,6 +232,19 @@ function RatingList() {
           open={openDialog}
         ></SimpleDialog>
       )}
+      <Dialog open={openDialogMessage} >
+        <DialogTitle>Mensaje</DialogTitle>
+        <DialogContent>
+        <DialogContentText>
+            No se encontraron registros
+        </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button  onClick={()=>handlerOpenDialogMessage()} color="primary">
+            Aceptar
+        </Button>
+        </DialogActions>
+      </Dialog>
         </div>
       );
 }
