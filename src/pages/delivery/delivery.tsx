@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Autocomplete, Button, Card, FormLabel, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
+import './delivery.scss';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
@@ -10,7 +11,6 @@ import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import { getAllEvents } from "../../services/events.service";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import './delivery.scss';
 
 function Delivery () {
     const [events, setEvents] = useState([]);
@@ -106,8 +106,8 @@ function Delivery () {
         <LoadingComponent></LoadingComponent>
       ) : (
         <>
-            <section className='assistance-container'>
-                <header className="assistance-container__actions">
+            <section className='delivery-container'>
+                <header className="delivery-container__actions">
                     <div className="content-page-title">
                         <Typography variant="h5" className="page-header">Entrega de bienes</Typography>
                         <span className="page-subtitle">Generar entrega de bienes a beneficiario.</span>

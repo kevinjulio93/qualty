@@ -82,11 +82,15 @@ function Assistance () {
     }
 
     const handleAddAction = async(item) => {
+        const exist = assistList.length ? assistList.some(ben => ben._id === item._id) : false;
+        if (exist) return;
         setAssistList([...assistList, item]);
     }
 
     const handleRemoveAction = async(index) => {
-        setAssistList(assistList.splice(index, 1));
+        const tempArr = assistList;
+        tempArr.splice(index, 1);
+        setAssistList([...tempArr]);
     }
 
     const onSelectedWorkshop = (e) => {

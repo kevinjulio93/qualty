@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Card, CardContent, CardMedia, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -169,36 +169,55 @@ function Ratings () {
                     </div>
                     }
                     {selectedBen &&
+                    <div className="assistance-container__form-section__table">
+                        <div className="panel-heading"> 
+                            Beneficiario seleccionado
+                        </div>
+                        <Table>
+                            <TableRow header>
+                                <TableCell>Foto</TableCell>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>Cedula</TableCell>
+                                <TableCell>Asociación</TableCell>
+                            </TableRow>
+                            <TableRow key={selectedBen.id}>
+                                    <TableCell>
+                                        <img
+                                        className="ben-foto-info"
+                                        src={selectedBen.photo_url}
+                                        alt="foto"
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        {selectedBen?.first_name} {selectedBen.second_name}{" "}
+                                        {selectedBen.first_last_name} {selectedBen.second_last_name}
+                                    </TableCell>
+                                    <TableCell>{selectedBen?.identification}</TableCell>
+                                    <TableCell>{selectedBen?.association?.name}</TableCell>
+                                </TableRow>
+                        </Table>
+                    </div>
+                    }
+                    {selectedBen &&
                         <div className="ratings-container__form-section__info">
-                            <div className="panel-heading"> 
-                                Información del beneficiario
-                            </div>
                             <Stack direction="row" spacing={4}>
-                                <Card sx={{ display: 'flex' }}>
-                                    <CardMedia
-                                        component="img"
-                                        sx={{ width: 151 }}
-                                        image={selectedBen.photo_url}
-                                        alt=""
-                                    />
-                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                        <CardContent sx={{ flex: '1 0 auto' }}>
-                                            <Typography component="div" variant="h5">
-                                                {selectedBen.first_name} {selectedBen.first_last_name} {selectedBen.second_last_name}
-                                            </Typography>
-                                            <Typography variant="subtitle1" color="text.secondary" component="div">
-                                                C.C. {selectedBen.identification}
-                                            </Typography>
-                                        </CardContent>
-                                    </Box>
-                                </Card>
                                 <TextField
                                     id="filled-multiline-static"
                                     label="Observaciones"
                                     multiline
                                     rows={6}
                                     variant="filled"
-                                    sx={{width: 1000}}
+                                    sx={{width: 800}}
+                                    onChange={(e) => handleText(e)}
+                                    value={notes}
+                                />
+                                <TextField
+                                    id="filled-multiline-static"
+                                    label="Diagnostico"
+                                    multiline
+                                    rows={6}
+                                    variant="filled"
+                                    sx={{width: 350}}
                                     onChange={(e) => handleText(e)}
                                     value={notes}
                                 />

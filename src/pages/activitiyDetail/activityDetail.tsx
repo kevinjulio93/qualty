@@ -112,7 +112,6 @@ function ActivityDetail() {
     }
 
     const addAssociationToActivity = () => {
-        console.log(selectedAso);
         const associationsData = {
             department: selectedDep,
             municipality: selectedMun,

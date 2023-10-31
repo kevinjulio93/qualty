@@ -20,6 +20,10 @@ import cameraImg from "../../assets/camera.png";
 import documentImg from "../../assets/document.jpeg";
 import Webcam from "react-webcam";
 import { ROUTES } from "../../constants/routes";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from "dayjs";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -463,18 +467,13 @@ function Beneficiaries() {
                   />
                 </div>
 
-                <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                  <TextField
-                    id="fechanacimiento"
-                    className="beneficiaries-container__form-section__beneficiarie__form__field__input"
-                    name="fechanacimiento"
-                    placeholder="01-02-2023"
-                    type="text"
-                    label="Fecha de Nacimiento"
-                    onChange={(e) => formHanlder("birthday", e)}
-                    value={(beneficiarie as any)?.birthday || ""}
-                  />
-                </div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker 
+                        onChange={(newDate: Dayjs) => formHanlder('birthday', newDate.format())}
+                        value={(beneficiarie as any)?.birthday ? dayjs((beneficiarie as any)?.birthday) : null}
+                        label="Fecha de nacimiento"
+                    />
+                </LocalizationProvider>
 
                 <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                   <Autocomplete style={{width:"100%"}}
