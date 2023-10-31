@@ -1,4 +1,4 @@
-import { Button, Pagination, Stack, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
 import { Table, TableCell, TableRow } from '../../components/table/table';
@@ -6,9 +6,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
-import { deleteWorkshop, getAllWorkshops } from '../../services/workshop.service';
+import { deleteWorkshop, getAllWorkshops, getFilePdfAttendeesWorkshop } from '../../services/workshop.service';
 import Search from '../../components/search/search';
 import { SimpleDialog } from '../../components/dialog/dialog';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 
 
 function WorkshopsList() {
@@ -18,6 +19,7 @@ function WorkshopsList() {
     const [dataLastSearch, setDataLastSearch] = useState("");
     const [currentWorkshop, setCurrentWorkshop] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,6 +62,31 @@ function WorkshopsList() {
       setOpenDialog(false);
     };
 
+    const handlerOpenDialogMessage=()=>{
+      setOpenDialogMessage(!openDialogMessage)
+    }
+
+    const getFilePdfAttendees=async (workshop:any)=>{
+      try {
+        const responsePdf=await getFilePdfAttendeesWorkshop(workshop._id);
+        const blobPdf=responsePdf.result;
+        blobPdf.name=workshop.name+"__"+Date.now()+".pdf";
+        const url = window.URL.createObjectURL(blobPdf);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = blobPdf.name;
+        a.style.display = "none";
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        handlerOpenDialogMessage();
+      }
+    }
+
     return (
         <div className="users-container">
           <div className="users-container__actions">
@@ -92,7 +119,7 @@ function WorkshopsList() {
               }
             }}
             voidInputFunction={getWorkshopsList}
-          />
+            />
             </div>
             {isLoading ? (
               <LoadingComponent></LoadingComponent>
@@ -124,6 +151,12 @@ function WorkshopsList() {
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
+
+                            <PictureAsPdfRoundedIcon
+                              onClick={() =>getFilePdfAttendees(workshop)}
+                              className="action-item-icon action-item-icon-edit"
+                            ></PictureAsPdfRoundedIcon>
+
                           </Stack>
                         </TableCell>
                       </TableRow>
@@ -160,6 +193,20 @@ function WorkshopsList() {
           open={openDialog}
         ></SimpleDialog>
       )}
+
+      <Dialog open={openDialogMessage} >
+        <DialogTitle>Mensaje</DialogTitle>
+        <DialogContent>
+        <DialogContentText>
+            Este taller no tiene asistentes
+        </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button  onClick={()=>handlerOpenDialogMessage()} color="primary">
+            Aceptar
+        </Button>
+        </DialogActions>
+      </Dialog>
         </div>
       );
 }
