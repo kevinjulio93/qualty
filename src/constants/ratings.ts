@@ -3,3 +3,9 @@ export type typeBodyRequestPdf={
 	endDate:string,
 	valueTypeRating:string
 }
+
+export const typesRating=[
+	"Fisioterapia",
+	"Psicología",
+	"Optometría"
+]
