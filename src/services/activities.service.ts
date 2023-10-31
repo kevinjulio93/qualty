@@ -55,9 +55,3 @@ export async function getAssociationsByCommunity(idcommunity:string) {
     const response = await activity.get(`/references/associations?community=${idcommunity}`);
     return response;
 }
-
-
-
-
-
-
