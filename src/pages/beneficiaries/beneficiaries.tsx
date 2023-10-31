@@ -6,7 +6,7 @@ import "./beneficiaries.scss";
 import SelectDropdown from "../../components/select";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import WebcamCapture from "./capture";
 import DPersonaReader from "./dpersonaReader";
 import {
@@ -14,10 +14,12 @@ import {
   getBeneficiarieById,
   updateBeneficiary,
 } from "../../services/beneficiaries.service";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import cameraImg from "../../assets/camera.png";
 import documentImg from "../../assets/document.jpeg";
+import Webcam from "react-webcam";
+import { ROUTES } from "../../constants/routes";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -81,8 +83,8 @@ function Beneficiaries() {
   ];
 
   const optionsGender=[
-    {label:"Hombre",value:"Hombre"},
-    {label:"Mujer",value:"Mujer"},
+    {label:"Masculino",value:"Masculino"},
+    {label:"Femenino",value:"Femenino"},
     {label:"Otro",value:"Otro"},
   ];
 
@@ -103,6 +105,9 @@ function Beneficiaries() {
   const [isSisbenValid, setIsSisbenValid] = useState(true);
   const [isVictimArmedConflict, setIsVictimArmedConflict] = useState(true);
   const [optionsEps, setOptionsEps] = useState([]);
+  const [optionsMunicipality, setOptionsMunicipality] = useState([]);
+  const [optionsComuna, setOptionsComuna] = useState([]);
+  const [optionsAsociacion, setOptionsAsociacion] = useState([]);
   const [selectedTab, setSelectedTab] = useState("1");
   const [cedFront, setCedFront] = useState(null);
   const [cedBack, setCedBack] = useState(null);
@@ -111,11 +116,67 @@ function Beneficiaries() {
   const [docReg, setDocReg] = useState(null);
   const { beneficiarieId } = useParams();
   const sisbenRegex = /^(A[1-5]|B[1-7]|C[1-18]|D[1-21])$/;
+  const [openCamaraSupports,setOpenCamaraSupports]=useState(false);
+  const webcamRef=useRef(null);
+  const [typeSupport,setTypeSupport]=useState(null);
+  const [files,setFiles]=useState([]);
+  const navigate=useNavigate();
 
   useEffect(() => {
-    //getBeneficiary();
+    if(beneficiarieId!==undefined){
+      getBeneficiary();
+    }
     getOptionsEps();
+    getOptionsMunicipality();
+    getOptionsComuna();
+    getOptionsAsociacion();
   }, []);
+
+
+  const getBeneficiary = async () => {
+    try {
+      const response = await getBeneficiarieById(beneficiarieId);
+      if (response.status === 200) {
+        console.log(response.result.data);
+        setBeneficiarie(response.result.data);
+        setFilesBen(response.result.data);
+      }
+    } catch (error) {
+      navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
+    }
+  };
+
+  const setFilesBen=(data)=>{
+    setDocEps(data?.fosiga_url);
+    setCedBack(data?.id_back);
+    setCedFront(data?.id_front);
+    setDocReg(data?.registry_doc_url);
+    setDocSis(data?.sisben_url);
+  }
+
+  const getOptionsAsociacion=()=>{
+    let list:any=[];
+    asociacion.map((item:any)=>{
+      list=[...list,{label:item.name,value:item._id}];
+    });
+    setOptionsAsociacion(list);
+  }
+
+  const getOptionsComuna=()=>{
+    let list:any=[];
+    comuna.map((item:any)=>{
+      list=[...list,{label:item.name,value:item._id}];
+    });
+    setOptionsComuna(list);
+  }
+
+  const getOptionsMunicipality=()=>{
+    let list:any=[];
+    municipios.map((item:any)=>{
+      list=[...list,{label:item.name,value:item._id}];
+    });
+    setOptionsMunicipality(list);
+  }
 
   const getOptionsEps=()=>{
     let list:any=[];
@@ -126,27 +187,43 @@ function Beneficiaries() {
   }
 
   const formHanlder = (target: string, e: any,data?:any) => {
-    if (target === "is_victim_armed_conflict")setIsVictimArmedConflict(!isVictimArmedConflict);
-    const value = e.target.value;
-    setBeneficiarie({ ...beneficiarie, [target]: value });
-    if (target === "sisben_score") setIsSisbenValid(sisbenRegex.test(value));
-    if (target === "eps" && data !== null){
-      setBeneficiarie({ ...beneficiarie, [target]: data.value});
+    if(data){
+      console.log(target,data)
+      setBeneficiarie({ ...beneficiarie, [target]: data});
+    }else{
+      if (target === "is_victim_armed_conflict")setIsVictimArmedConflict(!isVictimArmedConflict);
+      const value = e.target.value;
+      setBeneficiarie({ ...beneficiarie, [target]: value });
+      if (target === "sisben_score") setIsSisbenValid(sisbenRegex.test(value));
     }
   };
 
   const handleWebcamCapture = (imageBlob: any) => {
     // Include the imageBlob in your FormData
     const file = imageBlob;
+    const ext=file.type.split("/")[1];
+    const filePhoto=new File([file],"foto."+ext);
+    setFileBen("photo_url",filePhoto);
     setSelectedFile(file);
   };
 
+  const getFormData=()=>{
+    const formData=new FormData();
+    files.map((item,index)=>{
+      const keys=Object.keys(item);
+      formData.append(keys[0],files[index][`${keys[0]}`]);
+    });
+    return formData;
+  }
+
   const saveBeneficiary = async (beneficiary: any) => {
     const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
-    if (selectedFile || (beneficiarie as any)?.photo_url) {
+    if (files || (beneficiarie as any)?.photo_url) {
       try {
-        const response = await saveData(selectedFile, beneficiary); // Replace with your actual access token
+        const response = await saveData(getFormData(), beneficiary); // Replace with your actual access token
+        console.log(response)
         console.log("Upload successful:", response);
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
       } catch (error) {
         console.error("Upload failed:", error);
       }
@@ -159,16 +236,19 @@ function Beneficiaries() {
     saveBeneficiary(beneficiarie);
   };
 
-  const getBeneficiary = async () => {
-    try {
-      const response = await getBeneficiarieById(beneficiarieId);
-      if (response.status === 200) {
-        setBeneficiarie(response.result.data);
-      }
-    } catch (error) {
-      throw new Error("the beneficieary doesn't exist");
+  const setFileBen=(key,file,name?:string | null)=>{
+    const listFiles=files;
+    let fileParse=null;
+    if(name){
+      const ext="."+file.type.split("/")[1];
+      fileParse=new File([file],name+ext);
+      listFiles.push({[`${key}`]:fileParse});
+      setFiles([...listFiles]);
+    }else{
+      listFiles.push({[`${key}`]:file});
+      setFiles([...listFiles]);
     }
-  };
+  }
 
   const handleImage = (e, key) => {
     console.log(e);
@@ -178,26 +258,87 @@ function Beneficiaries() {
     switch(key) {
       case "front":
         setCedFront(imageDoc);
+        setFileBen("id_front",imageDoc2);
         break;
       case "back":
+        setFileBen("id_back",imageDoc2);
         setCedBack(imageDoc);
         break;
       case "eps":
+        setFileBen("fosiga_url",imageDoc2);
         setDocEps(imageDoc);
         break;
       case "sisben":
+        setFileBen("sisben_url",imageDoc2);
         setDocSis(imageDoc);
         break;
       case "reg":
+        setFileBen("registry_doc_url",imageDoc2);
         setDocReg(imageDoc);
         break;
       default: break;
     }
   }
 
+  const dataURItoBlob = (dataURI) => {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+};
+
+  const getCaptureSupport=()=>{
+    return webcamRef.current.getScreenshot();
+  } 
+
+  const handlerCaptureSupport = (e) => {
+    const imageDoc2=dataURItoBlob(getCaptureSupport());
+    const imageDoc = URL.createObjectURL(imageDoc2);
+    console.log(URL.createObjectURL(imageDoc2));
+    switch(typeSupport) {
+      case "front":
+        setFileBen("id_front",imageDoc2,"cedula-frontal");
+        setCedFront(imageDoc);
+        break;
+      case "back":
+        setFileBen("id_back",imageDoc2,"cedula-frontal");
+        setCedBack(imageDoc);
+        break;
+      case "eps":
+        setFileBen("fosiga_url",imageDoc2,"soporte-eps");
+        setDocEps(imageDoc);
+        break;
+      case "sisben":
+        setFileBen("sisben_url",imageDoc2,"soporte-sisben");
+        setDocSis(imageDoc);
+        break;
+      case "reg":
+        setFileBen("registry_doc_url",imageDoc2,"registraduria");
+        setDocReg(imageDoc);
+        break;
+      default: break;
+    }
+    setOpenCamaraSupports(false);
+    setTypeSupport(null);
+  }
+
   const handleSelectedTab = (e, newValue) => {
     setSelectedTab(newValue);
   }
+
+  const openCaptureSupport=(typeSupport:string)=>{
+    setTypeSupport(typeSupport);
+    setOpenCamaraSupports(true);
+  }
+  
+  const cancelCaptureSupport=()=>{
+    setOpenCamaraSupports(false);
+  }
+
   return (
     <>
       <section className="beneficiaries-container">
@@ -217,7 +358,7 @@ function Beneficiaries() {
             <div className="beneficiaries-container__form-section__resources__foto">
               <WebcamCapture
                 onCapture={handleWebcamCapture}
-                isEditing={Boolean(beneficiarieId)}
+                isEditing={(beneficiarie as any)?.photo_url !==undefined ? true : false}
                 existingImage={(beneficiarie as any)?.photo_url || null}
               />
             </div>
@@ -315,9 +456,10 @@ function Beneficiaries() {
                   <Autocomplete style={{width:"100%"}}
                     disablePortal
                     id="sex"
-                    options={["M", "F"]}
+                    options={['Hombre', 'Mujer', 'Otro']}
                     onChange={(e:any,data:any)=>formHanlder("sex",e,data)}
                     renderInput={(params) => <TextField  {...params} label="Sexo" />}
+                    value={(beneficiarie as any)?.sex || ""}
                   />
                 </div>
 
@@ -340,6 +482,7 @@ function Beneficiaries() {
                     id="blody_type"
                     options={["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]}
                     onChange={(e:any,data:any)=>formHanlder("blody_type",e,data)}
+                    value={(beneficiarie as any)?.blody_type || ""}
                     renderInput={(params) => <TextField  {...params} label="Tipo de sangre" />}
                   />
                 </div>
@@ -450,9 +593,9 @@ function Beneficiaries() {
                     <SelectDropdown
                       selectValue={(beneficiarie as any)?.municipality}
                       label="Municipios"
-                      options={municipios}
+                      options={optionsMunicipality}
                       keyLabel="name"
-                      keyValue="_id"
+                      // keyValue="_id"
                       targetKey="municipality"
                       handleValue={formHanlder}
                     />
@@ -462,7 +605,7 @@ function Beneficiaries() {
                     <SelectDropdown
                       selectValue={(beneficiarie as any)?.community}
                       label="Comuna"
-                      options={comuna}
+                      options={optionsComuna}
                       keyLabel="name"
                       keyValue="_id"
                       targetKey="community"
@@ -474,7 +617,7 @@ function Beneficiaries() {
                     <SelectDropdown
                       selectValue={(beneficiarie as any)?.association}
                       label="Asociación"
-                      options={asociacion}
+                      options={optionsAsociacion}
                       keyLabel="name"
                       keyValue="_id"
                       targetKey="association"
@@ -500,7 +643,8 @@ function Beneficiaries() {
                       disablePortal
                       id="eps"
                       options={optionsEps}
-                      onChange={(e:any,data:any)=>formHanlder("eps",e,data)}
+                      value={beneficiarie!=null && optionsEps.find((item)=>item.value===(beneficiarie as any)?.eps) || ""}
+                      onChange={(e:any,data:any)=>formHanlder("eps",e,data.value)}
                       renderInput={(params) => <TextField  {...params} label="EPS" />}
                     />
                   </div>
@@ -513,7 +657,7 @@ function Beneficiaries() {
                       placeholder="A1"
                       type="text"
                       label="Categoria SISBEN"
-                      onChange={(e) => formHanlder("sisben_score", e)}
+                      onChange={(e) => formHanlder("sisben_score",e)}
                       error={!isSisbenValid}
                       helperText={!isSisbenValid ? "Categoria no valida" : ""}
                       value={(beneficiarie as any)?.sisben_score || ""}
@@ -530,10 +674,22 @@ function Beneficiaries() {
                     />
                   </div>
 
-                <FormControlLabel control={<Checkbox />}  value={isVictimArmedConflict ?'Si':'No'} onChange={(e)=>formHanlder("is_victim_armed_conflict",e)}  label="¿Ha sido víctima del conflicto armado?" />
+                <FormControlLabel control={<Checkbox />} value={isVictimArmedConflict ?'Si':'No'} onChange={(e)=>formHanlder("is_victim_armed_conflict",e)}  label="¿Ha sido víctima del conflicto armado?" />
               </form>
               </TabPanel>
               <TabPanel value="3">
+                {
+                  openCamaraSupports && 
+                  <div className='content-webcam'>
+                    <Webcam className="video__capture__supports"
+                    audio={false}
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    />
+                    <Button  className='btn-image--capture' onClick={(e)=>handlerCaptureSupport(e)} >Capturar imagen</Button>
+                    <Button className='btn-image--delete' onClick={()=>cancelCaptureSupport()} >Cancelar</Button>
+                  </div>
+                }
                 <Stack direction="row" spacing={2}>
                   <Card sx={{ maxWidth: 200 }}>
                     <CardMedia
@@ -548,10 +704,14 @@ function Beneficiaries() {
                     </CardContent>
                     <CardActions>
                       <input
+                        id="cedula__frontal"
+                        hidden
                         type="file"
                         name="myImage"
                         onChange={(event) => handleImage(event, "front")}
                       />
+                      <label className="set__file btn__handler1" htmlFor="cedula__frontal">Explorar</label>
+                      <label className="set__file btn__handler2" onClick={()=>openCaptureSupport("front")}>Cámara</label>
                     </CardActions>
                   </Card>
                   <Card sx={{ maxWidth: 200 }}>
@@ -567,10 +727,14 @@ function Beneficiaries() {
                     </CardContent>
                     <CardActions>
                       <input
+                        id="cedula__lateral"
+                        hidden
                         type="file"
                         name="myImage"
                         onChange={(event) => handleImage(event, "back")}
                       />
+                      <label className="set__file btn__handler1" htmlFor="cedula__lateral">Explorar</label>
+                      <label className="set__file btn__handler2" onClick={()=>openCaptureSupport("back")}>Cámara</label>
                     </CardActions>
                   </Card>
                   <Card sx={{ maxWidth: 200 }}>
@@ -586,10 +750,14 @@ function Beneficiaries() {
                     </CardContent>
                     <CardActions>
                       <input
+                        id="soporte__eps"
+                        hidden
                         type="file"
                         name="myImage"
                         onChange={(event) => handleImage(event, "eps")}
                       />
+                      <label className="set__file btn__handler1" htmlFor="soporte__eps">Explorar</label>
+                      <label className="set__file btn__handler2" onClick={()=>openCaptureSupport("eps")}>Cámara</label>
                     </CardActions>
                   </Card>
                   <Card sx={{ maxWidth: 345 }}>
@@ -605,10 +773,14 @@ function Beneficiaries() {
                     </CardContent>
                     <CardActions>
                       <input
+                        id="soporte__sisben"
+                        hidden
                         type="file"
                         name="myImage"
                         onChange={(event) => handleImage(event, "sisben")}
                       />
+                      <label className="set__file btn__handler1" htmlFor="soporte__sisben">Explorar</label>
+                      <label className="set__file btn__handler2" onClick={()=>openCaptureSupport("sisben")}>Cámara</label>
                     </CardActions>
                   </Card>
                   <Card sx={{ maxWidth: 200 }}>
@@ -624,10 +796,14 @@ function Beneficiaries() {
                     </CardContent>
                     <CardActions>
                       <input
+                        id="registraduria"
+                        hidden
                         type="file"
                         name="myImage"
                         onChange={(event) => handleImage(event, "reg")}
                       />
+                      <label className="set__file btn__handler1" htmlFor="registraduria">Explorar</label>
+                      <label className="set__file btn__handler2" onClick={()=>openCaptureSupport("reg")}>Cámara</label>
                     </CardActions>
                   </Card>
                 </Stack>
