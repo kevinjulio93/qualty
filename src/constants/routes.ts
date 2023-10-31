@@ -19,4 +19,7 @@ export const ROUTES = {
     RATING_LIST: 'rating-list',
     ASSOCIATIONS: "associations",
     REPRESENTATIVES: "representantives",
+    DELIVERY_LIST: "delivery-list",
+    DELIVERY: "delivery",
+    EVENTS: 'events'
 }

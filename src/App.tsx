@@ -29,6 +29,9 @@ import WorkshopsList from './pages/assistance/workshops';
 import Assistance from './pages/assistance/assistance';
 import RatingList from './pages/ratings/ratingList';
 import Representatives from './pages/representatives/representatives';
+import DeliveryList from './pages/delivery/deliveryList';
+import Delivery from './pages/delivery/delivery';
+import EventList from './pages/events/events';
 
 
 function App() {
@@ -88,16 +91,32 @@ function App() {
                   <Route path={ROUTES.WORKSHOP} element={<WorkshopsList />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSISTANCE, action: [PERMISSIONS.CREATE] }} />}>
-                  <Route path={ROUTES.ASSISTANCE} element={<Assistance />} />
+                  <Route path={ROUTES.ASSISTANCE} element={<Assistance />}>
+                    <Route path=':workshopId' element={<Beneficiaries />} />
+                  </Route>
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RATINGS, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.RATING_LIST} element={<RatingList />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RATINGS, action: [PERMISSIONS.CREATE] }} />}>
-                  <Route path={ROUTES.RATINGS} element={<Ratings />} />
+                  <Route path={ROUTES.RATINGS} element={<Ratings />} >
+                    <Route path=':ratingId' element={<Beneficiaries />} />
+                  </Route>
                 </Route>
-                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
+                  <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
+                    <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
+                  </Route>
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ACTIVITY, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.EVENTS} element={<EventList />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.DELIVERY_LIST} element={<DeliveryList />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.CREATE] }} />}>
+                  <Route path={ROUTES.DELIVERY} element={<Delivery />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.REPRESENTATIVES} element={<Representatives />} />

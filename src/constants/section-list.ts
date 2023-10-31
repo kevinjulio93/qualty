@@ -48,6 +48,17 @@ export const sectionList = [
     }
   },
   {
+    key: "eventos",
+    name: "Eventos",
+    path: ROUTES.EVENTS,
+    icon: "beneficiaries",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.EVENTS,
+      action: [PERMISSIONS.READ]
+    }
+  },
+  {
     key: "roles",
     name: "Roles",
     path: ROUTES.ROLES,
@@ -88,18 +99,18 @@ export const sectionList = [
     hasChilds: false,
     permission: {
       subject: SECTIONS.ASSOCIATIONS,
-      action: [PERMISSIONS.CREATE],
+      action: [PERMISSIONS.READ],
     },
   },
   {
     key: "entregas",
     name: "Entregas",
-    path: ROUTES.ASSOCIATIONS,
-    icon: "groups",
+    path: ROUTES.DELIVERY_LIST,
+    icon: "deliver",
     hasChilds: false,
     permission: {
-      subject: SECTIONS.ASSOCIATIONS,
-      action: [PERMISSIONS.CREATE],
+      subject: SECTIONS.DELIVERY,
+      action: [PERMISSIONS.READ],
     },
   },
   {

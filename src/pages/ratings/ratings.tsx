@@ -6,12 +6,13 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import "./ratings.scss";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
-import { useNavigate } from "react-router-dom";
-import { createRatings } from "../../services/rating.service";
+import { useNavigate, useParams } from "react-router-dom";
+import { createRatings, getRatingsById } from "../../services/rating.service";
 import { ROUTES } from "../../constants/routes";
 
 
 function Ratings () {
+    const { ratingId } = useParams();
     const [bens, setBens] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedRating, setSelectedRating] = useState(null);
@@ -20,8 +21,19 @@ function Ratings () {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (ratingId) {
+            getCurrentRating();
+        }
         getBens();
     }, [])
+
+    const getCurrentRating = async () => {
+        const currentRating = await getRatingsById(ratingId);
+        const { rating_type, observations, attendee } = currentRating.result.data;
+        setSelectedRating(rating_type);
+        setSelectedBen(attendee);
+        setNotes(observations);
+    }
 
     const getBens = async () => {
         setIsLoading(true);
@@ -89,6 +101,7 @@ function Ratings () {
                                 id="demo-simple-select"
                                 label="Valoración a realizar"
                                 onChange={(e) => onSelectRating(e)}
+                                value={selectedRating}
                             >
                                 <MenuItem key={"fisio"} value="Fisioterapia">
                                     Fisioterapia

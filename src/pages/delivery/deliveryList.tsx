@@ -6,30 +6,27 @@ import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
-import { deleteWorkshop, getAllWorkshops } from '../../services/workshop.service';
 import Search from '../../components/search/search';
-import { SimpleDialog } from '../../components/dialog/dialog';
+import { deleteDelivery, getAllDelivery } from '../../services/delivery.service';
 
 
-function WorkshopsList() {
-    const [workshops, setWorkshops] = useState([]);
+function DeliveryList() {
+    const [delivery, setDelivery] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [totalPages, setTotalPages] = useState(1);
     const [dataLastSearch, setDataLastSearch] = useState("");
-    const [currentWorkshop, setCurrentWorkshop] = useState(null);
-    const [openDialog, setOpenDialog] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        getWorkshopsList();
+        getDeliveryList();
     }, [])
 
-    const getWorkshopsList = async () => {
+    const getDeliveryList = async () => {
       setIsLoading(true);
         try {
-          const { result } = await getAllWorkshops();
-          const { data: dataList, totalPages } = result;
-          setWorkshops(dataList);
+          const { result } = await getAllDelivery();
+          const { data: dataList, totalPages } = result.data;
+          setDelivery(dataList);
           setTotalPages(totalPages);
           setIsLoading(false);
         } catch (err) {
@@ -38,26 +35,20 @@ function WorkshopsList() {
     }
 
     const handleClickOpen = (id?: string) => {
-        const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.ASSISTANCE}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.ASSISTANCE}`
+        const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.DELIVERY}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.DELIVERY}`
         navigate(redirectTo);
     };
 
-    const deleteFromlist = async (work: string) => {
-      setCurrentWorkshop(work);
-      setOpenDialog(true);
-    };
-
-    const confirmDelete = async () => {
-      setIsLoading(true);
-      setOpenDialog(false);
-      await deleteWorkshop((currentWorkshop as any)._id);
-      setCurrentWorkshop(null);
-      getWorkshopsList();
-    };
-  
-    const cancelDelete = () => {
-      setCurrentWorkshop(null);
-      setOpenDialog(false);
+    const deleteFromlist = async (id: string) => {
+      try {
+        const response = await deleteDelivery(id);
+        if (response.status === 200) {
+            getDeliveryList();
+          console.log("deleted successfully");
+        }
+      } catch (error) {
+        throw new Error("the beneficieary doesn't exist");
+      }
     };
 
     return (
@@ -65,33 +56,33 @@ function WorkshopsList() {
           <div className="users-container__actions">
             <div className="content-page-title">
               <Typography variant="h5" className="page-header">
-                Administrar Talleres
+                Administrar entregas
               </Typography>
               <span className="page-subtitle">
-                Aqui podras gestionar los talleres realizados.
+                Aqui podras gestionar las entregas realizadas.
               </span>
             </div>
             <Button className="btn-create" onClick={() => handleClickOpen()}>
-              Generar asistencia
+              Generar entrega
             </Button>
           </div>
     
           <div className="main-center-container">
             <div className="panel-heading">
-              Listado de talleres realizados
+              Listado de entregas realizadas
               <Search
               label="Buscar beneficiario"
               searchFunction={async (data: string) => {
               try {
-                const { result } = await getAllWorkshops(data);
+                const { result } = await getAllDelivery(data);
                 setDataLastSearch(data);
                 const { data: works } = result;
-                setWorkshops(works);
+                setDelivery(works);
               } catch (err) {
                 console.log(err)
               }
             }}
-            voidInputFunction={getWorkshopsList}
+            voidInputFunction={getDeliveryList}
           />
             </div>
             {isLoading ? (
@@ -100,27 +91,29 @@ function WorkshopsList() {
               <>
                 <Table>
                   <TableRow header>
-                    <TableCell>Nombre</TableCell>
+                    <TableCell>Evento</TableCell>
                     <TableCell>Fecha</TableCell>
-                    <TableCell>Actividad</TableCell>
+                    <TableCell>Beneficiario</TableCell>
+                    <TableCell>Autor</TableCell>
                     <TableCell>Acciones</TableCell>
                   </TableRow>
-                  {workshops.map((workshop: any) => {
+                  {delivery.map((dev: any) => {
                     return (
-                      <TableRow key={workshop._id}>
-                        <TableCell>{workshop?.name}</TableCell>
-                        <TableCell>{workshop?.execution_date}</TableCell>
-                        <TableCell>{workshop?.activity?.name}</TableCell>
+                      <TableRow key={dev._id}>
+                        <TableCell>{dev?.event.name}</TableCell>
+                        <TableCell>{dev?.createdAt}</TableCell>
+                        <TableCell>{dev?.beneficiary?.first_name} {dev?.beneficiary?.first_last_name}</TableCell>
+                        <TableCell>{dev?.author?.email}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
                             <EditIcon
-                              onClick={() => handleClickOpen(workshop?._id)}
+                              onClick={() => handleClickOpen(dev?._id)}
                               className="action-item-icon action-item-icon-edit"
                             ></EditIcon>
     
                             <ClearIcon
                               onClick={() =>
-                                deleteFromlist(workshop)
+                                deleteFromlist(dev?._id)
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
@@ -134,12 +127,12 @@ function WorkshopsList() {
                   count={totalPages}
                   onChange={async (_, page) => {
                     try {
-                      const { result } = await getAllWorkshops(
+                      const { result } = await getAllDelivery(
                         dataLastSearch,
                         page
                       );
                       const { data: benfs, totalPages } = result;
-                      setWorkshops(benfs);
+                      setDelivery(benfs);
                       setTotalPages(totalPages);
                     } catch (err) {
                       console.log(err);
@@ -149,19 +142,8 @@ function WorkshopsList() {
               </>
             )}
           </div>
-          {openDialog && (
-        <SimpleDialog
-          title="Eliminar asociacion"
-          bodyContent="¿Está seguro que desea eliminar esta asociacion?"
-          mainBtnText="Confirmar"
-          secondBtnText="Cancelar"
-          mainBtnHandler={confirmDelete}
-          secondBtnHandler={cancelDelete}
-          open={openDialog}
-        ></SimpleDialog>
-      )}
         </div>
       );
 }
 
-export default WorkshopsList;
+export default DeliveryList;

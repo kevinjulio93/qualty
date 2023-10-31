@@ -13,6 +13,7 @@ export const arraySections = [
   { key: SECTIONS.ASSOCIATIONS, value: "Asociaciones" },
   { key: SECTIONS.WINERIES, value: "Bodegas" },
   { key: SECTIONS.REPRESENTATIVE, value: "Representantes" },
+  {key: SECTIONS.DELIVERY, value: "Entregas"},
 ];
 
 export const arrayPermissions = [

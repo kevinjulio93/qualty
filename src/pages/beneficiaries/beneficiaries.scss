@@ -100,6 +100,14 @@
 
 }
 
+.set__file{
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 6px 7px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 @keyframes camera {
     0% {
         transform: scaleY(0);
@@ -144,6 +152,9 @@
 
 
     }
+}
+.video__capture__supports{
+    width: 38% !important;
 }
 
 

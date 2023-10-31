@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
 import { deleteRatings, getAllRatings } from '../../services/rating.service';
+import { SimpleDialog } from '../../components/dialog/dialog';
 
 
 function RatingList() {
@@ -15,6 +16,8 @@ function RatingList() {
     const [isLoading, setIsLoading] = useState(true);
     const [totalPages, setTotalPages] = useState(1);
     const [dataLastSearch, setDataLastSearch] = useState("");
+    const [currentRating, setCurrentRating] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,16 +42,22 @@ function RatingList() {
         navigate(redirectTo);
     };
 
-    const deleteFromlist = async (id: string) => {
-      try {
-        const response = await deleteRatings(id);
-        if (response.status === 200) {
-            getRatingsList();
-          console.log("deleted successfully");
-        }
-      } catch (error) {
-        throw new Error("the beneficieary doesn't exist");
-      }
+    const deleteFromlist = async (work: string) => {
+      setCurrentRating(work);
+      setOpenDialog(true);
+    };
+
+    const confirmDelete = async () => {
+      setIsLoading(true);
+      setOpenDialog(false);
+      await deleteRatings((currentRating as any)._id);
+      setCurrentRating(null);
+      getRatingsList();
+    };
+  
+    const cancelDelete = () => {
+      setCurrentRating(null);
+      setOpenDialog(false);
     };
 
     return (
@@ -113,7 +122,7 @@ function RatingList() {
     
                             <ClearIcon
                               onClick={() =>
-                                deleteFromlist(rating?._id)
+                                deleteFromlist(rating)
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
@@ -142,6 +151,17 @@ function RatingList() {
               </>
             )}
           </div>
+          {openDialog && (
+        <SimpleDialog
+          title="Eliminar asociacion"
+          bodyContent="¿Está seguro que desea eliminar esta asociacion?"
+          mainBtnText="Confirmar"
+          secondBtnText="Cancelar"
+          mainBtnHandler={confirmDelete}
+          secondBtnHandler={cancelDelete}
+          open={openDialog}
+        ></SimpleDialog>
+      )}
         </div>
       );
 }

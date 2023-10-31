@@ -1,4 +1,4 @@
-import { Button, Pagination, Stack, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./beneficiariesList.scss";
 import { ROUTES } from "../../constants/routes";
@@ -23,6 +23,9 @@ function BeneficiariesList() {
     useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
+
+  const [benSelected,setBenSelected]=useState(null);
+  const [openDialogDelete,setOpenDialogDelete]=useState(false);
 
   const navigate = useNavigate();
 
@@ -55,12 +58,23 @@ function BeneficiariesList() {
       const response = await deleteBeneficiary(id);
       if (response.status === 200) {
         getBenfs();
+        setBenSelected(null);
+        handlerOpenDialogDelete();
         console.log("deleted successfully");
       }
     } catch (error) {
       throw new Error("the beneficieary doesn't exist");
     }
   };
+
+  const handlerOpenDialogDelete=()=>{
+    setOpenDialogDelete(!openDialogDelete);
+  }
+
+  const selectBenToDelete=(ben:any)=>{
+    setBenSelected(ben);
+    handlerOpenDialogDelete();
+  }
 
   return (
     <div className="users-container">
@@ -142,7 +156,7 @@ function BeneficiariesList() {
 
                         <ClearIcon
                           onClick={() =>
-                            deleteBeneficiaryFromList(beneficiary?._id)
+                            selectBenToDelete(beneficiary)
                           }
                           className="action-item-icon action-item-icon-delete"
                         ></ClearIcon>
@@ -171,6 +185,22 @@ function BeneficiariesList() {
           </>
         )}
       </div>
+      <Dialog open={openDialogDelete} >
+        <DialogTitle>Mensaje</DialogTitle>
+        <DialogContent>
+        <DialogContentText>
+            ¿ Desea eliminar a este beneficiario ?
+        </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button onClick={()=>handlerOpenDialogDelete()} color="primary">
+            Cancelar
+        </Button>
+        <Button onClick={()=>deleteBeneficiaryFromList(benSelected._id)} color="primary">
+            Eliminar
+        </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

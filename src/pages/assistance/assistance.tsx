@@ -8,12 +8,13 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Search from "../../components/search/search";
 import "./assistance.scss";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
-import { createWorkshop } from "../../services/workshop.service";
-import { useNavigate } from "react-router-dom";
+import { createWorkshop, getWorkshopById } from "../../services/workshop.service";
+import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 
 
 function Assistance () {
+    const { workshopId } = useParams();
     const [activities, setActivities] = useState([]);
     const [actArray, setActArray] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,9 +25,20 @@ function Assistance () {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (workshopId) {
+            getCurrentWorkshop();
+        }
         getActivities();
         getBens();
     }, [])
+
+    const getCurrentWorkshop = async () => {
+        const currentWork = await getWorkshopById(workshopId);
+        const { name, activity, attendees } = currentWork.result.data;
+        setSelectedWork(name);
+        setSelectedAct(activity);
+        setAssistList(attendees);
+    }
 
     
     const getActivities = async () => {
@@ -112,6 +124,7 @@ function Assistance () {
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} label="Actividad" />}
                             onChange={onSelectActivity}
+                            value={(selectedAct as any)?.name || ''}
                         />
                         <FormControl sx={{width: 300}}>
                             <InputLabel id="demo-simple-select-label">Taller</InputLabel>
@@ -119,6 +132,7 @@ function Assistance () {
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label="Taller a realizar"
+                                value={selectedWork}
                                 onChange={(e) => onSelectedWorkshop(e)}
                             >
                                 <MenuItem key={"taller_no_1"} value="Taller de cuidado personal">

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "win":"tsc && vite build --mode production",
+    "win": "tsc && vite build --mode production",
     "dev": "vite",
     "build": "sed -i '3s|^|// |' ./node_modules/@digitalpersona/devices/dist/es5/devices/websdk/channel.js && tsc && vite build --mode production && cp ./src/modules/WebSdk/index.js ./dist/assets/index.js",
     "build.mac": "vite build --mode production && cp ./src/modules/WebSdk/index.js ./dist/assets/index.js && tsc",
@@ -21,7 +21,9 @@
     "@mui/material": "^5.14.1",
     "@mui/styles": "^5.14.1",
     "@mui/x-data-grid": "^6.10.2",
+    "@mui/x-date-pickers": "^6.17.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "dayjs": "^1.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.2",
