@@ -11,41 +11,41 @@ import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
-import AssociationForm from "../../components/associationForm/associationForm";
-import {
-  createAssociation,
-  deleteAssociation,
-  getAssociationsList,
-  updateAssociation,
-} from "../../services/associations.service";
 import { getUserList } from "../../services/user.service";
+import RepresentativeForm from "../../components/representativeForm/representativeForm";
+import {
+  createRepresentative,
+  deleteRepresentative,
+  getRepresentativesList,
+  updateRepresentative,
+} from "../../services/representative.service";
 
-function Associations() {
-  const associationRef = useRef(null);
+function Representatives() {
+  const representativeRef = useRef(null);
   const dispatch = useDispatch();
   const modalRef = useRef(null);
-  const [associations, setAssociations] = useState([]);
+  const [representatives, setRepresentatives] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentAssociation, setCurrentAssociation] = useState(null);
+  const [currentRepresentative, setCurrentRepresentative] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
 
-  const [toastGetAssociationsError, setToastGetAssociationsError] =
+  const [toastGetRepresentativesError, setToastGetRepresentativesError] =
     useState(false);
 
   useEffect(() => {
-    getAssociations();
+    getRepresentatives();
   }, []);
 
-  const getAssociations = async () => {
+  const getRepresentatives = async () => {
     setIsLoading(true);
     try {
       const {
         result: { data },
-      } = await getAssociationsList();
-      const { data: associationList, totalPages } = data;
-      setAssociations(associationList);
+      } = await getRepresentativesList();
+      const { data: respresentativesList, totalPages } = data;
+      setRepresentatives(respresentativesList);
       setTotalPages(totalPages);
       setIsLoading(false);
     } catch (error) {
@@ -54,60 +54,62 @@ function Associations() {
   };
 
   const saveData = async () => {
-    if (associationRef.current !== null) {
-      let association = (associationRef.current as any).getAssociation();
-      const { department, municipality, community } = association;
-      association = {
-        ...association,
-        department: department.label,
-        municipality: municipality.label,
-        community: community.id,
+    if (representativeRef.current !== null) {
+      let representative = (
+        representativeRef.current as any
+      ).getRepresentative();
+      representative = {
+        ...representative,
+        identification_type: representative["identification-type"],
       };
-      await createAssociation(association);
+      console.log(representative);
+      await createRepresentative(representative);
       setIsLoading(true);
-      getAssociations();
+      getRepresentatives();
     }
-    setCurrentAssociation(null);
+    setCurrentRepresentative(null);
   };
 
   const updateData = async () => {
-    if (associationRef.current !== null) {
-      let association = (associationRef.current as any).getAssociation();
-      const { community } = association;
-      association = { ...association, community: community._id ?? community.id };
-      console.log(association);
-
-      await updateAssociation(association);
+    if (representativeRef.current !== null) {
+      let representative = (
+        representativeRef.current as any
+      ).getRepresentative();
+      representative = {
+        ...representative,
+        identification_type: representative["identification-type"],
+      };
+      await updateRepresentative(representative);
       setIsLoading(true);
-      getAssociations();
+      getRepresentatives();
     }
-    setCurrentAssociation(null);
+    setCurrentRepresentative(null);
   };
 
   const onCloseModal = () => {
-    setCurrentAssociation(null);
+    setCurrentRepresentative(null);
   };
 
-  const handleEditAction = (association) => {
-    setCurrentAssociation(association);
+  const handleEditAction = (representative) => {
+    setCurrentRepresentative(representative);
     (modalRef as any).current.handleClickOpen();
   };
 
-  const handleDeleteAction = (association) => {
-    setCurrentAssociation(association);
+  const handleDeleteAction = (representative) => {
+    setCurrentRepresentative(representative);
     setOpenDialog(true);
   };
 
   const confirmDelete = async () => {
     setIsLoading(true);
     setOpenDialog(false);
-    await deleteAssociation((currentAssociation as any)._id);
-    setCurrentAssociation(null);
-    getAssociations();
+    await deleteRepresentative((currentRepresentative as any)._id);
+    setCurrentRepresentative(null);
+    getRepresentatives();
   };
 
   const cancelDelete = () => {
-    setCurrentAssociation(null);
+    setCurrentRepresentative(null);
     setOpenDialog(false);
   };
 
@@ -116,48 +118,48 @@ function Associations() {
       <div className="users-container__actions">
         <div className="content-page-title">
           <Typography variant="h5" className="page-header">
-            Administrar asociaciones
+            Administrar representantes
           </Typography>
           <span className="page-subtitle">
-            Aqui podras gestionar las asociaciones del sistema.
+            Aqui podras gestionar los representantes del sistema.
           </span>
         </div>
         <Modal
           className="btn-create"
-          buttonText="Crear Asociacion"
-          title="Crear asociacion"
+          buttonText="Crear Representante"
+          title="Crear representante"
           ref={modalRef}
           modalClose={onCloseModal}
-          saveMethod={currentAssociation ? updateData : saveData}
+          saveMethod={currentRepresentative ? updateData : saveData}
         >
-          <AssociationForm
-            currentAssociation={currentAssociation}
-            ref={associationRef}
-          ></AssociationForm>
+          <RepresentativeForm
+            currentRepresentative={currentRepresentative}
+            ref={representativeRef}
+          ></RepresentativeForm>
         </Modal>
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
-          Listado de asociaciones
+          Listado de representantes
           <Search
-            label="Buscar asociacion"
+            label="Buscar representante"
             searchFunction={async (data: string) => {
               try {
-                const { result } = await getAssociationsList(data);
+                const { result } = await getRepresentativesList(data);
                 setDataLastSearch(data);
-                const { data: associations } = result;
-                setAssociations(associations);
+                const { data: representatives } = result;
+                setRepresentatives(representatives);
               } catch (err) {
-                setToastGetAssociationsError(true);
+                setToastGetRepresentativesError(true);
               }
             }}
-            voidInputFunction={getAssociations}
+            voidInputFunction={getRepresentatives}
           />
           <Toast
-            open={toastGetAssociationsError}
-            message={ERROR_MESSAGES.GET_ASSOCIATIONS_ERROR}
+            open={toastGetRepresentativesError}
+            message={ERROR_MESSAGES.GET_REPRESENTATIVES_ERROR}
             severity={SEVERITY_TOAST.ERROR}
-            handleClose={() => setToastGetAssociationsError(false)}
+            handleClose={() => setToastGetRepresentativesError(false)}
           />
         </div>
         {isLoading ? (
@@ -167,17 +169,19 @@ function Associations() {
             <Table>
               <TableRow header>
                 <TableCell>Nombre</TableCell>
-                <TableCell>Coordinador</TableCell>
-                <TableCell>Miembros</TableCell>
+                <TableCell>Asociacion</TableCell>
+                <TableCell>Telefono</TableCell>
+                <TableCell>Direccion</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
-              {associations.length > 0 &&
-                associations.map((association: any, index) => {
+              {representatives.length > 0 &&
+                representatives.map((representative: any, index) => {
                   return (
                     <TableRow key={index}>
-                      <TableCell>{association.name}</TableCell>
-                      <TableCell>{association.coordinator_name}</TableCell>
-                      <TableCell>{association.membersCount}</TableCell>
+                      <TableCell>{representative.name}</TableCell>
+                      <TableCell>{representative.association.name}</TableCell>
+                      <TableCell>{representative.phone}</TableCell>
+                      <TableCell>{representative.address}</TableCell>
                       <TableCell>
                         <Stack
                           className="actions-cell"
@@ -186,11 +190,11 @@ function Associations() {
                         >
                           <EditIcon
                             className="action-item-icon action-item-icon-edit"
-                            onClick={() => handleEditAction(association)}
+                            onClick={() => handleEditAction(representative)}
                           ></EditIcon>
                           <ClearIcon
                             className="action-item-icon action-item-icon-delete"
-                            onClick={() => handleDeleteAction(association)}
+                            onClick={() => handleDeleteAction(representative)}
                           ></ClearIcon>
                         </Stack>
                       </TableCell>
@@ -202,12 +206,12 @@ function Associations() {
               count={totalPages}
               onChange={async (_, page) => {
                 try {
-                  const { result } = await getAssociationsList(dataLastSearch, page);
-                  const { data: associations, totalPages } = result;
-                  setAssociations(associations);
+                  const { result } = await getRepresentativesList(dataLastSearch, page);
+                  const { data: representatives, totalPages } = result;
+                  setRepresentatives(representatives);
                   setTotalPages(totalPages);
                 } catch (err) {
-                  setToastGetAssociationsError(true);
+                  setToastGetRepresentativesError(true);
                 }
               }}
             />
@@ -217,8 +221,8 @@ function Associations() {
 
       {openDialog && (
         <SimpleDialog
-          title="Eliminar asociacion"
-          bodyContent="¿Está seguro que desea eliminar esta asociacion?"
+          title="Eliminar representante"
+          bodyContent="¿Está seguro que desea eliminar este representante?"
           mainBtnText="Confirmar"
           secondBtnText="Cancelar"
           mainBtnHandler={confirmDelete}
@@ -230,4 +234,4 @@ function Associations() {
   );
 }
 
-export default Associations;
+export default Representatives;

@@ -113,5 +113,16 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  {
+    key: "representantes",
+    name: "Representantes",
+    path: ROUTES.REPRESENTATIVES,
+    icon: "storage",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.REPRESENTATIVE,
+      action: [PERMISSIONS.READ],
+    },
+  },
 ];
 // import AssistWalkerIcon from '@mui/icons-material/AssistWalker';

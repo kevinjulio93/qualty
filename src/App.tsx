@@ -28,6 +28,7 @@ import Wineries from './pages/wineries/wineries';
 import WorkshopsList from './pages/assistance/workshops';
 import Assistance from './pages/assistance/assistance';
 import RatingList from './pages/ratings/ratingList';
+import Representatives from './pages/representatives/representatives';
 
 
 function App() {
@@ -97,6 +98,9 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSOCIATIONS, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE, action: [PERMISSIONS.CREATE] }} />}>
+                  <Route path={ROUTES.REPRESENTATIVES} element={<Representatives />} />
                 </Route>
               </Route>
             </Route>
