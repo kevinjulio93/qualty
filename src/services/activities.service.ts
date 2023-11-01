@@ -28,8 +28,8 @@ export async function getAllActivities() {
 }
 
 
-export async function deleteActivities(activities: any) {
-    const response = await activity.delete(`/activities/${activities.id}`);
+export async function deleteActivities(activityId: any) {
+    const response = await activity.delete(`/activities/${activityId}`);
     return response;
 }
 

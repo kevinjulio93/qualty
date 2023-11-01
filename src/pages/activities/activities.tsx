@@ -7,11 +7,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
-import { getAllActivities } from '../../services/activities.service';
+import { deleteActivities, getAllActivities } from '../../services/activities.service';
+import { SimpleDialog } from '../../components/dialog/dialog';
 
 
 function ActivityList() {
   const [actitivies, setActivities] = useState([]);
+  const [currentAct, setCurrentAct] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,6 +38,23 @@ function ActivityList() {
   const handleClickOpen = (id?: string) => {
     const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}`
     navigate(redirectTo);
+  };
+
+  const deleteFromlist = async (act: string) => {
+    setCurrentAct(act);
+    setOpenDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    setOpenDialog(false);
+    await deleteActivities((currentAct as any)._id);
+    setCurrentAct(null);
+    getActivitiesList();
+  };
+
+  const cancelDelete = () => {
+    setCurrentAct(null);
+    setOpenDialog(false);
   };
 
 
@@ -73,7 +93,7 @@ function ActivityList() {
                       </EditIcon>
 
                       <ClearIcon
-                        onClick={() => console.log('borrar')}
+                        onClick={() => deleteFromlist(activity)}
                         className="action-item-icon action-item-icon-delete">
                       </ClearIcon>
                     </Stack>
@@ -83,6 +103,17 @@ function ActivityList() {
             })}
           </Table>
         </div>
+        {openDialog && (
+        <SimpleDialog
+          title="Eliminar asociacion"
+          bodyContent="¿Está seguro que desea eliminar esta asociacion?"
+          mainBtnText="Confirmar"
+          secondBtnText="Cancelar"
+          mainBtnHandler={confirmDelete}
+          secondBtnHandler={cancelDelete}
+          open={openDialog}
+        ></SimpleDialog>
+      )}
       </div>
 
       : <LoadingComponent></LoadingComponent>
