@@ -34,7 +34,7 @@ import RepartitionIcon from '@mui/icons-material/Repartition';
 function SideMenu(props) {
     const abilities = useSelector((state: any) => state.auth.user.abilities);
     const currentSection = useSelector((state: RootState) => state.general.currentSection);
-    const availableSections = sectionList.filter(section => checkPermissions(section.permission, abilities)).sort((a,b) => (a.key > b.key) ? 1 : ((b.key > a.key) ? -1 : 0));
+    const availableSections = sectionList.filter(section => checkPermissions(section.permission, abilities)).sort((a,b) => (a.name > b.name) ? 1 : ((b.key > a.key) ? -1 : 0));
     const [selectedSection, setSelectedSection] = useState(currentSection || availableSections[0].key);
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();

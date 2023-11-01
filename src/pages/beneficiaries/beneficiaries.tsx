@@ -141,7 +141,6 @@ function Beneficiaries() {
     try {
       const response = await getBeneficiarieById(beneficiarieId);
       if (response.status === 200) {
-        console.log(response.result.data);
         setBeneficiarie(response.result.data);
         setFilesBen(response.result.data);
       }
@@ -150,7 +149,7 @@ function Beneficiaries() {
     }
   };
 
-  const setFilesBen=(data)=>{
+  const setFilesBen = (data) => {
     setDocEps(data?.fosiga_url);
     setCedBack(data?.id_back);
     setCedFront(data?.id_front);
@@ -192,7 +191,6 @@ function Beneficiaries() {
 
   const formHanlder = (target: string, e: any,data?:any) => {
     if(data){
-      console.log(target,data)
       setBeneficiarie({ ...beneficiarie, [target]: data});
     }else{
       if (target === "is_victim_armed_conflict")setIsVictimArmedConflict(!isVictimArmedConflict);
@@ -224,15 +222,11 @@ function Beneficiaries() {
     const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
     if (files || (beneficiarie as any)?.photo_url) {
       try {
-        const response = await saveData(getFormData(), beneficiary); // Replace with your actual access token
-        console.log(response)
-        console.log("Upload successful:", response);
+        await saveData(getFormData(), beneficiary); // Replace with your actual access token
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
       } catch (error) {
         console.error("Upload failed:", error);
       }
-    } else {
-      console.log("No file selected.");
     }
   };
 
@@ -255,10 +249,8 @@ function Beneficiaries() {
   }
 
   const handleImage = (e, key) => {
-    console.log(e);
     const imageDoc2 = e.target.files[0];
     const imageDoc = URL.createObjectURL(imageDoc2);
-    console.log(URL.createObjectURL(imageDoc2));
     switch(key) {
       case "front":
         setCedFront(imageDoc);
@@ -302,7 +294,6 @@ function Beneficiaries() {
   const handlerCaptureSupport = (e) => {
     const imageDoc2=dataURItoBlob(getCaptureSupport());
     const imageDoc = URL.createObjectURL(imageDoc2);
-    console.log(URL.createObjectURL(imageDoc2));
     switch(typeSupport) {
       case "front":
         setFileBen("id_front",imageDoc2,"cedula-frontal");

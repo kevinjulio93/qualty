@@ -43,7 +43,7 @@ function Ratings () {
           setBens(benList);
           setIsLoading(false);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setIsLoading(false);
         }
     };
@@ -54,7 +54,7 @@ function Ratings () {
             const { data: beneficiaries } = result;
             setBens(beneficiaries);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

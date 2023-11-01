@@ -97,10 +97,6 @@ function RatingList() {
       setOpenDialogMessage(!openDialogMessage);
     }
 
-    useEffect(()=>{
-      console.log(filterRating);
-    },[filterRating])
-
     return (
         <div className="users-container">
           <div className="users-container__actions">
@@ -129,7 +125,7 @@ function RatingList() {
                 const { data: list } = result;
                 setRatings(list);
               } catch (err) {
-                console.log(err)
+                console.error(err)
               }
             }}
             voidInputFunction={getRatingsList}
@@ -214,7 +210,7 @@ function RatingList() {
                       setRatings(benfs);
                       setTotalPages(totalPages);
                     } catch (err) {
-                      console.log(err);
+                      console.error(err);
                     }
                   }}
                 />

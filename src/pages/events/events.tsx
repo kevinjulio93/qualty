@@ -54,7 +54,6 @@ function EventList() {
       const response = await deleteEvent(id);
       if (response.status === 200) {
         getEvents();
-        console.log("deleted successfully");
       }
     } catch (error) {
       throw new Error("the beneficieary doesn't exist");

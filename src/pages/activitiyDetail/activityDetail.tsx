@@ -67,7 +67,6 @@ function ActivityDetail() {
     }
 
     const getMunicipiesList = async (department: any) => {
-        console.log(department);
         try {
             setSelectedDep(department);
             const response = await getMunicipies(department?.id);
@@ -78,8 +77,7 @@ function ActivityDetail() {
                 setSelectedAso(null);
             }
         } catch (error) {
-            setDepartmentsList([]);
-
+            console.error(error);
         }
     }
 
@@ -93,41 +91,41 @@ function ActivityDetail() {
                 setSelectedAso(null);
             }
         } catch (error) {
-            setDepartmentsList([]);
-
+            console.error(error);
         }
     }
 
     const getAssociations = async (community: any) => {
         try {
             setSelectedCom(community);
-            const response = await getAssociationsByCommunity(community?.id);
+            const response = await getAssociationsByCommunity(community?._id);
             if (response.status === 200) {
                 setAssociations(response.result.data);
                 setSelectedAso(null);
             }
         } catch (error) {
-            setDepartmentsList([]);
-
+            console.error(error);
         }
     }
 
     const addAssociationToActivity = () => {
-        const associationsData = {
-            department: selectedDep,
-            municipality: selectedMun,
-            community: selectedCom,
-            association: selectedAso,
-        }
-        const exist = activitiesAssociations.length ? activitiesAssociations.some(asso => associationsData.association.id === asso.association.id) : false;
+        const exist = activitiesAssociations.length ? activitiesAssociations.some(asso => selectedAso._id === asso._id) : false;
         if (exist) return;
-        const associacions = [...activitiesAssociations]
-        associacions.push(associationsData)
-        setActivitiesAssociations(associacions);
+        const associations = [...activitiesAssociations]
+        associations.push(selectedAso);
+        setActivitiesAssociations(associations);
+        cleanReferences();
+    }
+
+    const cleanReferences = () => {
+        setSelectedAso(null);
+        setSelectedCom(null);
+        setSelectedMun(null);
+        setSelectedDep(null);
     }
 
     const removeSelectedAssociation = (association: any) => {
-        const updateAssociations = activitiesAssociations.filter(asso => association.association.id !== asso.association.id);
+        const updateAssociations = activitiesAssociations.filter(asso => association._id !== asso._id);
         setActivitiesAssociations(updateAssociations);
     }
 
@@ -146,16 +144,15 @@ function ActivityDetail() {
             description: (activity as any)?.description,
             execution_date: (activity as any)?.execution_date,
             estimate_attendance: (activity as any)?.estimate_attendance,
-            participatingAssociations: activitiesAssociations.map(asso => asso?.association?.id ?? asso._id)
+            participatingAssociations: activitiesAssociations.map(asso =>  asso._id)
         }
 
         try {
-            const response = await saveActivity(payload);
-            console.log('actividad creada', response.result);
+            await saveActivity(payload);
             navigate(`${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES_LIST}`);
             
         } catch (error) {
-            console.log('no se creó la asociacion');
+            console.error('no se creó la asociacion');
         }
     }
 
@@ -239,7 +236,7 @@ function ActivityDetail() {
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={selectedCom?.id}
+                                    selectValue={selectedCom?._id}
                                     label="Comuna"
                                     options={communityList}
                                     keyLabel='name'
@@ -251,7 +248,7 @@ function ActivityDetail() {
 
                             <div className='activities-container__form-section__assitants__form-2__field'>
                                 <SelectDropdown
-                                    selectValue={selectedAso?.id}
+                                    selectValue={selectedAso?._id}
                                     label="Asociacion"
                                     options={associationsList}
                                     keyLabel='name'
@@ -261,7 +258,11 @@ function ActivityDetail() {
                                 />
                             </div>
 
-                            <Button className='btn-save' onClick={() => addAssociationToActivity()}>Agregar</Button>
+                            <Button 
+                                className='btn-save'
+                                onClick={() => addAssociationToActivity()}
+                                disabled={!selectedAso}
+                            >Agregar</Button>
                         </form>
 
                         <section className="activities-container__form-section__assitants__table">

@@ -60,7 +60,6 @@ function BeneficiariesList() {
         getBenfs();
         setBenSelected(null);
         handlerOpenDialogDelete();
-        console.log("deleted successfully");
       }
     } catch (error) {
       throw new Error("the beneficieary doesn't exist");

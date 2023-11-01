@@ -11,7 +11,6 @@ import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
-import { getUserList } from "../../services/user.service";
 import RepresentativeForm from "../../components/representativeForm/representativeForm";
 import {
   createRepresentative,
@@ -22,7 +21,6 @@ import {
 
 function Representatives() {
   const representativeRef = useRef(null);
-  const dispatch = useDispatch();
   const modalRef = useRef(null);
   const [representatives, setRepresentatives] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +60,6 @@ function Representatives() {
         ...representative,
         identification_type: representative["identification-type"],
       };
-      console.log(representative);
       await createRepresentative(representative);
       setIsLoading(true);
       getRepresentatives();

@@ -119,7 +119,11 @@ const AssociationForm = forwardRef((props: any, ref) => {
     e: any
   ) => {
     const value = e.target ? e.target.value : e;
-    setAssociation({ ...association, [target]: value });
+    if(["department", "municipality"].includes(target)) {
+      setAssociation({ ...association, [target]: value.name });
+    } else {
+      setAssociation({ ...association, [target]: value });
+    }
 
     if (target === "department") {
       getMunicipiesList(value);
@@ -214,7 +218,7 @@ const AssociationForm = forwardRef((props: any, ref) => {
             keyLabel="name"
             keyValue="id"
             targetKey="department"
-            handleValue={formHanlder}
+            handleValue={(value) => formHanlder("department", value)}
           />
         </div>
         <div className="activities-container__form-section__assitants__form-2__field">
@@ -235,26 +239,24 @@ const AssociationForm = forwardRef((props: any, ref) => {
             keyLabel="name"
             keyValue="id"
             targetKey="municipality"
-            handleValue={formHanlder}
+            handleValue={(value) => formHanlder("municipality", value)}
           />
         </div>
         <div className="activities-container__form-section__assitants__form-2__field">
           <SelectDropdown
             selectValue={(() => {
-              const r = communityList.length
+              return communityList.length
                 ? communityList.find(
                     ({ _id }) => _id === association.community._id
                   )?._id
                 : "";
-              console.log(r);
-              return r;
             })()}
             label="Comuna"
             options={communityList}
             keyLabel="name"
             keyValue="_id"
             targetKey="community"
-            handleValue={formHanlder}
+            handleValue={(value) => formHanlder("community", value)}
           />
         </div>
 

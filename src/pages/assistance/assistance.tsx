@@ -62,7 +62,7 @@ function Assistance () {
           const benList = response.result.data;
           setBens(benList);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
@@ -72,7 +72,7 @@ function Assistance () {
             const { data: beneficiaries } = result;
             setBens(beneficiaries);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 

@@ -115,7 +115,7 @@ function WorkshopsList() {
                 const { data: works } = result;
                 setWorkshops(works);
               } catch (err) {
-                console.log(err)
+                console.error(err)
               }
             }}
             voidInputFunction={getWorkshopsList}
@@ -175,7 +175,7 @@ function WorkshopsList() {
                       setWorkshops(benfs);
                       setTotalPages(totalPages);
                     } catch (err) {
-                      console.log(err);
+                      console.error(err);
                     }
                   }}
                 />

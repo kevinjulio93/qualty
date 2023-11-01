@@ -44,7 +44,6 @@ function DeliveryList() {
         const response = await deleteDelivery(id);
         if (response.status === 200) {
             getDeliveryList();
-          console.log("deleted successfully");
         }
       } catch (error) {
         throw new Error("the beneficieary doesn't exist");
@@ -79,7 +78,7 @@ function DeliveryList() {
                 const { data: works } = result;
                 setDelivery(works);
               } catch (err) {
-                console.log(err)
+                console.error(err)
               }
             }}
             voidInputFunction={getDeliveryList}
@@ -135,7 +134,7 @@ function DeliveryList() {
                       setDelivery(benfs);
                       setTotalPages(totalPages);
                     } catch (err) {
-                      console.log(err);
+                      console.error(err);
                     }
                   }}
                 />

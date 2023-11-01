@@ -6,7 +6,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import LoadingComponent from "../../components/loading/loading";
 import { SimpleDialog } from "../../components/dialog/dialog";
-import { useDispatch } from "react-redux";
 import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
@@ -18,11 +17,9 @@ import {
   getAssociationsList,
   updateAssociation,
 } from "../../services/associations.service";
-import { getUserList } from "../../services/user.service";
 
 function Associations() {
   const associationRef = useRef(null);
-  const dispatch = useDispatch();
   const modalRef = useRef(null);
   const [associations, setAssociations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,12 +53,10 @@ function Associations() {
   const saveData = async () => {
     if (associationRef.current !== null) {
       let association = (associationRef.current as any).getAssociation();
-      const { department, municipality, community } = association;
+      const { community } = association;
       association = {
         ...association,
-        department: department.label,
-        municipality: municipality.label,
-        community: community.id,
+        community: community._id,
       };
       await createAssociation(association);
       setIsLoading(true);
@@ -75,8 +70,6 @@ function Associations() {
       let association = (associationRef.current as any).getAssociation();
       const { community } = association;
       association = { ...association, community: community._id ?? community.id };
-      console.log(association);
-
       await updateAssociation(association);
       setIsLoading(true);
       getAssociations();

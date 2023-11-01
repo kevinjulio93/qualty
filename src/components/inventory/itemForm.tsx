@@ -36,10 +36,6 @@ const ItemForm = forwardRef((props: any, ref) => {
     const value = e.target.value;
     setItem({...item,[e.target.name]:value});
   };
-
-  useEffect(()=>{
-    console.log(item)
-  },[item])
   
   return (
     <>

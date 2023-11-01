@@ -241,7 +241,7 @@ function Winerie () {
             }
         setIsLoading(false);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             navigate(`${ROUTES.DASHBOARD}/${ROUTES.WINERIES_LIST}`);
 
         }

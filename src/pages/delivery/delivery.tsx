@@ -51,7 +51,7 @@ function Delivery () {
           const benList = response.result.data;
           setBens(benList);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 
@@ -61,7 +61,7 @@ function Delivery () {
             const { data: beneficiaries } = result;
             setBens(beneficiaries);
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 
