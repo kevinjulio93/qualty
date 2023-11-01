@@ -151,7 +151,7 @@ function Users() {
             <Table>
               <TableRow header>
                 <TableCell>Nombre</TableCell>
-                <TableCell>Email</TableCell>
+                <TableCell>Usuario</TableCell>
                 <TableCell>Role</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
@@ -160,7 +160,7 @@ function Users() {
                   return (
                     <TableRow key={index}>
                       <TableCell>{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.user_name}</TableCell>
                       <TableCell>{user.role.role}</TableCell>
                       <TableCell>
                         <Stack

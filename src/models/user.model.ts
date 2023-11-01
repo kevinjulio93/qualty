@@ -1,12 +1,12 @@
 
 abstract class Persona {
     name?: string;
-    email?:string
+    user_name?:string
     id?: string;
 
     constructor (user?:Persona) {
         this.name = user?.name ?? '';
-        this.email = user?.email ?? '';
+        this.user_name = user?.user_name ?? '';
         this.id = user?.id ?? '';
     }
 

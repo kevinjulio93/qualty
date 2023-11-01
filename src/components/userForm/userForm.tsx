@@ -12,7 +12,7 @@ import { getAllroles } from "../../services/roles.service";
 const UserForm = forwardRef((props: any, ref) => {
   const [user, setUser] = useState({
     name: "",
-    email: "",
+    user_name: "",
     password: "",
     role: "",
   });
@@ -48,11 +48,11 @@ const UserForm = forwardRef((props: any, ref) => {
   };
 
   const formHanlder = (
-    target: "name" | "email" | "password" | "role",
+    target: "name" | "user_name" | "password" | "role",
     e: any
   ) => {
     const value =
-      target === "email" ? (e.target.value as string).trim() : e.target.value;
+      target === "user_name" ? (e.target.value as string).trim() : e.target.value;
     setUser({ ...user, [target]: value });
   };
 
@@ -71,13 +71,13 @@ const UserForm = forwardRef((props: any, ref) => {
         />
         <TextField
           className="login-view__login-form__form-container__input"
-          id="email"
-          name="email"
+          id="user_name"
+          name="user_name"
           placeholder="ejemplo@gmail.com"
           type="text"
-          label="Correo electronico"
-          onChange={(e) => formHanlder("email", e)}
-          value={user.email || ""}
+          label="Usuario"
+          onChange={(e) => formHanlder("user_name", e)}
+          value={user.user_name || ""}
         />
         <TextField
           className="login-view__login-form__form-container__input"

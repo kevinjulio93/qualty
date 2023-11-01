@@ -19,7 +19,7 @@ import { SEVERITY_TOAST } from "../../constants/severityToast";
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [credentials, setCredentials] = useState({ user_name: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   // toasts
@@ -27,9 +27,9 @@ function Login() {
   const [toastGetAllReferencesError, setToastGetAllReferencesError] =
     useState(false);
 
-  const formHanlder = (target: "email" | "password", e: any) => {
+  const formHanlder = (target: "user_name" | "password", e: any) => {
     const value =
-      target === "email" ? (e.target.value as string).trim() : e.target.value;
+      target === "user_name" ? (e.target.value as string).trim() : e.target.value;
     setCredentials({ ...credentials, [target]: value });
   };
 
@@ -67,7 +67,7 @@ function Login() {
   };
 
   const validCredentials = (): boolean => {
-    return credentials.email === "" || credentials.password === "";
+    return credentials.user_name === "" || credentials.password === "";
   };
 
   return (
@@ -91,9 +91,9 @@ function Login() {
             <TextField
               className="login-view__login-form__form-container__input"
               id="user"
-              name="email"
-              onChange={(e) => formHanlder("email", e)}
-              placeholder="Email"
+              name="user_name"
+              onChange={(e) => formHanlder("user_name", e)}
+              placeholder="Usuario"
             />
 
             <TextField

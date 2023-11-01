@@ -102,7 +102,7 @@ function DeliveryList() {
                         <TableCell>{dev?.event.name}</TableCell>
                         <TableCell>{dev?.createdAt}</TableCell>
                         <TableCell>{dev?.beneficiary?.first_name} {dev?.beneficiary?.first_last_name}</TableCell>
-                        <TableCell>{dev?.author?.email}</TableCell>
+                        <TableCell>{dev?.author?.user_name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
                             <EditIcon
