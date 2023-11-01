@@ -229,7 +229,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
           keyLabel="name"
           keyValue="id"
           targetKey="department"
-          handleValue={(e, value) => getMunicipiesList(value)}
+          handleValue={(value) => getMunicipiesList(value)}
         />
         <SelectDropdown
           selectValue={selectedMun?.id}
@@ -238,7 +238,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
           keyLabel="name"
           keyValue="id"
           targetKey="municipality"
-          handleValue={(e, value) => getCommunities(value)}
+          handleValue={(value) => getCommunities(value)}
         />
         <SelectDropdown
           selectValue={selectedCom?.id ?? selectedCom?._id}
@@ -247,7 +247,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
           keyLabel="name"
           keyValue="_id"
           targetKey="community"
-          handleValue={(e, value) => getAssociations(value)}
+          handleValue={(value) => getAssociations(value)}
         />
         <SelectDropdown
           selectValue={selectedAso?.id ?? selectedAso?._id}
@@ -256,7 +256,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
           keyLabel="name"
           keyValue="_id"
           targetKey="association"
-          handleValue={(e, value) => setSelectedAso(value)}
+          handleValue={(value) => setSelectedAso(value)}
         />
       </form>
     </>

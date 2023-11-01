@@ -1,5 +1,4 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import { useEffect, useState } from "react";
 
 interface IProp {
   label?: string;
@@ -15,9 +14,9 @@ interface IProp {
 function SelectDropdown(props: IProp) {
 
     const selectValue = (e: any) => {
-        const selectedItem = props.options?.find(item => item.value === e.target.value);
-        // const selectedValue = { id: selectedItem[props.keyValue as string], label: selectedItem[props.keyLabel as string] }
-        props.handleValue(props.targetKey, e);
+        const propKey = props.keyValue || 'value';
+        const selectedItem = props.options?.find(item => item[propKey] === e.target.value);
+        props.handleValue(selectedItem, e);
     }
 
     return (
@@ -35,8 +34,8 @@ function SelectDropdown(props: IProp) {
                         <MenuItem
                             key={index}
                             defaultValue={''}
-                            value={option.value}>
-                            {props.keyLabel ? option.label : option.label}
+                            value={props.keyValue ? option[props.keyValue as string] : option.value}>
+                            {props.keyLabel ? option[props.keyLabel as string] : option.label}
                         </MenuItem>
                     )
                 })}

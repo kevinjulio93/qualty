@@ -67,6 +67,7 @@ function ActivityDetail() {
     }
 
     const getMunicipiesList = async (department: any) => {
+        console.log(department);
         try {
             setSelectedDep(department);
             const response = await getMunicipies(department?.id);
@@ -221,7 +222,7 @@ function ActivityDetail() {
                                     keyLabel='name'
                                     keyValue='id'
                                     targetKey='department'
-                                    handleValue={(e, value) => getMunicipiesList(value)}
+                                    handleValue={(value) => getMunicipiesList(value)}
                                 />
                             </div>
                             <div className='activities-container__form-section__assitants__form-2__field'>
@@ -232,7 +233,7 @@ function ActivityDetail() {
                                     keyLabel='name'
                                     keyValue='id'
                                     targetKey='municipality'
-                                    handleValue={(e, value) => getCommunities(value)}
+                                    handleValue={(value) => getCommunities(value)}
                                 />
                             </div>
 
@@ -244,7 +245,7 @@ function ActivityDetail() {
                                     keyLabel='name'
                                     keyValue='_id'
                                     targetKey='community'
-                                    handleValue={(e, value) => getAssociations(value)}
+                                    handleValue={(value) => getAssociations(value)}
                                 />
                             </div>
 
@@ -256,7 +257,7 @@ function ActivityDetail() {
                                     keyLabel='name'
                                     keyValue='_id'
                                     targetKey='association'
-                                    handleValue={(e, value) => setSelectedAso(value)}
+                                    handleValue={(value) => setSelectedAso(value)}
                                 />
                             </div>
 
