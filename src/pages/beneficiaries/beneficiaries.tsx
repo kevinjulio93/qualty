@@ -25,6 +25,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 import { getAssociationsByCommunity, getComunaByMunicipie, getDepartments, getMunicipies } from "../../services/activities.service";
+import { epsList } from "../../constants/epsList";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -92,14 +93,11 @@ function Beneficiaries() {
     {label:"Femenino",value:"Femenino"},
     {label:"Otro",value:"Otro"},
   ];
-  const eps = useSelector(
-    (state: RootState) => state.references.references?.eps
-  );
+
   const [beneficiarie, setBeneficiarie] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSisbenValid, setIsSisbenValid] = useState(true);
   const [isVictimArmedConflict, setIsVictimArmedConflict] = useState(true);
-  const [optionsEps, setOptionsEps] = useState([]);
   const [selectedTab, setSelectedTab] = useState("1");
   const [cedFront, setCedFront] = useState(null);
   const [cedBack, setCedBack] = useState(null);
@@ -123,7 +121,6 @@ function Beneficiaries() {
     if(beneficiarieId!==undefined){
       getBeneficiary();
     }
-    getOptionsEps();
     getDepartamentsList();
   }, []);
 
@@ -160,20 +157,12 @@ function Beneficiaries() {
     setDocSis(data?.sisben_url);
   }
 
-  const getOptionsEps=()=>{
-    let list:any=[];
-    eps.map((item:any)=>{
-      list=[...list,{label:item.name,value:item._id}];
-    });
-    setOptionsEps(list);
-  }
-
   const formHanlder = (target: string, e: any,data?:any) => {
     if(data){
       setBeneficiarie({ ...beneficiarie, [target]: data});
     }else{
       if (target === "is_victim_armed_conflict")setIsVictimArmedConflict(!isVictimArmedConflict);
-      const value = e.label ? e.value : e;
+      const value = e.target ? e.target.value : e.value || e;
       setBeneficiarie({ ...beneficiarie, [target]: value });
       if (target === "sisben_score") setIsSisbenValid(sisbenRegex.test(value));
     }
@@ -210,6 +199,7 @@ function Beneficiaries() {
   };
 
   const createBeneficiarie = () => {
+    console.log(beneficiarie);
     saveBeneficiary(beneficiarie);
   };
 
@@ -331,7 +321,7 @@ const getCommunities = async (target, municipality: any) => {
         const response = await getComunaByMunicipie(municipality?.id);
         if (response.status === 200) {
             setCommunityList(response.result.data);
-            setBeneficiarie({ ...beneficiarie, community: null, association: null, [target]: municipality });
+            setBeneficiarie({ ...beneficiarie, community: null, association: null, [target]: municipality.name });
         }
     } catch (error) {
         console.error(error);
@@ -349,6 +339,18 @@ const getAssociations = async (target, community: any) => {
     } catch (error) {
         console.error(error);
     }
+}
+
+const getSelectedValueDep = (key) => {
+  const valueKey = beneficiarie[key];
+  const index = departmentsList.findIndex(item => item.name  === valueKey);
+  return departmentsList[index];
+}
+
+const getSelectedValueMun = (key) => {
+  const valueKey = beneficiarie[key];
+  const index = municipiesList.findIndex(item => item.name  === valueKey);
+  return municipiesList[index];
 }
 
   return (
@@ -512,13 +514,13 @@ const getAssociations = async (target, community: any) => {
 
                   <div className='beneficiaries-container__form-section__beneficiarie__form__field'>
                       <SelectDropdown
-                          selectValue={(beneficiarie as any)?.residence_department?.id}
+                          selectValue={getSelectedValueDep("residence_department")?.id}
                           label="Departamento de residencia"
                           options={departmentsList}
                           keyLabel='name'
                           keyValue='id'
                           targetKey='residence_department'
-                          handleValue={(value) => formHanlder("residence_department", value)}
+                          handleValue={(value) => formHanlder("residence_department", value.name)}
                       />
                   </div>
 
@@ -608,7 +610,7 @@ const getAssociations = async (target, community: any) => {
                   </div>
                   <div className='activities-container__form-section__assitants__form-2__field'>
                       <SelectDropdown
-                          selectValue={(beneficiarie as any)?.municipality?.id}
+                          selectValue={getSelectedValueMun("municipality")?.id}
                           label="Municipio"
                           options={municipiesList}
                           keyLabel='name'
@@ -644,13 +646,13 @@ const getAssociations = async (target, community: any) => {
 
                   <div className='beneficiaries-container__form-section__beneficiarie__form__field'>
                       <SelectDropdown
-                          selectValue={(beneficiarie as any)?.sisben_department?.id}
+                          selectValue={getSelectedValueDep("sisben_department")?.id}
                           label="Departamento de SISBEN"
                           options={departmentsList}
                           keyLabel='name'
                           keyValue='id'
                           targetKey='sisben_department'
-                          handleValue={(value) => formHanlder("sisben_department", value)}
+                          handleValue={(value) => formHanlder("sisben_department", value.name)}
                       />
                   </div>
 
@@ -658,9 +660,9 @@ const getAssociations = async (target, community: any) => {
                     <Autocomplete style={{width:"100%"}}
                       disablePortal
                       id="eps"
-                      options={optionsEps}
-                      value={beneficiarie!=null && optionsEps.find((item)=>item.value===(beneficiarie as any)?.eps) || ""}
-                      onChange={(e:any,data:any)=>formHanlder("eps",e,data.value)}
+                      options={epsList}
+                      onChange={(e:any,data:any)=>formHanlder("eps",e,data)}
+                      value={(beneficiarie as any)?.eps || ""}
                       renderInput={(params) => <TextField  {...params} label="EPS" />}
                     />
                   </div>
