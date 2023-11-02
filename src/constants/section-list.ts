@@ -50,7 +50,7 @@ export const sectionList = [
   {
     key: "eventos",
     name: "Eventos",
-    path: ROUTES.EVENTS,
+    path: ROUTES.EVENTS_LIST,
     icon: "beneficiaries",
     hasChilds: false,
     permission: {

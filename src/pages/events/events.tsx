@@ -44,8 +44,8 @@ function EventList() {
   const handleClickOpen = (event?: any) => {
     const id = event?._id  ?? undefined;
     const redirectTo = id
-      ? `${ROUTES.DASHBOARD}/${ROUTES.BENEFICIARIES}/${id}`
-      : `${ROUTES.DASHBOARD}/${ROUTES.BENEFICIARIES}`;
+      ? `${ROUTES.DASHBOARD}/${ROUTES.EVENTS}/${id}`
+      : `${ROUTES.DASHBOARD}/${ROUTES.EVENTS}`;
     navigate(redirectTo);
   };
 

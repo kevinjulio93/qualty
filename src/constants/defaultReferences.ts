@@ -1,0 +1,20 @@
+export const NORTE_DE_SANTANDER = {
+  cities: null,
+  cityCapital: null,
+  cityCapitalId: 870,
+  country: null,
+  countryId: 1,
+  description:
+    "Norte de Santander es uno de los treinta y dos departamentos que, junto con Bogotá, Distrito Capital, forman la República de Colombia. Su capital es la ciudad de Cúcuta. Es una entidad territorial que goza de autonomía para la administración de los asuntos seccionales y la planificación y promoción del desarrollo económico y social dentro de su territorio, tiene una extensión de 22.648 km², que equivalen al 1.91% del territorio nacional, ubicado en la región nororiental de Colombia. Limita al norte y al este con los estados de Zulia y Táchira de Venezuela, al sur con los departamentos de Boyacá y Santander, y al oeste con Santander y Cesar.",
+  id: 23,
+  indigenousReservations: null,
+  maps: null,
+  municipalities: 40,
+  name: "Norte de Santander",
+  naturalAreas: null,
+  phonePrefix: "7",
+  population: 1651278,
+  region: null,
+  regionId: 5,
+  surface: 21658,
+};

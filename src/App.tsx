@@ -32,6 +32,7 @@ import Representatives from './pages/representatives/representatives';
 import DeliveryList from './pages/delivery/deliveryList';
 import Delivery from './pages/delivery/delivery';
 import EventList from './pages/events/events';
+import EventDetail from './pages/eventDetail/eventDetail';
 
 
 function App() {
@@ -109,8 +110,12 @@ function App() {
                     <Route path={ROUTES.ASSOCIATIONS} element={<Associations />} />
                   </Route>
                 </Route>
-                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ACTIVITY, action: [PERMISSIONS.READ] }} />}>
-                  <Route path={ROUTES.EVENTS} element={<EventList />} />
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.EVENTS, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.EVENTS_LIST} element={<EventList />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.EVENTS, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.EVENTS} element={<EventDetail/>} />
+                  <Route path={ROUTES.EVENTS+'/:eventId'} element={<EventDetail />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.DELIVERY_LIST} element={<DeliveryList />} />

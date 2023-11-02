@@ -24,7 +24,7 @@ export async function getAllEvents(
   return response;
 }
 
-export async function getEvent(id:string) {
+export async function getEventById(id:string) {
   const response= await events.get("/events/"+id);
   return response;
 }
