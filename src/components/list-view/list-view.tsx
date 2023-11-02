@@ -20,19 +20,26 @@ interface IListViewProp {
 	listContent: Array<any>,
 	totalPages:number,
 	listTitle:string,
-	handleCreatebutton: () => void,
+	handleCreatebutton?: () => void,
 	hanldeSearchFunction: (param) => void,
 	hanldeVoidInputFunction: () => void,
 	handleCloseToast: () => void,
 	handleEdit: (param) => void,
 	handleDelete: (param) => void,
 	handlePaginationChange: (param) => void,
+	createButton?: any
 
 
 
 }
 
 function ListView(props: IListViewProp) {
+	const renderButton = () => {
+		return props.createButton || 
+		<Button className="btn-create" onClick={() => props.handleCreatebutton()}>
+			{props.createButtonText}
+		</Button>
+	}
 	return (
 		<div className="users-container">
 			<div className="users-container__actions">
@@ -44,9 +51,7 @@ function ListView(props: IListViewProp) {
 						{props.sectionDescription}
 					</span>
 				</div>
-				<Button className="btn-create" onClick={() => props.handleCreatebutton()}>
-					{props.createButtonText}
-				</Button>
+				{renderButton()}
 			</div>
 
 			<div className="main-center-container">

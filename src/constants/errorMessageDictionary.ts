@@ -10,4 +10,5 @@ export const ERROR_MESSAGES = {
   GET_WINERIES_ERROR: ocurrioUnErrorAl + " obtener las bodegas",
   GET_REPRESENTATIVES_ERROR: ocurrioUnErrorAl + " obtener los representantes",
   GET_EVENTS_ERROR: ocurrioUnErrorAl + " obtener los eventos",
+  GET_ACTIVITIES_ERROR: ocurrioUnErrorAl + " obtener las actividades",
 };

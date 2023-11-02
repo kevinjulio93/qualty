@@ -1,34 +1,46 @@
-import { Button, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import "./activities.scss";
 import { ROUTES } from '../../constants/routes';
-import { Table, TableCell, TableRow } from '../../components/table/table';
-import EditIcon from '@mui/icons-material/Edit';
-import ClearIcon from '@mui/icons-material/Clear';
 import { useEffect, useState } from 'react';
-import LoadingComponent from '../../components/loading/loading';
 import { deleteActivities, getAllActivities } from '../../services/activities.service';
 import { SimpleDialog } from '../../components/dialog/dialog';
+import { ERROR_MESSAGES } from '../../constants/errorMessageDictionary';
+import { SEVERITY_TOAST } from '../../constants/severityToast';
+import ListView from '../../components/list-view/list-view';
 
 
 function ActivityList() {
+  const columnAndRowkeys = [
+    { label: 'Nombre', rowKey: 'name' }, 
+    { label: 'Fecha de ejecución', rowKey: 'execution_date' }, 
+    { label: 'Asistencia estimada', rowKey: 'estimate_attendance' }
+  ];
   const [actitivies, setActivities] = useState([]);
   const [currentAct, setCurrentAct] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [dataLastSearch, setDataLastSearch] = useState("");
+  const [toastGetBeneficiariesError, setToastGetBeneficiariesError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     getActivitiesList();
   }, [])
 
-  const getActivitiesList = async () => {
+  const getActivitiesList = async (search?: string, page: number = 1) => {
+    setIsLoading(true);
     try {
-      const response = await getAllActivities();
+      const response = await getAllActivities(search, page);
       if (response.status === 200) {
-        const dataList = response.result.data;
+        setDataLastSearch(search);
+      const { data: dataList, totalPages } = response.result;
         setActivities(dataList);
+        setTotalPages(totalPages || 1);
+        setIsLoading(false);
       } else {
         setActivities([]);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -57,53 +69,29 @@ function ActivityList() {
     setOpenDialog(false);
   };
 
-
   return (
-    actitivies.length > 0 ?
-      <div className='users-container'>
-        <div className="users-container__actions">
-          <div className="content-page-title">
-            <Typography variant="h5" className="page-header">Administrar Actividades</Typography>
-            <span className="page-subtitle">Aqui podras gestionar los actividades del sistema.</span>
-          </div>
-        </div>
-
-        <div className="main-center-container">
-          <div className="panel-heading"> Listado de Actividades
-            <Button className="btn-create" onClick={() => handleClickOpen()}>
-              Crear Actividad
-            </Button>
-          </div>
-          <Table>
-            <TableRow header>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-            {actitivies.map((activity: any) => {
-              return (
-                <TableRow key={activity._id}>
-                  <TableCell>{activity?.name}</TableCell>
-                  <TableCell>{activity?.description}</TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={2}>
-                      <EditIcon
-                        onClick={() => handleClickOpen(activity?._id)}
-                        className="action-item-icon action-item-icon-edit">
-                      </EditIcon>
-
-                      <ClearIcon
-                        onClick={() => deleteFromlist(activity)}
-                        className="action-item-icon action-item-icon-delete">
-                      </ClearIcon>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </Table>
-        </div>
-        {openDialog && (
+    <>
+    <ListView
+      sectionTitle="Administrar Actividades"
+      sectionDescription="Aquí podras gestionar las actividades del sistema."
+      createButtonText="Crear actividad"
+      listTitle="Listado de Actividades"
+      openToast={false}
+      toastMessage={ERROR_MESSAGES.GET_ACTIVITIES_ERROR}
+      toastSeverity={SEVERITY_TOAST.ERROR}
+      isLoading={isLoading}
+      columnHeaders={columnAndRowkeys}
+      listContent={actitivies}
+      totalPages={totalPages}
+      handleCreatebutton={() => handleClickOpen()}
+      hanldeSearchFunction={(data) => getActivitiesList(data)}
+      hanldeVoidInputFunction={() => getActivitiesList()}
+      handleCloseToast={() => setToastGetBeneficiariesError(false)}
+      handleEdit={(event) => handleClickOpen(event)}
+      handleDelete={(param) => deleteFromlist(param)}
+      handlePaginationChange={(data) => getActivitiesList('', data)}
+    />
+    {openDialog && (
         <SimpleDialog
           title="Eliminar asociacion"
           bodyContent="¿Está seguro que desea eliminar esta asociacion?"
@@ -114,10 +102,7 @@ function ActivityList() {
           open={openDialog}
         ></SimpleDialog>
       )}
-      </div>
-
-      : <LoadingComponent></LoadingComponent>
-
+    </>
   );
 }
 

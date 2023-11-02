@@ -22,10 +22,17 @@ export async function updateAttendance(id: string, info :any) {
     return response;
 }
 
-export async function getAllActivities() {
-    const response = await activity.get('/activities');
+export async function getAllActivities(
+    queryString?: string,
+    page: number = 1,
+    perPage: number = 20
+  ) {
+    const params = `page=${page}&perPage=${perPage}${
+      queryString ? `&queryString=${queryString}` : ""
+    }`;
+    const response = await activity.get("/activities/?" + params);
     return response;
-}
+  }
 
 
 export async function deleteActivities(activityId: any) {
