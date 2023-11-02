@@ -47,8 +47,8 @@ function ActivityList() {
     }
   }
 
-  const handleClickOpen = (id?: string) => {
-    const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}`
+  const handleClickOpen = (activity?: any) => {
+    const redirectTo = activity?._id ? `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}/${activity?._id}` : `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}`
     navigate(redirectTo);
   };
 

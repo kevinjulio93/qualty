@@ -49,7 +49,7 @@ const ItemForm = forwardRef((props: any, ref) => {
           label="Nombre del item"
           onChange={(e) => formHanlder(e)}
           value={item?.name || ""}
-          key="item-input"
+          key="item-input-name"
         />
         <TextField
           className="login-view__login-form__form-container__input"
@@ -60,7 +60,7 @@ const ItemForm = forwardRef((props: any, ref) => {
           label="Código de item"
           onChange={(e) => formHanlder(e)}
           value={item?.code || ""}
-          key="item-input"
+          key="item-input-code"
         />
         <TextField
           className="login-view__login-form__form-container__input"
@@ -71,7 +71,7 @@ const ItemForm = forwardRef((props: any, ref) => {
           label="Valor de item"
           onChange={(e) => formHanlder(e)}
           value={item?.value || ""}
-          key="item-input"
+          key="item-input-value"
         />
       </form>
     </>
