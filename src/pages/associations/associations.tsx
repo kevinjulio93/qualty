@@ -124,10 +124,10 @@ function Associations() {
   return (
     <>
     <ListView
-      sectionTitle="Administrar Actividades"
-      sectionDescription="Aquí podras gestionar las actividades del sistema."
-      createButtonText="Crear actividad"
-      listTitle="Listado de Actividades"
+      sectionTitle="Administrar Asociaciones"
+      sectionDescription="Aquí podras gestionar las asociaciones del sistema."
+      createButtonText="Crear asociaciones"
+      listTitle="Listado de Asociaciones"
       openToast={false}
       toastMessage={ERROR_MESSAGES.GET_ACTIVITIES_ERROR}
       toastSeverity={SEVERITY_TOAST.ERROR}

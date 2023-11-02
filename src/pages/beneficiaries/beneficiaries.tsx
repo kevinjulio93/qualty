@@ -24,6 +24,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
+import { getAssociationsByCommunity, getComunaByMunicipie, getDepartments, getMunicipies } from "../../services/activities.service";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -91,16 +92,6 @@ function Beneficiaries() {
     {label:"Femenino",value:"Femenino"},
     {label:"Otro",value:"Otro"},
   ];
-
-  const comuna = useSelector(
-    (state: RootState) => state.references.references?.communities
-  );
-  const asociacion = useSelector(
-    (state: RootState) => state.references.references?.associations
-  );
-  const municipios = useSelector(
-    (state: RootState) => state.references.references?.municipalities
-  );
   const eps = useSelector(
     (state: RootState) => state.references.references?.eps
   );
@@ -109,9 +100,6 @@ function Beneficiaries() {
   const [isSisbenValid, setIsSisbenValid] = useState(true);
   const [isVictimArmedConflict, setIsVictimArmedConflict] = useState(true);
   const [optionsEps, setOptionsEps] = useState([]);
-  const [optionsMunicipality, setOptionsMunicipality] = useState([]);
-  const [optionsComuna, setOptionsComuna] = useState([]);
-  const [optionsAsociacion, setOptionsAsociacion] = useState([]);
   const [selectedTab, setSelectedTab] = useState("1");
   const [cedFront, setCedFront] = useState(null);
   const [cedBack, setCedBack] = useState(null);
@@ -124,6 +112,11 @@ function Beneficiaries() {
   const webcamRef=useRef(null);
   const [typeSupport,setTypeSupport]=useState(null);
   const [files,setFiles]=useState([]);
+  const [departmentsList, setDepartmentsList] = useState([]);
+  const [municipiesList, setMunicipiesList] = useState([]);
+  const [communityList, setCommunityList] = useState([]);
+  const [associationsList, setAssociations] = useState([]);
+  const [selectedDep, setSelectedDep] = useState(null);
   const navigate=useNavigate();
 
   useEffect(() => {
@@ -131,9 +124,7 @@ function Beneficiaries() {
       getBeneficiary();
     }
     getOptionsEps();
-    getOptionsMunicipality();
-    getOptionsComuna();
-    getOptionsAsociacion();
+    getDepartamentsList();
   }, []);
 
 
@@ -149,36 +140,24 @@ function Beneficiaries() {
     }
   };
 
+  const getDepartamentsList = async () => {
+    try {
+        const response = await getDepartments();
+        if (response && response.length > 0) {
+            setDepartmentsList(response);
+        }
+    } catch (error) {
+        setDepartmentsList([]);
+
+    }
+}
+
   const setFilesBen = (data) => {
     setDocEps(data?.fosiga_url);
     setCedBack(data?.id_back);
     setCedFront(data?.id_front);
     setDocReg(data?.registry_doc_url);
     setDocSis(data?.sisben_url);
-  }
-
-  const getOptionsAsociacion=()=>{
-    let list:any=[];
-    asociacion.map((item:any)=>{
-      list=[...list,{label:item.name,value:item._id}];
-    });
-    setOptionsAsociacion(list);
-  }
-
-  const getOptionsComuna=()=>{
-    let list:any=[];
-    comuna.map((item:any)=>{
-      list=[...list,{label:item.name,value:item._id}];
-    });
-    setOptionsComuna(list);
-  }
-
-  const getOptionsMunicipality=()=>{
-    let list:any=[];
-    municipios.map((item:any)=>{
-      list=[...list,{label:item.name,value:item._id}];
-    });
-    setOptionsMunicipality(list);
   }
 
   const getOptionsEps=()=>{
@@ -194,7 +173,7 @@ function Beneficiaries() {
       setBeneficiarie({ ...beneficiarie, [target]: data});
     }else{
       if (target === "is_victim_armed_conflict")setIsVictimArmedConflict(!isVictimArmedConflict);
-      const value = e.target.value;
+      const value = e.label ? e.value : e;
       setBeneficiarie({ ...beneficiarie, [target]: value });
       if (target === "sisben_score") setIsSisbenValid(sisbenRegex.test(value));
     }
@@ -334,6 +313,48 @@ function Beneficiaries() {
     setOpenCamaraSupports(false);
   }
 
+  const getMunicipiesList = async (department: any) => {
+    try {
+        setSelectedDep(department);
+        const response = await getMunicipies(department?.id);
+        if (response && response.length > 0) {
+            setMunicipiesList(response);
+            setBeneficiarie({ ...beneficiarie, municipality: null });
+            setBeneficiarie({ ...beneficiarie, community: null });
+            setBeneficiarie({ ...beneficiarie, association: null });
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const getCommunities = async (target, municipality: any) => {
+    try {
+        formHanlder(target, municipality);
+        const response = await getComunaByMunicipie(municipality?.id);
+        if (response.status === 200) {
+            setCommunityList(response.result.data);
+            setBeneficiarie({ ...beneficiarie, community: null });
+            setBeneficiarie({ ...beneficiarie, association: null });
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const getAssociations = async (target, community: any) => {
+    try {
+      formHanlder(target, community);
+        const response = await getAssociationsByCommunity(community?._id);
+        if (response.status === 200) {
+            setAssociations(response.result.data);
+            setBeneficiarie({ ...beneficiarie, association: null });
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
   return (
     <>
       <section className="beneficiaries-container">
@@ -378,7 +399,7 @@ function Beneficiaries() {
                     label="Tipo de documento"
                     options={documentTypes}
                     targetKey="identification_type"
-                    handleValue={formHanlder}
+                    handleValue={(value) => formHanlder("identification_type", value)}
                   />
                 </div>
 
@@ -493,17 +514,16 @@ function Beneficiaries() {
                     />
                   </div>
 
-                  <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                    <TextField
-                      id="departamentoresidencia"
-                      className="beneficiaries-container__form-section__beneficiarie__form__field__input"
-                      name="departamentoresidencia"
-                      placeholder="Norte de Santander"
-                      type="text"
-                      label="Departamento de Residencia"
-                      onChange={(e) => formHanlder("residence_department", e)}
-                      value={(beneficiarie as any)?.residence_department || ""}
-                    />
+                  <div className='beneficiaries-container__form-section__beneficiarie__form__field'>
+                      <SelectDropdown
+                          selectValue={(beneficiarie as any)?.residence_department?.id}
+                          label="Departamento de residencia"
+                          options={departmentsList}
+                          keyLabel='name'
+                          keyValue='id'
+                          targetKey='residence_department'
+                          handleValue={(value) => formHanlder("residence_department", value)}
+                      />
                   </div>
 
                   <div className="beneficiaries-container__form-section__beneficiarie__form__field">
@@ -525,7 +545,7 @@ function Beneficiaries() {
                       label="Género"
                       options={optionsGender}
                       targetKey="gender"
-                      handleValue={formHanlder}
+                      handleValue={(value) => formHanlder("gender", value)}
                     />
                   </div>
 
@@ -535,7 +555,7 @@ function Beneficiaries() {
                       label="Estado Civil"
                       options={optionsCivilStatus}
                       targetKey="civil_status"
-                      handleValue={formHanlder}
+                      handleValue={(value) => formHanlder("civil_status", value)}
                     />
                   </div>
 
@@ -545,7 +565,7 @@ function Beneficiaries() {
                       label="Pertenencia Étnica"
                       options={optionsEthnicity}
                       targetKey="ethnicity"
-                      handleValue={formHanlder}
+                      handleValue={(value) => formHanlder("ethnicity", value)}
                     />
                   </div>
 
@@ -555,7 +575,7 @@ function Beneficiaries() {
                       label="Nivel Educativo"
                       options={optionsEducationLevel}
                       targetKey="education_level"
-                      handleValue={formHanlder}
+                      handleValue={(value) => formHanlder("education_level", value)}
                     />
                   </div>
 
@@ -565,7 +585,7 @@ function Beneficiaries() {
                       label="Ocupación"
                       options={optionsOcupation}
                       targetKey="ocupation"
-                      handleValue={formHanlder}
+                      handleValue={(value) => formHanlder("ocupation", value)}
                     />
                   </div>
 
@@ -575,57 +595,67 @@ function Beneficiaries() {
                       label="Discapacidad"
                       options={optionsDisability}
                       targetKey="disability"
-                      handleValue={formHanlder}
+                      handleValue={(value) => formHanlder("disability", value)}
                     />
                   </div>
 
-                  <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                    <SelectDropdown
-                      selectValue={(beneficiarie as any)?.municipality}
-                      label="Municipios"
-                      options={optionsMunicipality}
-                      keyLabel="name"
-                      // keyValue="_id"
-                      targetKey="municipality"
-                      handleValue={formHanlder}
-                    />
+                  <div className='activities-container__form-section__assitants__form-2__field'>
+                      <SelectDropdown
+                          selectValue={selectedDep?.id}
+                          label="Departamento"
+                          options={departmentsList}
+                          keyLabel='name'
+                          keyValue='id'
+                          targetKey='department'
+                          handleValue={(value) => getMunicipiesList(value)}
+                      />
+                  </div>
+                  <div className='activities-container__form-section__assitants__form-2__field'>
+                      <SelectDropdown
+                          selectValue={(beneficiarie as any)?.municipality?.id}
+                          label="Municipio"
+                          options={municipiesList}
+                          keyLabel='name'
+                          keyValue='id'
+                          targetKey='municipality'
+                          handleValue={(value) => getCommunities("municipality", value)}
+                      />
                   </div>
 
-                  <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                    <SelectDropdown
-                      selectValue={(beneficiarie as any)?.community}
-                      label="Comuna"
-                      options={optionsComuna}
-                      keyLabel="name"
-                      keyValue="_id"
-                      targetKey="community"
-                      handleValue={formHanlder}
-                    />
+                  <div className='activities-container__form-section__assitants__form-2__field'>
+                      <SelectDropdown
+                          selectValue={(beneficiarie as any)?.community?._id}
+                          label="Comuna"
+                          options={communityList}
+                          keyLabel='name'
+                          keyValue='_id'
+                          targetKey='community'
+                          handleValue={(value) => getAssociations("community", value)}
+                      />
                   </div>
 
-                  <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                    <SelectDropdown
-                      selectValue={(beneficiarie as any)?.association}
-                      label="Asociación"
-                      options={optionsAsociacion}
-                      keyLabel="name"
-                      keyValue="_id"
-                      targetKey="association"
-                      handleValue={formHanlder}
-                    />
+                  <div className='activities-container__form-section__assitants__form-2__field'>
+                      <SelectDropdown
+                          selectValue={(beneficiarie as any)?.association?._id}
+                          label="Asociacion"
+                          options={associationsList}
+                          keyLabel='name'
+                          keyValue='_id'
+                          targetKey='association'
+                          handleValue={(value) => formHanlder("association", value)}
+                      />
                   </div>
 
-                  <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                    <TextField
-                      id="departamentosisben"
-                      className="beneficiaries-container__form-section__beneficiarie__form__field__input"
-                      name="departamentosisben"
-                      placeholder="Norte de Santander"
-                      type="text"
-                      label="Departamento de SISBEN"
-                      onChange={(e) => formHanlder("sisben_department", e)}
-                      value={(beneficiarie as any)?.sisben_department || ""}
-                    />
+                  <div className='beneficiaries-container__form-section__beneficiarie__form__field'>
+                      <SelectDropdown
+                          selectValue={(beneficiarie as any)?.sisben_department?.id}
+                          label="Departamento de SISBEN"
+                          options={departmentsList}
+                          keyLabel='name'
+                          keyValue='id'
+                          targetKey='sisben_department'
+                          handleValue={(value) => formHanlder("sisben_department", value)}
+                      />
                   </div>
 
                   <div className="beneficiaries-container__form-section__beneficiarie__form__field">
@@ -660,7 +690,7 @@ function Beneficiaries() {
                       label="Régimen de Salud"
                       options={optionsRegimenHealth}
                       targetKey="health_regimen"
-                      handleValue={formHanlder}
+                      handleValue={(value) => formHanlder("health_regimen", value)}
                     />
                   </div>
 
