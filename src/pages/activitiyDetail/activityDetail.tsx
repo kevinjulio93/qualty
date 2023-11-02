@@ -162,7 +162,7 @@ function ActivityDetail() {
                 <header className="activities-container__actions">
                     <div className="content-page-title">
                         <Typography variant="h5" className="page-header">{title} Actividad</Typography>
-                        <span className="page-subtitle">Aqui podras gestionar los usuarios del sistema.</span>
+                        <span className="page-subtitle">Aqui podrás gestionar las actividades del sistema.</span>
                     </div>
                 </header>
 

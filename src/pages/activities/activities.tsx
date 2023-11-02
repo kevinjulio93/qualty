@@ -47,8 +47,8 @@ function ActivityList() {
     }
   }
 
-  const handleClickOpen = (id?: string) => {
-    const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}`
+  const handleClickOpen = (activity?: any) => {
+    const redirectTo = activity._id ? `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}/${activity._id}` : `${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES}`
     navigate(redirectTo);
   };
 
@@ -73,7 +73,7 @@ function ActivityList() {
     <>
     <ListView
       sectionTitle="Administrar Actividades"
-      sectionDescription="Aquí podras gestionar las actividades del sistema."
+      sectionDescription="Aquí podrás gestionar las actividades del sistema."
       createButtonText="Crear actividad"
       listTitle="Listado de Actividades"
       openToast={false}
@@ -93,8 +93,8 @@ function ActivityList() {
     />
     {openDialog && (
         <SimpleDialog
-          title="Eliminar asociacion"
-          bodyContent="¿Está seguro que desea eliminar esta asociacion?"
+          title="Eliminar actividad"
+          bodyContent="¿Está seguro que desea eliminar esta actividad?"
           mainBtnText="Confirmar"
           secondBtnText="Cancelar"
           mainBtnHandler={confirmDelete}

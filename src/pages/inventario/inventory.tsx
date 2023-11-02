@@ -3,7 +3,7 @@ import "./inventory.scss";
 import {
   getAllItems,updateItem,createItem,deleteItem
 } from "../../services/inventory.service";
-import { Pagination, Stack, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination, Stack, Typography } from "@mui/material";
 import Modal from "../../components/modal/modal";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,6 +25,8 @@ function Inventory() {
   const [toastGetItemsError, setToastGetItemsError] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
+  const [openDialogMessage,setOpenDialogMessage]=useState(false);
+  const [messageDialog,setMessageDialog]=useState("");
 
   const modalRef = useRef(null);
 
@@ -49,12 +51,26 @@ function Inventory() {
     setCurrentItem(null);
   };
 
+  const isValidUpdate=(item)=>{
+    const filterItems=items.filter((it)=>currentItem.code.trim().toLowerCase()!==it.code.trim().toLowerCase() && currentItem.name.trim().toLowerCase()!==it.name.trim().toLowerCase());
+    const itemFound=filterItems.find((it)=>item.code.trim().toLowerCase()===it.code.trim().toLowerCase() || item.name.trim().toLowerCase()===it.name.trim().toLowerCase());
+    if(!itemFound){
+      return true;
+    }
+    return false;
+  }
+
   const updateData = async () => {
     if (itemRef.current !== null) {
       const item = (itemRef.current as any).getItem();
-      await updateItem(item);
-      setIsLoading(true);
-      getItems();
+      if(isValidUpdate(item)){
+        await updateItem(item);
+        setIsLoading(true);
+        getItems();
+      }else{
+        setMessageDialog("Existe un articulo con los datos ingresados");
+        handlerOpenDialogMessage();
+      }
     }
     setCurrentItem(null);
   };
@@ -62,11 +78,17 @@ function Inventory() {
   const saveData = async () => {
     if (itemRef.current !== null) {
       const item = (itemRef.current as any).getItem();
-      await createItem(item);
-      setIsLoading(true);
-      getItems();
+      const itemFound=items.find((it)=>it.code===item.code || it.name.toLowerCase()===item.name.toLowerCase());
+      if(!itemFound){
+        await createItem(item);
+        setIsLoading(true);
+        getItems();
+      }else{
+        setMessageDialog("Ya este articulo existe en el sistema");
+        handlerOpenDialogMessage();
+      }
+      setCurrentItem(null);
     }
-    setCurrentItem(null);
   };
 
   const handleEditAction = (item) => {
@@ -92,21 +114,25 @@ function Inventory() {
     setOpenDialog(false);
   };
 
+  const handlerOpenDialogMessage=()=>{
+    setOpenDialogMessage(!openDialogMessage);
+  }
+
   return (
     <div className="inventary-container">
       <div className="inventary-container__actions">
         <div className="content-page-title">
           <Typography variant="h5" className="page-header">
-            Administrar Items
+            Administrar artículos
           </Typography>
           <span className="page-subtitle">
-            Aqui podrás gestionar los articulos (items) de las bodegas del sistema.
+            Aqui podrás gestionar los artículos de las bodegas del sistema.
           </span>
         </div>
         <Modal
           className="btn-create"
-          buttonText="Crear Item"
-          title="Crear item"
+          buttonText="Crear artículo"
+          title="Crear artículo"
           ref={modalRef}
           modalClose={onCloseModal}
           saveMethod={currentItem ? updateData : saveData}
@@ -116,9 +142,9 @@ function Inventory() {
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
-          Listado de items
+          Listado de artículos
           <Search
-            label="Buscar item"
+            label="Buscar artículo"
             searchFunction={async (value: string) => {
               try {
                 const { result } = await getAllItems(value);
@@ -158,7 +184,7 @@ function Inventory() {
                         {item.code}
                       </TableCell>
                       <TableCell>
-                        {item.value}
+                        $ {item.value >0 ? item.value:0}
                       </TableCell>
                       <TableCell>
                         <Stack
@@ -208,6 +234,19 @@ function Inventory() {
           open={openDialog}
         ></SimpleDialog>
       )}
+      <Dialog open={openDialogMessage} >
+        <DialogTitle>Mensaje</DialogTitle>
+        <DialogContent>
+        <DialogContentText>
+            {messageDialog}
+        </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button  onClick={()=>handlerOpenDialogMessage()} color="primary">
+            Aceptar
+        </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
