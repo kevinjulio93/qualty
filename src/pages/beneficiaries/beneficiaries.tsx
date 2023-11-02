@@ -319,9 +319,7 @@ function Beneficiaries() {
         const response = await getMunicipies(department?.id);
         if (response && response.length > 0) {
             setMunicipiesList(response);
-            setBeneficiarie({ ...beneficiarie, municipality: null });
-            setBeneficiarie({ ...beneficiarie, community: null });
-            setBeneficiarie({ ...beneficiarie, association: null });
+            setBeneficiarie({ ...beneficiarie, community: null, association: null, municipality: null });
         }
     } catch (error) {
         console.error(error);
@@ -330,12 +328,10 @@ function Beneficiaries() {
 
 const getCommunities = async (target, municipality: any) => {
     try {
-        formHanlder(target, municipality);
         const response = await getComunaByMunicipie(municipality?.id);
         if (response.status === 200) {
             setCommunityList(response.result.data);
-            setBeneficiarie({ ...beneficiarie, community: null });
-            setBeneficiarie({ ...beneficiarie, association: null });
+            setBeneficiarie({ ...beneficiarie, community: null, association: null, [target]: municipality });
         }
     } catch (error) {
         console.error(error);
@@ -348,7 +344,7 @@ const getAssociations = async (target, community: any) => {
         const response = await getAssociationsByCommunity(community?._id);
         if (response.status === 200) {
             setAssociations(response.result.data);
-            setBeneficiarie({ ...beneficiarie, association: null });
+            setBeneficiarie({ ...beneficiarie, association: null, [target]: community });
         }
     } catch (error) {
         console.error(error);
