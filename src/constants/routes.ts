@@ -21,5 +21,6 @@ export const ROUTES = {
     REPRESENTATIVES: "representantives",
     DELIVERY_LIST: "delivery-list",
     DELIVERY: "delivery",
-    EVENTS: 'events'
+    EVENTS_LIST: 'events-list',
+    EVENTS: 'events',
 }
