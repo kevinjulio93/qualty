@@ -223,11 +223,7 @@ const AssociationForm = forwardRef((props: any, ref) => {
                 : "";
             })()}
             label="Departamento"
-            options={departmentsList.sort(({ name: a }, { name: b }) => {
-              if (a > b) return 1;
-              if (a < b) return -1;
-              return 0;
-            })}
+            options={departmentsList}
             keyLabel="name"
             keyValue="id"
             targetKey="department"
@@ -244,11 +240,7 @@ const AssociationForm = forwardRef((props: any, ref) => {
                 : "";
             })()}
             label="Municipio"
-            options={municipiesList.sort(({ name: a }, { name: b }) => {
-              if (a > b) return 1;
-              if (a < b) return -1;
-              return 0;
-            })}
+            options={municipiesList}
             keyLabel="name"
             keyValue="id"
             targetKey="municipality"

@@ -4,8 +4,6 @@
 import { Button, Paper, TextField, Typography,Checkbox, FormControlLabel ,Autocomplete, Tabs, Tab, Box, Stack, Card, CardMedia, CardContent, CardActions} from "@mui/material";
 import "./beneficiaries.scss";
 import SelectDropdown from "../../components/select";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
 import { useEffect, useRef, useState } from "react";
 import WebcamCapture from "./capture";
 import DPersonaReader from "./dpersonaReader";
