@@ -69,24 +69,34 @@ function Delivery () {
         const currentEvent = eventArray.find(item => item.name === selected);
         setSelectedEvent(currentEvent);
         console.log(currentEvent);
-        //setItemList(currentEvent.associated_winery?.inventory);
-        const inventory = [
-            { name: "Silla de ruedas", code: "001", value: "$120.000" },
-            { name: "Bastones", code: "002", value: "$150.000" },
-            { name: "Protesis dentales", code: "003", value: "$20.000" },
-            { name: "Gafas", code: "004", value: "$12.000" },
-        ];
+        const inventory = currentEvent.associated_winery?.inventory;
+        setItemList(inventory);
         const newCounts = new Array(inventory.length).fill(0);
         setCounters(newCounts);
-        setItemList(inventory);
     }
 
     const handleAddAction = async(item) => {
         setSelectedBen(item);
     }
 
+    const getFinalItemList = () => {
+        const finalList = [];
+        itemList.forEach((item, i) => {
+            if (counters[i] > 0) finalList.push({
+                item: item._id,
+                quantity: counters[i],
+            });
+        });
+        return finalList;
+    }
+
     const saveDelivery = async () => {
-        console.log(selectedEvent);
+        const currentEvent = {
+            beneficiary: selectedBen._id,
+            event: selectedEvent._id,
+            itemList: getFinalItemList(),
+        };
+        console.log(currentEvent);
     }
 
     const addCounter = (i) => {
