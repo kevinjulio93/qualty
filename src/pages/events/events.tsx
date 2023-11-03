@@ -1,23 +1,28 @@
 import { useNavigate } from "react-router-dom";
 import "./events.scss";
-import { ROUTES } from "../../constants/routes";;
+import { ROUTES } from "../../constants/routes";
 import { useEffect, useState } from "react";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
 import { deleteEvent, getAllEvents } from "../../services/events.service";
 import ListView from "../../components/list-view/list-view";
+import dayjs, { Dayjs } from "dayjs";
+import { SimpleDialog } from "../../components/dialog/dialog";
 
 function EventList() {
   const columnAndRowkeys = [
-    { label: 'Nombre', rowKey: 'name' }, 
-    { label: 'Fecha de ejecución', rowKey: 'execution_date' }, 
-    { label: 'Asistencia estimada', rowKey: 'estimate_attendance' }
-  ]
+    { label: "Nombre", rowKey: "name" },
+    { label: "Fecha de ejecución", rowKey: "execution_date" },
+    { label: "Asistencia estimada", rowKey: "estimate_attendance" },
+  ];
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [toastGetBeneficiariesError, setToastGetBeneficiariesError] = useState(false);
+  const [currentEvn, setCurrentEvn] = useState(null);
+  const [toastGetBeneficiariesError, setToastGetBeneficiariesError] =
+    useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,15 +30,20 @@ function EventList() {
     getEvents();
   }, []);
 
-
-  const getEvents = async (search?: string, page:number = 1) => {
+  const getEvents = async (search?: string, page: number = 1) => {
     setIsLoading(true);
     try {
-      const { result } = await getAllEvents(search, page );
+      const { result } = await getAllEvents(search, page);
       setDataLastSearch(search);
       const { data: events } = result;
-      const { data: eventList, totalPages } = events
-      setEvents(eventList);
+      const { data: eventList, totalPages } = events;
+      const mappedList = eventList.map((event) => {
+        return {
+          ...event,
+          execution_date: dayjs(event.execution_date).format("L"),
+        };
+      });
+      setEvents(mappedList);
       setTotalPages(totalPages);
       setIsLoading(false);
     } catch (err) {
@@ -42,7 +52,7 @@ function EventList() {
   };
 
   const handleClickOpen = (event?: any) => {
-    const id = event?._id  ?? undefined;
+    const id = event?._id ?? undefined;
     const redirectTo = id
       ? `${ROUTES.DASHBOARD}/${ROUTES.EVENTS}/${id}`
       : `${ROUTES.DASHBOARD}/${ROUTES.EVENTS}`;
@@ -60,27 +70,59 @@ function EventList() {
     }
   };
 
+  const deleteFromlist = async (act: string) => {
+    setCurrentEvn(act);
+    setOpenDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    setOpenDialog(false);
+    await deleteBeneficiaryFromList((currentEvn as any)._id);
+    setCurrentEvn(null);
+    getEvents()
+  };
+
+  const cancelDelete = () => {
+    setCurrentEvn(null);
+    setOpenDialog(false);
+  };
+
+
   return (
-    <ListView
-      sectionTitle="Administrar Eventos"
-      sectionDescription="Aqui podras gestionar los eventos del sistema."
-      createButtonText="Crear evento"
-      listTitle="Listado de Eventos"
-      openToast={false}
-      toastMessage={ERROR_MESSAGES.GET_EVENTS_ERROR}
-      toastSeverity={SEVERITY_TOAST.ERROR}
-      isLoading={isLoading}
-      columnHeaders={columnAndRowkeys}
-      listContent={events}
-      totalPages={totalPages}
-      handleCreatebutton={() => handleClickOpen()}
-      hanldeSearchFunction={(data) => getEvents(data)}
-      hanldeVoidInputFunction={() => getEvents()}
-      handleCloseToast={() => setToastGetBeneficiariesError(false)}
-      handleEdit={(event) => handleClickOpen(event)}
-      handleDelete={(param) => deleteBeneficiaryFromList(param?._id)}
-      handlePaginationChange={(data) => getEvents('', data)}
-    />
+    <>
+      <ListView
+        sectionTitle="Administrar Eventos"
+        sectionDescription="Aqui podras gestionar los eventos del sistema."
+        createButtonText="Crear evento"
+        listTitle="Listado de Eventos"
+        openToast={false}
+        toastMessage={ERROR_MESSAGES.GET_EVENTS_ERROR}
+        toastSeverity={SEVERITY_TOAST.ERROR}
+        isLoading={isLoading}
+        columnHeaders={columnAndRowkeys}
+        listContent={events}
+        totalPages={totalPages}
+        handleCreatebutton={() => handleClickOpen()}
+        hanldeSearchFunction={(data) => getEvents(data)}
+        hanldeVoidInputFunction={() => getEvents()}
+        handleCloseToast={() => setToastGetBeneficiariesError(false)}
+        handleEdit={(event) => handleClickOpen(event)}
+        handleDelete={(param) => deleteFromlist(param)}
+        handlePaginationChange={(data) => getEvents("", data)}
+      />
+
+      {openDialog && (
+        <SimpleDialog
+          title="Eliminar asociacion"
+          bodyContent="¿Está seguro que desea eliminar este Evento ?"
+          mainBtnText="Confirmar"
+          secondBtnText="Cancelar"
+          mainBtnHandler={confirmDelete}
+          secondBtnHandler={cancelDelete}
+          open={openDialog}
+        ></SimpleDialog>
+      )}
+    </>
   );
 }
 
