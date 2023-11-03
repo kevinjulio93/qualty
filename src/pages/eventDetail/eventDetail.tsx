@@ -170,7 +170,7 @@ function EventDetail() {
       description: (event as any)?.description,
       execution_date: (event as any)?.execution_date,
       associated_winery: selectedBog._id,
-      estimate_attendance: 100,
+      estimate_attendance: (event as any)?.estimate_attendance,
       participatingAssociations: eventsAssociations.map(
         (asso) => asso?.association?.id ?? asso._id
       ),
@@ -187,12 +187,10 @@ function EventDetail() {
 
   const disableAssociationTable = () => {
     return (
-      !(event as any)?.name ||
-      (event as any)?.name === "" ||
-      !(event as any)?.execution_date ||
-      (event as any)?.execution_date === "" ||
-      !(event as any)?.description ||
-      (event as any)?.description === "" ||
+      (!(event as any)?.name || (event as any)?.name === "") ||
+      (!(event as any)?.execution_date || (event as any)?.execution_date === "") ||
+      (!(event as any)?.description || (event as any)?.description === "") ||
+      (!(event as any)?.estimate_attendance || (event as any)?.estimate_attendance === "") ||
       !selectedBog?._id
     );
   };
@@ -248,6 +246,17 @@ function EventDetail() {
               />
             </LocalizationProvider>
 
+            <TextField
+              className="activities-container__form-section__form-1__field"
+              id="estimate_attendance"
+              name="estimate_attendance"
+              placeholder="100"
+              type="number"
+              onChange={(e) => formHanlder("estimate_attendance", e)}
+              label="Aforo estimado"
+              value={(event as any)?.estimate_attendance || ""}
+            />
+
             <div className="activities-container__form-section__form-1__field">
               <SelectDropdown
                 selectValue={selectedBog?._id}
@@ -275,7 +284,7 @@ function EventDetail() {
             <form className="activities-container__form-section__assitants__form-2">
               <div className="activities-container__form-section__assitants__form-2__field">
                 <SelectDropdown
-                  selectValue={selectedDep?.id}
+                  selectValue={(selectedDep as any)?.id}
                   label="Departamento"
                   options={departmentsList}
                   keyLabel="name"
@@ -316,7 +325,7 @@ function EventDetail() {
                   keyLabel="name"
                   keyValue="_id"
                   targetKey="association"
-                  handleValue={(value, e) => setSelectedAso(value, e)}
+                  handleValue={(value) => setSelectedAso(value)}
                 />
               </div>
 
