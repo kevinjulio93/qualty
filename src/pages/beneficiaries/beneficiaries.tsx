@@ -24,6 +24,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 import { getAssociationsByCommunity, getComunaByMunicipie, getDepartments, getMunicipies } from "../../services/activities.service";
 import { epsList } from "../../constants/epsList";
+import { isEmpty } from "../../helpers/isEmpty";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -112,15 +113,49 @@ function Beneficiaries() {
   const [municipiesList, setMunicipiesList] = useState([]);
   const [communityList, setCommunityList] = useState([]);
   const [associationsList, setAssociations] = useState([]);
-  const [selectedDep, setSelectedDep] = useState(null);
+  const [forceRender, setForceRender] = useState(+ new Date());
   const navigate=useNavigate();
 
   useEffect(() => {
     if(beneficiarieId!==undefined){
+      getDepartamentsList();
       getBeneficiary();
+    } else {
+      getDepartamentsList();
     }
-    getDepartamentsList();
   }, []);
+
+  useEffect(() => {
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) getMuns();
+  }, [beneficiarie]);
+
+  useEffect(() => {
+    if (!isEmpty(beneficiarieId) && !isEmpty(municipiesList)) getComs();
+  }, [municipiesList]);
+
+  useEffect(() => {
+    if (!isEmpty(beneficiarieId) && !isEmpty(communityList)) getAsos();
+  }, [communityList]);
+
+  const getMuns = async() => {
+    const currentDep = getSelectedValueDep("residence_department");
+    if (currentDep === undefined) return;
+    const responseMuns = await getMunicipies(currentDep.id);
+    setMunicipiesList(responseMuns);
+  }
+
+  const getComs = async() => {
+    const currentMun = getSelectedValueMun("municipality");
+    if (currentMun === undefined) return;
+    const responseCom = await getComunaByMunicipie(currentMun.id);
+    setCommunityList(responseCom.result.data);
+  }
+
+  const getAsos = async () => {
+    const responseAso = await getAssociationsByCommunity((beneficiarie as any).community);
+    setAssociations(responseAso.result.data);
+    setForceRender(+ new Date());
+  }
 
 
   const getBeneficiary = async () => {
@@ -131,21 +166,10 @@ function Beneficiaries() {
         setFilesBen(response.result.data);
       }
     } catch (error) {
+      console.error(error);
       navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
     }
   };
-
-  const getDepartamentsList = async () => {
-    try {
-        const response = await getDepartments();
-        if (response && response.length > 0) {
-            setDepartmentsList(response);
-        }
-    } catch (error) {
-        setDepartmentsList([]);
-
-    }
-}
 
   const setFilesBen = (data) => {
     setDocEps(data?.fosiga_url);
@@ -301,13 +325,24 @@ function Beneficiaries() {
     setOpenCamaraSupports(false);
   }
 
-  const getMunicipiesList = async (department: any) => {
+  const getDepartamentsList = async () => {
     try {
-        setSelectedDep(department);
+        const response = await getDepartments();
+        if (response && response.length > 0) {
+            setDepartmentsList(response);
+        }
+    } catch (error) {
+        setDepartmentsList([]);
+
+    }
+  }
+
+  const getMunicipiesList = async (target: string, department: any) => {
+    try {
         const response = await getMunicipies(department?.id);
         if (response && response.length > 0) {
             setMunicipiesList(response);
-            setBeneficiarie({ ...beneficiarie, community: null, association: null, municipality: null });
+            setBeneficiarie({ ...beneficiarie, community: null, association: null, municipality: null, [target]: department.name });
         }
     } catch (error) {
         console.error(error);
@@ -510,31 +545,6 @@ const getSelectedValueMun = (key) => {
                     />
                   </div>
 
-                  <div className='beneficiaries-container__form-section__beneficiarie__form__field'>
-                      <SelectDropdown
-                          selectValue={getSelectedValueDep("residence_department")?.id}
-                          label="Departamento de residencia"
-                          options={departmentsList}
-                          keyLabel='name'
-                          keyValue='id'
-                          targetKey='residence_department'
-                          handleValue={(value) => formHanlder("residence_department", value.name)}
-                      />
-                  </div>
-
-                  <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                    <TextField
-                      id="direccion"
-                      className="beneficiaries-container__form-section__beneficiarie__form__field__input"
-                      name="direccion"
-                      placeholder="Dirección completa"
-                      type="text"
-                      label="Dirección"
-                      onChange={(e) => formHanlder("address", e)}
-                      value={(beneficiarie as any)?.address || ""}
-                    />
-                  </div>
-
                   <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                     <SelectDropdown
                       selectValue={(beneficiarie as any)?.gender}
@@ -595,17 +605,18 @@ const getSelectedValueMun = (key) => {
                     />
                   </div>
 
-                  <div className='activities-container__form-section__assitants__form-2__field'>
+                  <div className='beneficiaries-container__form-section__beneficiarie__form__field'>
                       <SelectDropdown
-                          selectValue={selectedDep?.id}
+                          selectValue={getSelectedValueDep("residence_department")?.id}
                           label="Departamento"
                           options={departmentsList}
                           keyLabel='name'
                           keyValue='id'
-                          targetKey='department'
-                          handleValue={(value) => getMunicipiesList(value)}
+                          targetKey='residence_department'
+                          handleValue={(value) => getMunicipiesList("residence_department", value)}
                       />
                   </div>
+
                   <div className='activities-container__form-section__assitants__form-2__field'>
                       <SelectDropdown
                           selectValue={getSelectedValueMun("municipality")?.id}
@@ -620,7 +631,7 @@ const getSelectedValueMun = (key) => {
 
                   <div className='activities-container__form-section__assitants__form-2__field'>
                       <SelectDropdown
-                          selectValue={(beneficiarie as any)?.community?._id}
+                          selectValue={(beneficiarie as any)?.community?._id || (beneficiarie as any)?.community}
                           label="Comuna"
                           options={communityList}
                           keyLabel='name'
@@ -632,7 +643,7 @@ const getSelectedValueMun = (key) => {
 
                   <div className='activities-container__form-section__assitants__form-2__field'>
                       <SelectDropdown
-                          selectValue={(beneficiarie as any)?.association?._id}
+                          selectValue={(beneficiarie as any)?.association?._id || (beneficiarie as any)?.association}
                           label="Asociacion"
                           options={associationsList}
                           keyLabel='name'
@@ -640,6 +651,19 @@ const getSelectedValueMun = (key) => {
                           targetKey='association'
                           handleValue={(value) => formHanlder("association", value)}
                       />
+                  </div>
+
+                  <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                    <TextField
+                      id="direccion"
+                      className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                      name="direccion"
+                      placeholder="Dirección completa"
+                      type="text"
+                      label="Dirección"
+                      onChange={(e) => formHanlder("address", e)}
+                      value={(beneficiarie as any)?.address || ""}
+                    />
                   </div>
 
                   <div className='beneficiaries-container__form-section__beneficiarie__form__field'>

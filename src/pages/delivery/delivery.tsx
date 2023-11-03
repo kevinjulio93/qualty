@@ -11,6 +11,7 @@ import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import { getAllEvents } from "../../services/events.service";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
+import { createDelivery } from "../../services/delivery.service";
 
 function Delivery () {
     const [events, setEvents] = useState([]);
@@ -84,7 +85,7 @@ function Delivery () {
         itemList.forEach((item, i) => {
             if (counters[i] > 0) finalList.push({
                 item: item._id,
-                quantity: counters[i],
+                amount: counters[i],
             });
         });
         return finalList;
@@ -97,6 +98,7 @@ function Delivery () {
             itemList: getFinalItemList(),
         };
         console.log(currentEvent);
+        await createDelivery(currentEvent);
     }
 
     const addCounter = (i) => {
@@ -228,9 +230,9 @@ function Delivery () {
                                     <Stack direction={"column"}>
                                         {itemList.map((item, i) => {
                                             return (
-                                                <Grid container spacing={2} key={item.name + '_' + i}>
+                                                <Grid container spacing={2} key={item.item.name + '_' + i}>
                                                     <Grid item xs={5}>
-                                                        <FormLabel component="legend">{item.name}</FormLabel>
+                                                        <FormLabel component="legend">{item.item.name}</FormLabel>
                                                     </Grid>
                                                     <Grid item xs={3}>
                                                         <Button
