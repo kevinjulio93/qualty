@@ -139,7 +139,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
       setRepresentative({
         ...props.currentRepresentative,
         role: props.currentRepresentative._id,
-        "identification-type": props.currentRepresentative.identification_type,
+        "identification_type": props.currentRepresentative.identification_type,
       });
     }
   };
@@ -147,7 +147,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
   const formHanlder = (
     target:
       | "name"
-      | "identification-type"
+      | "identification_type"
       | "identification"
       | "address"
       | "phone"
@@ -179,7 +179,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             label="Tipo de documento"
-            onChange={(e) => formHanlder("identification-type", e)}
+            onChange={(e) => formHanlder("identification_type", e)}
             value={representative.identification_type || ""}
           >
             {identificationTypes.length > 0 &&

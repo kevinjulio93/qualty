@@ -284,7 +284,7 @@ function EventDetail() {
             <form className="activities-container__form-section__assitants__form-2">
               <div className="activities-container__form-section__assitants__form-2__field">
                 <SelectDropdown
-                  selectValue={selectedDep?.id}
+                  selectValue={(selectedDep as any)?.id}
                   label="Departamento"
                   options={departmentsList}
                   keyLabel="name"
@@ -325,7 +325,7 @@ function EventDetail() {
                   keyLabel="name"
                   keyValue="_id"
                   targetKey="association"
-                  handleValue={(value, e) => setSelectedAso(value, e)}
+                  handleValue={(value) => setSelectedAso(value)}
                 />
               </div>
 
