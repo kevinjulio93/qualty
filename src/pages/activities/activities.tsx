@@ -7,6 +7,7 @@ import { SimpleDialog } from '../../components/dialog/dialog';
 import { ERROR_MESSAGES } from '../../constants/errorMessageDictionary';
 import { SEVERITY_TOAST } from '../../constants/severityToast';
 import ListView from '../../components/list-view/list-view';
+import dayjs, { Dayjs } from "dayjs";
 
 
 function ActivityList() {
@@ -35,7 +36,13 @@ function ActivityList() {
       if (response.status === 200) {
         setDataLastSearch(search);
       const { data: dataList, totalPages } = response.result;
-        setActivities(dataList);
+      const mappedList = dataList.map((event) => {
+        return {
+          ...event,
+          execution_date: dayjs(event.execution_date).format("L"),
+        };
+      });
+        setActivities(mappedList);
         setTotalPages(totalPages || 1);
         setIsLoading(false);
       } else {

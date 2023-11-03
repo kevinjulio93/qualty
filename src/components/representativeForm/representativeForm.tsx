@@ -197,7 +197,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
           id="identification"
           name="identification"
           placeholder="Nro. Documento"
-          type="text"
+          type="number"
           label="Nro. Documento"
           onChange={(e) => formHanlder("identification", e)}
           value={representative.identification || ""}
@@ -217,7 +217,7 @@ const RepresentativeForm = forwardRef((props: any, ref) => {
           id="phone"
           name="phone"
           placeholder="Telefono"
-          type="text"
+          type="number"
           label="Telefono"
           onChange={(e) => formHanlder("phone", e)}
           value={representative.phone || ""}
