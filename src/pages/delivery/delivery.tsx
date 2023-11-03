@@ -68,6 +68,7 @@ function Delivery () {
     const onSelectEvent = (_, selected) => {
         const currentEvent = eventArray.find(item => item.name === selected);
         setSelectedEvent(currentEvent);
+        console.log(currentEvent);
         //setItemList(currentEvent.associated_winery?.inventory);
         const inventory = [
             { name: "Silla de ruedas", code: "001", value: "$120.000" },

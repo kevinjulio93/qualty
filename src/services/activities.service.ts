@@ -1,3 +1,4 @@
+import { putElementAtFirst } from "../helpers/putElementAtFirst";
 import { FecthRequestModel } from "../models/request.model";
 
 const activity = FecthRequestModel.getInstance();
@@ -42,15 +43,15 @@ export async function deleteActivities(activityId: any) {
 
 export async function getDepartments() {
     const request = await fetch('https://api-colombia.com/api/v1/Department');
-    const departments = await request.json()
-    return departments;
-    
+    const departments = await request.json();
+
+    return putElementAtFirst(departments, "id", 23);
 }
 
 export async function getMunicipies(departmentId:string) {
     const request = await fetch(`https://api-colombia.com/api/v1/Department/${departmentId}/cities`);
     const municipies = await request.json()
-    return municipies;
+    return putElementAtFirst(municipies, "id", 870);
 }
 
 export async function getComunaByMunicipie(municipalityId:string) {
