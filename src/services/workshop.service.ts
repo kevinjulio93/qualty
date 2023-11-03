@@ -7,8 +7,8 @@ export async function createWorkshop(item:any) {
     return response;
 }
 
-export async function updateWorkshop(item:any) {
-    const response = await workshop.put('/workshops', item);
+export async function updateWorkshop(id, item:any) {
+    const response = await workshop.put(`/workshops/${id}`, item);
     return response;
 }
 

@@ -20,7 +20,6 @@ const AssociationForm = forwardRef((props: any, ref) => {
     address: "",
     coordinator_name: "",
     phones: "",
-    email: "",
     department: "",
     municipality: "",
     community: "",
@@ -46,11 +45,9 @@ const AssociationForm = forwardRef((props: any, ref) => {
 
   useEffect(() => {
     setCurrentAssociation();
-  }, []);
-
-  useEffect(() => {
     getDepartamentsList();
   }, []);
+
 
   const setCurrentAssociation = () => {
     if (props.currentAssociation) {
@@ -113,7 +110,6 @@ const AssociationForm = forwardRef((props: any, ref) => {
       | "address"
       | "coordinator_name"
       | "phones"
-      | "email"
       | "department"
       | "municipality"
       | "community"
@@ -196,20 +192,9 @@ const AssociationForm = forwardRef((props: any, ref) => {
           id="phones"
           name="phones"
           placeholder="Telefono"
-          type="text"
+          type="number"
           label="Telefono"
           onChange={(e) => formHanlder("phones", e)}
-          value={association.phones || ""}
-        />
-
-        <TextField
-          className="login-view__login-form__form-container__input"
-          id="email"
-          name="email"
-          placeholder="Correo"
-          type="text"
-          label="Correo"
-          onChange={(e) => formHanlder("email", e)}
           value={association.phones || ""}
         />
 
