@@ -9,6 +9,7 @@ export const enum SECTIONS {
   INVENTORY = "item",
   ASSOCIATIONS = "association",
   DELIVERY = "delivery",
+  PHYSICAL_DELIVERY = "physicalDelivery",
   WINERIES = "winerie",
   REPRESENTATIVE = "representant",
   STATS = "stats",

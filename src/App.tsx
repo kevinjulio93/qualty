@@ -30,6 +30,8 @@ import Assistance from './pages/assistance/assistance';
 import RatingList from './pages/ratings/ratingList';
 import Representatives from './pages/representatives/representatives';
 import DeliveryList from './pages/delivery/deliveryList';
+import PhysicalDeliveryList from './pages/physicalDelivery/physicalDeliveryList';
+import PhysicalDelivery from './pages/physicalDelivery/physicalDelivery';
 import Delivery from './pages/delivery/delivery';
 import EventList from './pages/events/events';
 import EventDetail from './pages/eventDetail/eventDetail';
@@ -129,6 +131,15 @@ function App() {
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.DELIVERY} element={<Delivery />} />
                 </Route>
+
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={"physical-delivery-list"} element={<PhysicalDeliveryList />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.CREATE] }} />}>
+                  <Route path={"physical-delivery"} element={<PhysicalDelivery />} />
+                  <Route path={"physical-delivery/:idDelivery"} element={<PhysicalDelivery />} />
+                </Route>
+
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.REPRESENTATIVES} element={<Representatives />} />
                 </Route>

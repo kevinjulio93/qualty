@@ -125,6 +125,17 @@ export const sectionList = [
     },
   },
   {
+    key: "entregas fisicas",
+    name: "Entregas físicas",
+    path: ROUTES.PHYSICAL_DELIVERY_LIST,
+    icon: "deliver",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.PHYSICAL_DELIVERY,
+      action: [PERMISSIONS.READ],
+    },
+  },
+  {
     key: "bodegas",
     name: "Bodegas",
     path: ROUTES.WINERIES_LIST,

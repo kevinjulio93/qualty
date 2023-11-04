@@ -20,6 +20,8 @@ export const ROUTES = {
     ASSOCIATIONS: "associations",
     REPRESENTATIVES: "representantives",
     DELIVERY_LIST: "delivery-list",
+    PHYSICAL_DELIVERY_LIST: "/physical-delivery-list",
+    PHYSICAL_DELIVERY: "/physical-delivery",
     DELIVERY: "delivery",
     EVENTS_LIST: 'events-list',
     EVENTS_ASSISTANCE: 'events-assistance',
