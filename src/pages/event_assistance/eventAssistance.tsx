@@ -44,25 +44,25 @@ function EventAssistance() {
     const checkRequirements=(ben:any)=>{
       let aux=0;
 
-      if(levelSisben.includes(ben?.sisben_score)===true){
+      if(ben?.sisben_score && levelSisben.includes(ben?.sisben_score)===true){
         aux+=1
       }else{
         setListMissingRequirements("Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1");
       }
 
-      if(ben?.sisben_department.includes("Norte de Santander")===true){
+      if(ben?.sisben_department && ben?.sisben_department.includes("Norte de Santander")===true){
         aux+=1
       }else{
         setListMissingRequirements("Tener sisben del Norte de Santander");
       }
 
-      if(regimeHealthList.includes(ben?.health_regimen)===true){
+      if(ben?.health_regimen && regimeHealthList.includes(ben?.health_regimen)===true){
         aux+=1
       }else{
         setListMissingRequirements("Tener regimen de salud Subsidiado o Cotizante beneficiario");
       }
 
-      if(isAgeBenValid(ben?.birthday)===true){
+      if(ben?.birthday && isAgeBenValid(ben?.birthday)===true){
         aux+=1
       }else{
         setListMissingRequirements("Mayor o igual a 60 años");

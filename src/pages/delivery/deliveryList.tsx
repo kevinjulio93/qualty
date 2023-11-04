@@ -26,6 +26,7 @@ function DeliveryList() {
         try {
           const { result } = await getAllDelivery();
           const { data: dataList, totalPages } = result.data;
+          console.log(dataList)
           setDelivery(dataList);
           setTotalPages(totalPages);
           setIsLoading(false);
@@ -99,7 +100,7 @@ function DeliveryList() {
                   {delivery.map((dev: any) => {
                     return (
                       <TableRow key={dev._id}>
-                        <TableCell>{dev?.event.name}</TableCell>
+                        <TableCell>{dev?.event?.name}</TableCell>
                         <TableCell>{dev?.createdAt}</TableCell>
                         <TableCell>{dev?.beneficiary?.first_name} {dev?.beneficiary?.first_last_name}</TableCell>
                         <TableCell>{dev?.author?.user_name}</TableCell>

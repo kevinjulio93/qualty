@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Autocomplete, Button, Card, FormLabel, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormLabel, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import './delivery.scss';
@@ -12,6 +12,8 @@ import { getAllEvents } from "../../services/events.service";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { createDelivery } from "../../services/delivery.service";
+import DoneIcon from '@mui/icons-material/Done';
+import WarningIcon from '@mui/icons-material/Warning';
 
 function Delivery () {
     const [events, setEvents] = useState([]);
@@ -23,6 +25,12 @@ function Delivery () {
     const [itemList, setItemList] = useState([]);
     const [counters, setCounters] = useState([]);
     const [forceRender, setForceRender] = useState(+ new Date());
+    const [levelSisben,setLevelSisben]=useState(["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"]);
+    const [regimeHealthList,setRegimeHealthList]=useState(["Subsidiado","Cotizante Beneficiario"]);
+    const [missingRequirements,setMissingRequirements]=useState([]);
+    const [openDialogMessage,setOpenDialogMessage]=useState(false);
+    const [openDialogRequeriment,setOpenDialogRequeriment]=useState(false);
+
     //const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,7 +38,60 @@ function Delivery () {
         getBens();
     }, [])
 
-    
+    const setListMissingRequirements=(message:string)=>{
+        const list=missingRequirements;
+        list.push(message);
+        setMissingRequirements(list);
+      }
+
+    function isAgeBenValid(date) {
+        date = new Date(date);
+        const fechaHace60Anios = new Date();
+        fechaHace60Anios.setFullYear(fechaHace60Anios.getFullYear() - 60);
+        return date <= fechaHace60Anios;
+      }
+
+      const checkRequirements=(ben:any)=>{
+        let aux=0;
+  
+        if(ben?.sisben_score && levelSisben.includes(ben?.sisben_score)===true){
+          aux+=1
+        }else{
+          setListMissingRequirements("Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1");
+        }
+  
+        if(ben?.sisben_department && ben?.sisben_department.includes("Norte de Santander")===true){
+          aux+=1
+        }else{
+          setListMissingRequirements("Tener sisben del Norte de Santander");
+        }
+  
+        if( ben?.health_regimen && regimeHealthList.includes(ben?.health_regimen)===true){
+          aux+=1
+        }else{
+          setListMissingRequirements("Tener regimen de salud Subsidiado o Cotizante beneficiario");
+        }
+  
+        if(ben?.birthday && isAgeBenValid(ben?.birthday)===true){
+          aux+=1
+        }else{
+          setListMissingRequirements("Mayor o igual a 60 años");
+        }
+  
+        if(aux===4){
+            aux=0;
+            return true;
+        }else{
+            aux=0;
+            return false;
+        }
+        
+      }
+
+    const handOpenDialogRequirement=()=>{
+        setOpenDialogRequeriment(!openDialogRequeriment);
+    }
+
     const getEvents = async () => {
         setIsLoading(true);
         try {
@@ -76,8 +137,18 @@ function Delivery () {
         setCounters(newCounts);
     }
 
+    const handOpenDialogMessage=()=>{
+        setOpenDialogMessage(!openDialogMessage);        
+    }
+
     const handleAddAction = async(item) => {
-        setSelectedBen(item);
+        missingRequirements.length=0;
+        setMissingRequirements(missingRequirements);
+        if(!checkRequirements(item)){
+            setOpenDialogMessage(true);
+        }else{
+            setSelectedBen(item);
+        }
     }
 
     const getFinalItemList = () => {
@@ -275,6 +346,50 @@ function Delivery () {
                         </Button>
                     }
                 </Paper>
+                <Dialog open={openDialogMessage} >
+                    <DialogTitle>Advertencia</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                    {
+                    missingRequirements.length > 0 ? 
+                      <>
+                        <h2>Requisitos necesarios para este beneficiario:</h2>
+                        {
+                          missingRequirements.map((requitement:string,index:number)=>{
+                            return <p key={index}>{index+1}. {requitement} <WarningIcon/></p>
+                          })
+                        }
+                      </>
+                    :""
+                  }
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={()=>handOpenDialogMessage()} color="primary">
+                        Aceptar
+                    </Button>
+                    <Button onClick={()=>handOpenDialogRequirement()} color="primary">
+                        Ver requisitos
+                    </Button>
+                    </DialogActions>
+                </Dialog>
+
+                <Dialog open={openDialogRequeriment} >
+                    <DialogTitle>Requisitos</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        <p>1. Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1</p>
+                        <p>2. Tener sisben del Norte de Santander</p>
+                        <p>3. Tener regimen de salud Subsidiado o Cotizante beneficiario</p>
+                        <p>4. Mayor o igual a 60 años</p>
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={()=>handOpenDialogRequirement()} color="primary">
+                        Aceptar
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </section>
         </>
     );
