@@ -5,6 +5,8 @@ import { ROUTES } from "../../constants/routes";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
+import userImage from '../../assets/user.png'
+
 import { useEffect, useState } from "react";
 import {
   deleteBeneficiary,
@@ -134,7 +136,7 @@ function BeneficiariesList() {
                     <TableCell>
                       <img
                         className="ben-foto"
-                        src={beneficiary.photo_url}
+                        src={beneficiary.photo_url?beneficiary.photo_url:userImage}
                         alt="foto"
                       />
                     </TableCell>
