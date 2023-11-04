@@ -41,41 +41,28 @@ function EventAssistance() {
     const [levelSisben,setLevelSisben]=useState(["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"]);
     const [regimeHealthList,setRegimeHealthList]=useState(["Subsidiado","Cotizante Beneficiario"]);
 
-    const [isAgeValid,setIsValidAge]=useState(false);
-    const [isSisbenNorteSantander,setIsSisbenNorteSantander]=useState(false);
-    const [isLevelSibenValid,setIsLevelSibenValid]=useState(false);
-    const [isRegimenValid,setIsRegimenValid]=useState(false);
-
-    useEffect(() => {
-      console.log(enableButtonAdd)
-    }, [enableButtonAdd]);
-
     const checkRequirements=(ben:any)=>{
       let aux=0;
 
       if(levelSisben.includes(ben?.sisben_score)===true){
-        setIsLevelSibenValid(true);
         aux+=1
       }else{
         setListMissingRequirements("Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1");
       }
 
       if(ben?.sisben_department.includes("Norte de Santander")===true){
-        setIsSisbenNorteSantander(true);
         aux+=1
       }else{
         setListMissingRequirements("Tener sisben del Norte de Santander");
       }
 
       if(regimeHealthList.includes(ben?.health_regimen)===true){
-        setIsRegimenValid(true);
         aux+=1
       }else{
         setListMissingRequirements("Tener regimen de salud Subsidiado o Cotizante beneficiario");
       }
 
       if(isAgeBenValid(ben?.birthday)===true){
-        setIsValidAge(true);
         aux+=1
       }else{
         setListMissingRequirements("Mayor o igual a 60 años");
@@ -196,16 +183,6 @@ function EventAssistance() {
       getEvents();
       getAllBeneficiaries();
     }, []);
-
-
-    // useEffect(() => {
-    //   if(isAgeValid === true && isSisbenNorteSantander === true && isLevelSibenValid===true &&  isRegimenValid===true){
-    //     setEnableButtonAdd(true);
-    //     console.log(isAgeValid,isSisbenNorteSantander,isLevelSibenValid,isRegimenValid)
-    //   }else{
-    //     setEnableButtonAdd(false);
-    //   }
-    // }, [isAgeValid,isSisbenNorteSantander,isLevelSibenValid,isRegimenValid]);
 
     return (
         <div className="users-container">
