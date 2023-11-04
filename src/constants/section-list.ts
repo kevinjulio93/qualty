@@ -26,6 +26,17 @@ export const sectionList = [
     },
   },
   {
+    key: "assistance",
+    name: "Asistencia",
+    path: ROUTES.EVENTS_ASSISTANCE,
+    icon: "beneficiaries",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.EVENTS,
+      action: [PERMISSIONS.READ],
+    },
+  },
+  {
     key: "valoraciones",
     name: "Valoraciones",
     path: ROUTES.RATING_LIST,

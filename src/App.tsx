@@ -33,6 +33,7 @@ import DeliveryList from './pages/delivery/deliveryList';
 import Delivery from './pages/delivery/delivery';
 import EventList from './pages/events/events';
 import EventDetail from './pages/eventDetail/eventDetail';
+import EventAssistance from './pages/event_assistance/eventAssistance';
 
 
 function App() {
@@ -67,6 +68,11 @@ function App() {
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.INVENTORY} element={<Inventory />} />
                 </Route>
+
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.EVENTS, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.EVENTS_ASSISTANCE} element={<EventAssistance />} />
+                </Route>
+
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.WINERIES_LIST} element={<WineriesList/>} />
                 </Route>
