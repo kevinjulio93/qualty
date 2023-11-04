@@ -165,8 +165,8 @@ function PhysicalDelivery () {
             <section className='delivery-container'>
                 <header className="delivery-container__actions">
                     <div className="content-page-title">
-                        <Typography variant="h5" className="page-header">Entregas físicas de bienes</Typography>
-                        <span className="page-subtitle">{physicalDeliveryEdit!==null ?  "Editar":"Generar"} entrega física.</span>
+                        <Typography variant="h5" className="page-header">Ordenes de bienes</Typography>
+                        <span className="page-subtitle">{physicalDeliveryEdit!==null ?  "Editar":"Generar"} registro.</span>
                     </div>
                 </header>
 
@@ -277,7 +277,7 @@ function PhysicalDelivery () {
                             className="btn-save-delivery"
                             onClick={() => saveDelivery()}
                             >
-                           {physicalDeliveryEdit!==null ?  "Guardar":"Generar"} entrega
+                           Guardar
                         </Button>
                         : ""
                     }

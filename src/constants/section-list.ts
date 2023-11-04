@@ -126,9 +126,9 @@ export const sectionList = [
   },
   {
     key: "entregas fisicas",
-    name: "Orden de entrega",
+    name: "Ordenes",
     path: ROUTES.PHYSICAL_DELIVERY_LIST,
-    icon: "deliver",
+    icon: "physicalDeliver",
     hasChilds: false,
     permission: {
       subject: SECTIONS.PHYSICAL_DELIVERY,

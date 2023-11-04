@@ -49,7 +49,7 @@ function PhysicalDeliveryList() {
             getDeliveryList();
         }
       } catch (error) {
-        setMessageDialog("Error al eliminar esta entrega");
+        setMessageDialog("Error al eliminar este registro");
         handDialogMessage();
       }
       handDialogMessage();
@@ -62,7 +62,7 @@ function PhysicalDeliveryList() {
 
     const handOpenDialogMessage=(delivery:any)=>{
       setDeliverySeleted(delivery);
-      setMessageDialog("¿ Desea eliminar esta entrega ?");
+      setMessageDialog("¿ Desea eliminar este registro ?");
       setOpenDialogMessage(!openDialogMessage);
     }
 
@@ -76,20 +76,20 @@ function PhysicalDeliveryList() {
           <div className="users-container__actions">
             <div className="content-page-title">
               <Typography variant="h5" className="page-header">
-                Administrar entregas realizadas fisicamente
+                Administrar ordenes
               </Typography>
               <span className="page-subtitle">
                 Aqui podrás gestionar las entregas que fueron realizadas fisicamente.
               </span>
             </div>
             <Button className="btn-create" onClick={() => handleClickOpen()}>
-              Generar entrega
+              Generar orden
             </Button>
           </div>
     
           <div className="main-center-container">
             <div className="panel-heading">
-              Listado de entregas realizadas
+              Listado de ordenes realizadas
               <Search
               label="Buscar beneficiario"
               searchFunction={async (data: string) => {

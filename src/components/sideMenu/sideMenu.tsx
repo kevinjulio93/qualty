@@ -30,6 +30,7 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import RepartitionIcon from '@mui/icons-material/Repartition';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 function SideMenu(props) {
     const abilities = useSelector((state: any) => state.auth.user.abilities);
@@ -62,7 +63,8 @@ function SideMenu(props) {
     role: <PsychologyIcon />,
     event: <EmojiEventsIcon />,
     storage: <WarehouseIcon />,
-    deliver: <RepartitionIcon />
+    deliver: <RepartitionIcon />,
+    physicalDeliver: <ListAltIcon/>
   };
 
   const getIcon = (icon: string) => {
@@ -95,6 +97,8 @@ function SideMenu(props) {
         return iconList.storage;
       case "deliver":
         return iconList.deliver
+      case "physicalDeliver":
+        return iconList.physicalDeliver
       default:
         return iconList.draft;
     }
