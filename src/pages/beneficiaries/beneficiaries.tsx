@@ -119,7 +119,9 @@ function Beneficiaries() {
   useEffect(() => {
     if(beneficiarieId!==undefined){
       getDepartamentsList();
-      getBeneficiary();
+      (async () => {
+        await getBeneficiary()
+      })();
     } else {
       getDepartamentsList();
     }

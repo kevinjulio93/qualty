@@ -26,6 +26,7 @@ function DeliveryList() {
         try {
           const { result } = await getAllDelivery();
           const { data: dataList, totalPages } = result.data;
+          console.log(dataList)
           setDelivery(dataList);
           setTotalPages(totalPages);
           setIsLoading(false);

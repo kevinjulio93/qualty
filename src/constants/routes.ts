@@ -22,5 +22,6 @@ export const ROUTES = {
     DELIVERY_LIST: "delivery-list",
     DELIVERY: "delivery",
     EVENTS_LIST: 'events-list',
+    EVENTS_ASSISTANCE: 'events-assistance',
     EVENTS: 'events',
 }
