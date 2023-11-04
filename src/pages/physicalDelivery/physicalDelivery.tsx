@@ -146,7 +146,7 @@ function PhysicalDelivery () {
             const action=physicalDeliveryEdit ===null ? createPhysicalDelivery: updatePhysicalDelivery
             const response=await action(physicalDelivery);
             if(response.status===200){
-                navigate(`${ROUTES.DASHBOARD}${ROUTES.PHYSICAL_DELIVERY_LIST}`);
+                navigate(`${ROUTES.DASHBOARD}/${ROUTES.PHYSICAL_DELIVERY_LIST}`);
             }
         } catch (error) {
             setMessageDialog("Se produjo un error");

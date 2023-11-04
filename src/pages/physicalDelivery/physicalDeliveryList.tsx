@@ -38,7 +38,7 @@ function PhysicalDeliveryList() {
     }
 
     const handleClickOpen = (id?: string) => {
-        const redirectTo = id ? `${ROUTES.DASHBOARD}${ROUTES.PHYSICAL_DELIVERY}/${id}` : `${ROUTES.DASHBOARD}${ROUTES.PHYSICAL_DELIVERY}`
+        const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.PHYSICAL_DELIVERY}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.PHYSICAL_DELIVERY}`
         navigate(redirectTo);
     };
 
