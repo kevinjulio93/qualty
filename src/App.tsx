@@ -133,11 +133,11 @@ function App() {
                 </Route>
 
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>
-                  <Route path={"physical-delivery-list"} element={<PhysicalDeliveryList />} />
+                  <Route path={ROUTES.PHYSICAL_DELIVERY_LIST} element={<PhysicalDeliveryList />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.CREATE] }} />}>
-                  <Route path={"physical-delivery"} element={<PhysicalDelivery />} />
-                  <Route path={"physical-delivery/:idDelivery"} element={<PhysicalDelivery />} />
+                  <Route path={ROUTES.PHYSICAL_DELIVERY} element={<PhysicalDelivery />} />
+                  <Route path={`${ROUTES.PHYSICAL_DELIVERY}/:idDelivery`} element={<PhysicalDelivery />} />
                 </Route>
 
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE, action: [PERMISSIONS.CREATE] }} />}>

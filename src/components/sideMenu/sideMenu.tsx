@@ -33,12 +33,18 @@ import RepartitionIcon from '@mui/icons-material/Repartition';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
 
 function SideMenu(props) {
-    const abilities = useSelector((state: any) => state.auth.user.abilities);
-    const currentSection = useSelector((state: RootState) => state.general.currentSection);
-    const availableSections = sectionList.filter(section => checkPermissions(section.permission, abilities)).sort((a,b) => (a.name > b.name) ? 1 : ((b.key > a.key) ? -1 : 0));
-    const [selectedSection, setSelectedSection] = useState(currentSection || availableSections[0].key);
-    const [open, setOpen] = useState(false);
-    const dispatch = useDispatch();
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
+  const currentSection = useSelector(
+    (state: RootState) => state.general.currentSection
+  );
+  const availableSections = sectionList
+    .filter((section) => checkPermissions(section.permission, abilities))
+    .sort((a, b) => (a.name > b.name ? 1 : b.key > a.key ? -1 : 0));
+  const [selectedSection, setSelectedSection] = useState(
+    currentSection || availableSections[0].key
+  );
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSectionChange = (section: string) => {
     dispatch(setCurrentSection(section));
@@ -177,12 +183,12 @@ function SideMenu(props) {
         </List>
 
         <Button
-          className="content-menu__logout-btn btn-create"
+          className="content-menu__logout-btn"
           variant="contained"
           onClick={props.logoutF}
         >
-          <span>Logout</span>
-          <LogoutIcon></LogoutIcon>
+          <span>Salir</span>
+          <LogoutIcon sx={{ fontSize: 16 }}></LogoutIcon>
         </Button>
       </Paper>
     </>
