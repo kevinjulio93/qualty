@@ -24,21 +24,26 @@ import { checkPermissions } from "../../helpers/checkPermissions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { RootState } from "../../app/store";
 import { setCurrentSection } from "../../features/generalSlice";
-import Diversity3Icon from '@mui/icons-material/Diversity3';
-import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import WarehouseIcon from '@mui/icons-material/Warehouse';
-import RepartitionIcon from '@mui/icons-material/Repartition';
-import ListAltIcon from '@mui/icons-material/ListAlt';
+import Diversity3Icon from "@mui/icons-material/Diversity3";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import PsychologyIcon from "@mui/icons-material/Psychology";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+import RepartitionIcon from "@mui/icons-material/Repartition";
 
 function SideMenu(props) {
-    const abilities = useSelector((state: any) => state.auth.user.abilities);
-    const currentSection = useSelector((state: RootState) => state.general.currentSection);
-    const availableSections = sectionList.filter(section => checkPermissions(section.permission, abilities)).sort((a,b) => (a.name > b.name) ? 1 : ((b.key > a.key) ? -1 : 0));
-    const [selectedSection, setSelectedSection] = useState(currentSection || availableSections[0].key);
-    const [open, setOpen] = useState(false);
-    const dispatch = useDispatch();
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
+  const currentSection = useSelector(
+    (state: RootState) => state.general.currentSection
+  );
+  const availableSections = sectionList
+    .filter((section) => checkPermissions(section.permission, abilities))
+    .sort((a, b) => (a.name > b.name ? 1 : b.key > a.key ? -1 : 0));
+  const [selectedSection, setSelectedSection] = useState(
+    currentSection || availableSections[0].key
+  );
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSectionChange = (section: string) => {
     dispatch(setCurrentSection(section));
@@ -63,8 +68,7 @@ function SideMenu(props) {
     role: <PsychologyIcon />,
     event: <EmojiEventsIcon />,
     storage: <WarehouseIcon />,
-    deliver: <RepartitionIcon />,
-    physicalDeliver: <ListAltIcon/>
+    deliver: <RepartitionIcon />
   };
 
   const getIcon = (icon: string) => {
@@ -97,8 +101,6 @@ function SideMenu(props) {
         return iconList.storage;
       case "deliver":
         return iconList.deliver
-      case "physicalDeliver":
-        return iconList.physicalDeliver
       default:
         return iconList.draft;
     }
@@ -177,12 +179,12 @@ function SideMenu(props) {
         </List>
 
         <Button
-          className="content-menu__logout-btn btn-create"
+          className="content-menu__logout-btn"
           variant="contained"
           onClick={props.logoutF}
         >
-          <span>Logout</span>
-          <LogoutIcon></LogoutIcon>
+          <span>Salir</span>
+          <LogoutIcon sx={{ fontSize: 16 }}></LogoutIcon>
         </Button>
       </Paper>
     </>
