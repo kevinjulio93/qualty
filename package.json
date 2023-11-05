@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "win": "tsc && vite build --mode production",
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "sed -i '3s|^|// |' ./node_modules/@digitalpersona/devices/dist/es5/devices/websdk/channel.js && tsc && vite build --mode production && cp ./src/modules/WebSdk/index.js ./dist/assets/index.js",
     "build.mac": "vite build --mode production && cp ./src/modules/WebSdk/index.js ./dist/assets/index.js && tsc",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

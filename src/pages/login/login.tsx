@@ -83,7 +83,6 @@ function Login() {
             src={logo}
             alt="Logo"
           />
-          <Typography variant="h4">Bienvenido a Qualty</Typography>
           <form
             className="login-view__login-form__card__form-container"
             onSubmit={login}
