@@ -39,7 +39,7 @@ function SideMenu(props) {
   );
   const availableSections = sectionList
     .filter((section) => checkPermissions(section.permission, abilities))
-    .sort((a, b) => (a.name > b.name ? 1 : b.key > a.key ? -1 : 0));
+    .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
   const [selectedSection, setSelectedSection] = useState(
     currentSection || availableSections[0].key
   );

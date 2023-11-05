@@ -14,6 +14,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { createDelivery } from "../../services/delivery.service";
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../constants/routes";
 
 function Delivery () {
     const [events, setEvents] = useState([]);
@@ -30,6 +32,7 @@ function Delivery () {
     const [missingRequirements,setMissingRequirements]=useState([]);
     const [openDialogMessage,setOpenDialogMessage]=useState(false);
     const [openDialogRequeriment,setOpenDialogRequeriment]=useState(false);
+    const navigate = useNavigate();
 
     //const navigate = useNavigate();
 
@@ -170,6 +173,7 @@ function Delivery () {
         };
         console.log(currentEvent);
         await createDelivery(currentEvent);
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
     }
 
     const addCounter = (i) => {
