@@ -15,6 +15,10 @@ import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
+import { useSelector } from "react-redux";
+import { checkPermissions } from "../../helpers/checkPermissions";
 
 function WineriesList() {
   const [wineries, setWineries] = useState([]);
@@ -25,6 +29,7 @@ function WineriesList() {
   const [openDialog,setOpenDialog]=useState(false);
   const [winerieSelectedDelete,setWinerieSelectedDelete]=useState(null);
   const [messageDialog,setMessageDialog]=useState("");
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const navigate = useNavigate();
 
@@ -82,6 +87,21 @@ function WineriesList() {
 
   const handleDeleteAction=()=>{
     deleteWinerieFromList(winerieSelectedDelete._id);
+  }
+
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.WINERIES,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.WINERIES,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
   }
 
   return (
@@ -149,17 +169,18 @@ function WineriesList() {
                     </TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={2}>
-                        <EditIcon
+                      { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                           onClick={() => handleClickOpen(winerie?._id)}
                           className="action-item-icon action-item-icon-edit"
                         ></EditIcon>
-
-                        <ClearIcon
+                      }
+                      { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                           onClick={() =>
                             selectWinerieDelete(winerie)
                           }
                           className="action-item-icon action-item-icon-delete"
                         ></ClearIcon>
+                      }
                       </Stack>
                     </TableCell>
                   </TableRow>

@@ -16,11 +16,14 @@ import LoadingComponent from "../../components/loading/loading";
 import { SimpleDialog } from "../../components/dialog/dialog";
 import { getReferences } from "../../services/references.service";
 import { setReference } from "../../features/referencesSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
+import { checkPermissions } from "../../helpers/checkPermissions";
 
 function Users() {
   const userRef = useRef(null);
@@ -31,7 +34,7 @@ function Users() {
   const [openDialog, setOpenDialog] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
-
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
   const [toastGetUsersError, setToastGetUsersError] = useState(false);
 
   useEffect(() => {
@@ -97,6 +100,21 @@ function Users() {
     setCurrentUser(null);
     setOpenDialog(false);
   };
+
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.USER,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.USER,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
+  }
 
   return (
     <div className="users-container">
@@ -168,14 +186,16 @@ function Users() {
                           direction="row"
                           spacing={2}
                         >
-                          <EditIcon
+                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                             className="action-item-icon action-item-icon-edit"
                             onClick={() => handleEditAction(user)}
                           ></EditIcon>
-                          <ClearIcon
+                          }
+                          { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                             className="action-item-icon action-item-icon-delete"
                             onClick={() => handleDeleteAction(user)}
                           ></ClearIcon>
+                          }
                         </Stack>
                       </TableCell>
                     </TableRow>

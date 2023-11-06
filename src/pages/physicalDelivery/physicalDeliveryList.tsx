@@ -8,6 +8,10 @@ import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
 import { getAllPhysicalDelivery,deletePhysicalDelivery } from '../../services/physicalDelivery.service';
+import { useSelector } from 'react-redux';
+import { SECTIONS } from '../../constants/sections';
+import { PERMISSIONS } from '../../constants/permissions';
+import { checkPermissions } from '../../helpers/checkPermissions';
 
 
 function PhysicalDeliveryList() {
@@ -19,6 +23,7 @@ function PhysicalDeliveryList() {
     const [openDialogMessage,setOpenDialogMessage]=useState(false);
     const [messageDialog,setMessageDialog]=useState("");
     const navigate = useNavigate();
+    const abilities = useSelector((state: any) => state.auth.user.abilities);
 
     useEffect(() => {
         getDeliveryList();
@@ -71,6 +76,21 @@ function PhysicalDeliveryList() {
       setPhysicalDeliveryList(deliveriesFound);
     }
 
+    const getPermission = (key) => {
+      switch(key) {
+        case 'edit':
+          return {
+            subject: SECTIONS.PHYSICAL_DELIVERY,
+            action: [PERMISSIONS.UPDATE],
+          };
+        case 'delete':
+          return {
+            subject: SECTIONS.PHYSICAL_DELIVERY,
+            action: [PERMISSIONS.DELETE],
+          };
+      }
+    }
+
     return (
         <div className="users-container">
           <div className="users-container__actions">
@@ -121,17 +141,19 @@ function PhysicalDeliveryList() {
                         <TableCell>{delivery?.author?.name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
-                            <EditIcon
+                            { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                               onClick={() => handleClickOpen(delivery?._id)}
                               className="action-item-icon action-item-icon-edit"
                             ></EditIcon>
+                            }
     
-                            <ClearIcon
+                            { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                               onClick={() =>
                                 handOpenDialogMessage(delivery)
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
+                            }
                           </Stack>
                         </TableCell>
                       </TableRow>

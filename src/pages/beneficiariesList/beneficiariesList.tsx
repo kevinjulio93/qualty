@@ -17,6 +17,10 @@ import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
+import { checkPermissions } from "../../helpers/checkPermissions";
+import { useSelector } from "react-redux";
 
 function BeneficiariesList() {
   const [benfs, setBenfs] = useState([]);
@@ -25,9 +29,9 @@ function BeneficiariesList() {
     useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
-
   const [benSelected,setBenSelected]=useState(null);
   const [openDialogDelete,setOpenDialogDelete]=useState(false);
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const navigate = useNavigate();
 
@@ -75,6 +79,21 @@ function BeneficiariesList() {
   const selectBenToDelete=(ben:any)=>{
     setBenSelected(ben);
     handlerOpenDialogDelete();
+  }
+
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.BENEFICIARY,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.BENEFICIARY,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
   }
 
   return (
@@ -150,17 +169,18 @@ function BeneficiariesList() {
                     <TableCell>{beneficiary?.eps?.name}</TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={2}>
-                        <EditIcon
+                        { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                           onClick={() => handleClickOpen(beneficiary?._id)}
                           className="action-item-icon action-item-icon-edit"
                         ></EditIcon>
-
-                        <ClearIcon
+                        }
+                        { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                           onClick={() =>
                             selectBenToDelete(beneficiary)
                           }
                           className="action-item-icon action-item-icon-delete"
                         ></ClearIcon>
+                        }
                       </Stack>
                     </TableCell>
                   </TableRow>

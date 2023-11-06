@@ -16,6 +16,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
+import { SECTIONS } from '../../constants/sections';
+import { PERMISSIONS } from '../../constants/permissions';
+import { useSelector } from 'react-redux';
+import { checkPermissions } from '../../helpers/checkPermissions';
 
 function RatingList() {
     const [ratings, setRatings] = useState([]);
@@ -27,6 +31,7 @@ function RatingList() {
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const navigate = useNavigate();
     const [filterRating,setFilterRating]=useState({startDate:"",endDate:"",valueTypeRating:""});
+    const abilities = useSelector((state: any) => state.auth.user.abilities);
 
     useEffect(() => {
         getRatingsList();
@@ -95,6 +100,21 @@ function RatingList() {
 
     const handlerOpenDialogMessage=()=>{
       setOpenDialogMessage(!openDialogMessage);
+    }
+
+    const getPermission = (key) => {
+      switch(key) {
+        case 'edit':
+          return {
+            subject: SECTIONS.RATINGS,
+            action: [PERMISSIONS.UPDATE],
+          };
+        case 'delete':
+          return {
+            subject: SECTIONS.RATINGS,
+            action: [PERMISSIONS.DELETE],
+          };
+      }
     }
 
     return (
@@ -181,17 +201,18 @@ function RatingList() {
                         <TableCell>{rating?.author?.name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
-                            <EditIcon
+                            { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                               onClick={() => handleClickOpen(rating?._id)}
                               className="action-item-icon action-item-icon-edit"
                             ></EditIcon>
-    
-                            <ClearIcon
+                            }
+                            { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                               onClick={() =>
                                 deleteFromlist(rating)
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
+                            }
                           </Stack>
                         </TableCell>
                       </TableRow>

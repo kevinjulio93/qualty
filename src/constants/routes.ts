@@ -26,4 +26,5 @@ export const ROUTES = {
     EVENTS_LIST: 'events-list',
     EVENTS_ASSISTANCE: 'events-assistance',
     EVENTS: 'events',
+    STATS: 'stats'
 }

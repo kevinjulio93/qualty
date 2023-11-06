@@ -22,7 +22,6 @@ import "./sideMenu.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { RootState } from "../../app/store";
 import { setCurrentSection } from "../../features/generalSlice";
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
@@ -34,15 +33,10 @@ import EqualizerIcon from '@mui/icons-material/Equalizer';
 
 function SideMenu(props) {
   const abilities = useSelector((state: any) => state.auth.user.abilities);
-  const currentSection = useSelector(
-    (state: RootState) => state.general.currentSection
-  );
   const availableSections = sectionList
     .filter((section) => checkPermissions(section.permission, abilities))
     .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
-  const [selectedSection, setSelectedSection] = useState(
-    currentSection || availableSections[0].key
-  );
+  const [selectedSection, setSelectedSection] = useState(availableSections[0].key);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 

@@ -15,6 +15,9 @@ import { setReference } from "../../features/referencesSlice";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "./../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
+import { sectionList } from "../../constants/section-list";
+import { checkPermissions } from "../../helpers/checkPermissions";
+import { setCurrentSection } from "../../features/generalSlice";
 
 function Login() {
   const navigate = useNavigate();
@@ -56,7 +59,11 @@ function Login() {
         const user = new AppUser(response.result.user);
         dispatch(setUser({ ...user }));
         getAllReferences();
-        navigate(`${ROUTES.DASHBOARD}/${ROUTES.USERS}`);
+        const availableSections = sectionList
+          .filter((section) => checkPermissions(section.permission, user.abilities))
+          .sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0));
+        dispatch(setCurrentSection(availableSections[0].key));
+        navigate(`${ROUTES.DASHBOARD}/${availableSections[0].path}`);
       } else {
         setLoading(false);
       }
