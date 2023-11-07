@@ -1,5 +1,7 @@
 import "./itemForm.scss";
 import {
+  Checkbox,
+  FormControlLabel,
   TextField,
 } from "@mui/material";
 import {
@@ -10,7 +12,7 @@ import {
 } from "react";
 
 const ItemForm = forwardRef((props: any, ref) => {
-  const [item, setItem] = useState({name:"",code:"",value:""});
+  const [item, setItem] = useState({name:"",code:"",value:"", isDefault: false});
 
   useImperativeHandle(ref, () => {
     return {
@@ -28,13 +30,19 @@ const ItemForm = forwardRef((props: any, ref) => {
 
   const setCurrentItem = () => {
     if (props.currentItem) {
+      console.log(props.currentItem);
       setItem(props.currentItem);
     }
   };
 
   const formHanlder = (e: any) => {
     const value = e.target.value;
-    setItem({...item,[e.target.name]:value});
+    const name = e.target.name;
+    if(name === "isDefault") {
+      setItem({...item,[name]:e.isTrusted});
+    } else {
+      setItem({...item,[name]:value});
+    }
   };
   
   return (
@@ -72,6 +80,15 @@ const ItemForm = forwardRef((props: any, ref) => {
           onChange={(e) => formHanlder(e)}
           value={item?.value || ""}
           key="item-input-value"
+        />
+        <FormControlLabel
+          control={<Checkbox />}
+          value={item.isDefault}
+          name="isDefault"
+          onChange={(e) =>
+            formHanlder(e)
+          }
+          label="Articulo predeterminado"
         />
       </form>
     </>
