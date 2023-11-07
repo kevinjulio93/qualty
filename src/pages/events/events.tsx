@@ -93,7 +93,7 @@ function EventList() {
   };
 
   const openStatsView = (item) => {
-    const redirectTo = `${ROUTES.DASHBOARD}/${ROUTES.DELIVERY}/${item._id}`;
+    const redirectTo = `${ROUTES.DASHBOARD}/${ROUTES.STATS}/${item._id}`;
     navigate(redirectTo);
   }
 
