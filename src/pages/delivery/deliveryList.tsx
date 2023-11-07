@@ -37,11 +37,10 @@ function DeliveryList() {
           const mappedList = dataList.map((event) => {
             return {
               ...event,
-              execution_date: dayjs(event.execution_date).format("L"),
+              createdAt: dayjs(event.createdAt).format("L"),
             };
           });
-    
-          setDelivery(dataList);
+          setDelivery(mappedList);
           setTotalPages(totalPages);
           setIsLoading(false);
         } catch (err) {
@@ -105,8 +104,14 @@ function DeliveryList() {
               try {
                 const { result } = await getAllDelivery(data);
                 setDataLastSearch(data);
-                const { data: works } = result;
-                setDelivery(works);
+                const { data: list } = result;
+                const mappedList = list.map((event) => {
+                  return {
+                    ...event,
+                    createdAt: dayjs(event.createdAt).format("L"),
+                  };
+                });
+                setDelivery(mappedList);
               } catch (err) {
                 console.error(err)
               }
@@ -162,10 +167,15 @@ function DeliveryList() {
                         dataLastSearch,
                         page
                       );
-                      const { data: benfs, currentPage, totalPages } = result.data;
-                      debugger
+                      const { data: list, currentPage, totalPages } = result.data;
+                      const mappedList = list.map((event) => {
+                        return {
+                          ...event,
+                          createdAt: dayjs(event.createdAt).format("L"),
+                        };
+                      });
                       setCurrentPage(currentPage);
-                      setDelivery(benfs);
+                      setDelivery(mappedList);
                       setTotalPages(totalPages);
                     } catch (err) {
                       console.error(err);

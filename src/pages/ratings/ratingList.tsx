@@ -43,7 +43,13 @@ function RatingList() {
         try {
           const { result } = await getAllRatings();
           const { data: dataList, totalPages } = result;
-          setRatings(dataList);
+          const mappedList = dataList.map((event) => {
+            return {
+              ...event,
+              createdAt: dayjs(event.createdAt).format("L"),
+            };
+          });
+          setRatings(mappedList);
           setTotalPages(totalPages);
           setIsLoading(false);
         } catch (err) {
@@ -144,7 +150,13 @@ function RatingList() {
                 const { result } = await getAllRatings(data);
                 setDataLastSearch(data);
                 const { data: list } = result;
-                setRatings(list);
+                const mappedList = list.map((event) => {
+                  return {
+                    ...event,
+                    createdAt: dayjs(event.createdAt).format("L"),
+                  };
+                });
+                setRatings(mappedList);
               } catch (err) {
                 console.error(err)
               }
@@ -229,9 +241,15 @@ function RatingList() {
                         dataLastSearch,
                         page
                       );
-                      const { data: benfs, currentPage, totalPages } = result;
+                      const { data: list, currentPage, totalPages } = result;
+                      const mappedList = list.map((event) => {
+                        return {
+                          ...event,
+                          createdAt: dayjs(event.createdAt).format("L"),
+                        };
+                      });
                       setCurrentPage(currentPage);
-                      setRatings(benfs);
+                      setRatings(mappedList);
                       setTotalPages(totalPages);
                     } catch (err) {
                       console.error(err);

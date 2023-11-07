@@ -3,6 +3,7 @@
 .dashboard-layout {
     display: flex;
     flex-direction: column;
+    position: relative;
 
     &__page-view {
         display: flex;
@@ -16,7 +17,6 @@
             box-shadow: 10px 0px 20px 0 rgba(0, 0, 0, 0.05);
             z-index: 99;
             position: fixed;
-            width: 250px;
             margin-top: 0px;
             height: 100%;
             overflow: auto;
@@ -87,4 +87,27 @@
             padding:0 40px;
         }
     }
+    .show-menu-icon {
+        display: none;
+    }
+
+    .show-menu {
+        display: block !important;
+    }
 }
+
+@media screen and (max-width: 1200px) {
+    .dashboard-layout__page-view__menu {
+        display: none;
+    }
+    .dashboard-layout__page-view__body-content {
+        width: 100%;
+        margin: 0;
+    }
+
+    .show-menu-icon {
+        position: absolute;
+        z-index: 200;
+        display: block !important;
+    }
+  }
