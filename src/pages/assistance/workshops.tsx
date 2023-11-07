@@ -20,6 +20,7 @@ function WorkshopsList() {
     const [currentWorkshop, setCurrentWorkshop] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -165,13 +166,15 @@ function WorkshopsList() {
                 </Table>
                 <Pagination
                   count={totalPages}
+                  page={currentPage}
                   onChange={async (_, page) => {
                     try {
                       const { result } = await getAllWorkshops(
                         dataLastSearch,
                         page
                       );
-                      const { data: benfs, totalPages } = result;
+                      const { data: benfs, currentPage, totalPages } = result;
+                      setCurrentPage(currentPage);
                       setWorkshops(benfs);
                       setTotalPages(totalPages);
                     } catch (err) {

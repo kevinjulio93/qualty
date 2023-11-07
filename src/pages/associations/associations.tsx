@@ -27,6 +27,7 @@ function Associations() {
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [toastGetAssociationsError, setToastGetAssociationsError] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     getAssociations();
@@ -39,7 +40,8 @@ function Associations() {
         result: { data },
       } = await getAssociationsList(search, page);
       setDataLastSearch(search);
-      const { data: associationList, totalPages } = data;
+      const { data: associationList, currentPage, totalPages } = data;
+      setCurrentPage(currentPage)
       setAssociations(associationList);
       setTotalPages(totalPages);
       setIsLoading(false);
@@ -142,6 +144,7 @@ function Associations() {
       handleDelete={(param) => handleDeleteAction(param)}
       handlePaginationChange={(data) => getAssociations('', data)}
       createButton={getCreateButton()}
+      currentPage={currentPage}
     />
     {openDialog && (
         <SimpleDialog

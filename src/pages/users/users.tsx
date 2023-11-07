@@ -31,6 +31,7 @@ function Users() {
   const [openDialog, setOpenDialog] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [toastGetUsersError, setToastGetUsersError] = useState(false);
 
@@ -184,10 +185,12 @@ function Users() {
             </Table>
             <Pagination
               count={totalPages}
+              page={currentPage}
               onChange={async (_, page) => {
                 try {
                   const { result } = await getUserList(dataLastSearch, page);
-                  const { data: users, totalPages } = result;
+                  const { data: users, currentPage, totalPages } = result;
+                  setCurrentPage(currentPage);
                   setUsers(users);
                   setTotalPages(totalPages);
                 } catch (err) {

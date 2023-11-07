@@ -20,6 +20,8 @@ interface IListViewProp {
 	listContent: Array<any>,
 	totalPages:number,
 	listTitle:string,
+	createButton?: any,
+	currentPage?: number,
 	handleCreatebutton?: () => void,
 	hanldeSearchFunction: (param) => void,
 	hanldeVoidInputFunction: () => void,
@@ -27,7 +29,6 @@ interface IListViewProp {
 	handleEdit: (param) => void,
 	handleDelete: (param) => void,
 	handlePaginationChange: (param) => void,
-	createButton?: any
 
 
 
@@ -117,6 +118,7 @@ function ListView(props: IListViewProp) {
 						<Pagination
 							count={props.totalPages}
 							onChange={(_,page)=> props.handlePaginationChange(page)}
+							page={props.currentPage ?? 1}
 						/>
 					</>
 				)}
