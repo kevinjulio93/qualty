@@ -12,7 +12,6 @@ import { getAllEvents } from "../../services/events.service";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { createDelivery } from "../../services/delivery.service";
-import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";

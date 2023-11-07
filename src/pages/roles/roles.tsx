@@ -18,6 +18,10 @@ import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
+import { useSelector } from "react-redux";
+import { checkPermissions } from "../../helpers/checkPermissions";
 
 function Roles() {
   const roleRef = useRef(null);
@@ -28,7 +32,7 @@ function Roles() {
   const [toastGetRolesError, setToastGetRolesError] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
-
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -93,6 +97,21 @@ function Roles() {
     setCurrentRole(null);
     setOpenDialog(false);
   };
+
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.ROLE,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.ROLE,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
+  }
 
   return (
     <div className="roles-container">
@@ -164,14 +183,16 @@ function Roles() {
                           direction="row"
                           spacing={2}
                         >
-                          <EditIcon
+                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                             className="action-item-icon action-item-icon-edit"
                             onClick={() => handleEditAction(role)}
                           ></EditIcon>
-                          <ClearIcon
+                          }
+                          { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                             className="action-item-icon action-item-icon-delete"
                             onClick={() => handleDeleteAction(role)}
                           ></ClearIcon>
+                        }
                         </Stack>
                       </TableCell>
                     </TableRow>

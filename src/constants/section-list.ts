@@ -33,7 +33,7 @@ export const sectionList = [
     hasChilds: false,
     permission: {
       subject: SECTIONS.EVENTS,
-      action: [PERMISSIONS.READ],
+      action: [PERMISSIONS.CREATE],
     },
   },
   {

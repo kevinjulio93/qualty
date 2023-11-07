@@ -8,6 +8,11 @@ import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
 import { deleteDelivery, getAllDelivery } from '../../services/delivery.service';
+import { SECTIONS } from '../../constants/sections';
+import { PERMISSIONS } from '../../constants/permissions';
+import { useSelector } from 'react-redux';
+import { checkPermissions } from '../../helpers/checkPermissions';
+
 
 
 function DeliveryList() {
@@ -17,6 +22,7 @@ function DeliveryList() {
     const [dataLastSearch, setDataLastSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
+    const abilities = useSelector((state: any) => state.auth.user.abilities);
 
     useEffect(() => {
         getDeliveryList();
@@ -51,6 +57,21 @@ function DeliveryList() {
         throw new Error("the beneficieary doesn't exist");
       }
     };
+
+    const getPermission = (key) => {
+      switch(key) {
+        case 'edit':
+          return {
+            subject: SECTIONS.DELIVERY,
+            action: [PERMISSIONS.UPDATE],
+          };
+        case 'delete':
+          return {
+            subject: SECTIONS.DELIVERY,
+            action: [PERMISSIONS.DELETE],
+          };
+      }
+    }
 
     return (
         <div className="users-container">
@@ -107,17 +128,18 @@ function DeliveryList() {
                         <TableCell>{dev?.author?.user_name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
-                            <EditIcon
+                            { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                               onClick={() => handleClickOpen(dev?._id)}
                               className="action-item-icon action-item-icon-edit"
                             ></EditIcon>
-    
-                            <ClearIcon
+                            }
+                            { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                               onClick={() =>
                                 deleteFromlist(dev?._id)
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
+                            }
                           </Stack>
                         </TableCell>
                       </TableRow>

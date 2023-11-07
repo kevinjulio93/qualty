@@ -6,8 +6,12 @@ import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
 import { deleteEvent, getAllEvents } from "../../services/events.service";
 import ListView from "../../components/list-view/list-view";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { SimpleDialog } from "../../components/dialog/dialog";
+import { checkPermissions } from "../../helpers/checkPermissions";
+import { useSelector } from "react-redux";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
 
 function EventList() {
   const columnAndRowkeys = [
@@ -24,6 +28,7 @@ function EventList() {
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const navigate = useNavigate();
 
@@ -89,6 +94,31 @@ function EventList() {
     setOpenDialog(false);
   };
 
+  const openStatsView = (item) => {
+    const redirectTo = `${ROUTES.DASHBOARD}/${ROUTES.DELIVERY}/${item._id}`;
+    navigate(redirectTo);
+  }
+
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.EVENTS,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.EVENTS,
+          action: [PERMISSIONS.DELETE],
+        };
+      case 'stats':
+        return {
+          subject: SECTIONS.EVENTS,
+          action: [PERMISSIONS.READ],
+        };
+    }
+  }
+
 
   return (
     <>
@@ -104,6 +134,7 @@ function EventList() {
         columnHeaders={columnAndRowkeys}
         listContent={events}
         totalPages={totalPages}
+        currentPage={currentPage}
         handleCreatebutton={() => handleClickOpen()}
         hanldeSearchFunction={(data) => getEvents(data)}
         hanldeVoidInputFunction={() => getEvents()}
@@ -111,7 +142,10 @@ function EventList() {
         handleEdit={(event) => handleClickOpen(event)}
         handleDelete={(param) => deleteFromlist(param)}
         handlePaginationChange={(data) => getEvents("", data)}
-        currentPage={currentPage}
+        handleStats={(param) => openStatsView(param)}
+        hasEdit={checkPermissions(getPermission('edit'), abilities)}
+        hasDelete={checkPermissions(getPermission('delete'), abilities)}
+        hasStats={checkPermissions(getPermission('stats'), abilities)}
       />
 
       {openDialog && (

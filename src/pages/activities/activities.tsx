@@ -7,7 +7,11 @@ import { SimpleDialog } from '../../components/dialog/dialog';
 import { ERROR_MESSAGES } from '../../constants/errorMessageDictionary';
 import { SEVERITY_TOAST } from '../../constants/severityToast';
 import ListView from '../../components/list-view/list-view';
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import { SECTIONS } from '../../constants/sections';
+import { PERMISSIONS } from '../../constants/permissions';
+import { checkPermissions } from '../../helpers/checkPermissions';
+import { useSelector } from 'react-redux';
 
 
 function ActivityList() {
@@ -25,6 +29,7 @@ function ActivityList() {
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [toastGetBeneficiariesError, setToastGetBeneficiariesError] = useState(false);
   const navigate = useNavigate();
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   useEffect(() => {
     getActivitiesList();
@@ -78,6 +83,21 @@ function ActivityList() {
     setOpenDialog(false);
   };
 
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.ACTIVITY,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.ACTIVITY,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
+  }
+
   return (
     <>
     <ListView
@@ -100,6 +120,9 @@ function ActivityList() {
       handleDelete={(param) => deleteFromlist(param)}
       handlePaginationChange={(data) => getActivitiesList('', data)}
       currentPage={currentPage}
+      hasEdit={checkPermissions(getPermission('edit'), abilities)}
+      hasDelete={checkPermissions(getPermission('delete'), abilities)}
+      hasStats={false}
     />
     {openDialog && (
         <SimpleDialog

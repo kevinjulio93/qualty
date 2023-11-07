@@ -11,6 +11,10 @@ import {
   updateAssociation,
 } from "../../services/associations.service";
 import ListView from "../../components/list-view/list-view";
+import { useSelector } from "react-redux";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
+import { checkPermissions } from "../../helpers/checkPermissions";
 
 function Associations() {
   const columnAndRowkeys = [
@@ -28,6 +32,7 @@ function Associations() {
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [toastGetAssociationsError, setToastGetAssociationsError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   useEffect(() => {
     getAssociations();
@@ -105,6 +110,21 @@ function Associations() {
     setOpenDialog(false);
   };
 
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.ASSOCIATIONS,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.ASSOCIATIONS,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
+  }
+
   const getCreateButton = () => {
     return (
       <Modal
@@ -145,6 +165,9 @@ function Associations() {
       handlePaginationChange={(data) => getAssociations('', data)}
       createButton={getCreateButton()}
       currentPage={currentPage}
+      hasEdit={checkPermissions(getPermission('edit'), abilities)}
+      hasDelete={checkPermissions(getPermission('delete'), abilities)}
+      hasStats={false}
     />
     {openDialog && (
         <SimpleDialog

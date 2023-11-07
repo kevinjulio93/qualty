@@ -15,6 +15,10 @@ import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
 import { SEVERITY_TOAST } from "../../constants/severityToast";
+import { useSelector } from "react-redux";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
+import { checkPermissions } from "../../helpers/checkPermissions";
 
 function Inventory() {
   const itemRef = useRef(null);
@@ -28,6 +32,7 @@ function Inventory() {
   const [openDialogMessage,setOpenDialogMessage]=useState(false);
   const [messageDialog,setMessageDialog]=useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const modalRef = useRef(null);
 
@@ -119,6 +124,21 @@ function Inventory() {
     setOpenDialogMessage(!openDialogMessage);
   }
 
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.INVENTORY,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.INVENTORY,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
+  }
+
   return (
     <div className="inventary-container">
       <div className="inventary-container__actions">
@@ -193,14 +213,16 @@ function Inventory() {
                           direction="row"
                           spacing={3}
                         >
-                          <EditIcon
+                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                             className="action-item-icon action-item-icon-edit"
                             onClick={() => handleEditAction(item)}
                           ></EditIcon>
-                          <ClearIcon
+                          }
+                          { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                             className="action-item-icon action-item-icon-delete"
                             onClick={() => handleDeleteAction(item)}
                           ></ClearIcon>
+                          }
                         </Stack>
                       </TableCell>
                     </TableRow>

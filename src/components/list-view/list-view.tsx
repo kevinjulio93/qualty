@@ -1,11 +1,11 @@
 import { Button, Pagination, Stack, Typography } from '@mui/material';
-import React from 'react'
 import Search from '../search/search';
 import Toast from '../toast/toast';
 import LoadingComponent from '../loading/loading';
 import { Table, TableCell, TableRow } from '../table/table';
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
+import EqualizerIcon from '@mui/icons-material/Equalizer';
 import './list-view.scss';
 
 interface IListViewProp {
@@ -26,9 +26,13 @@ interface IListViewProp {
 	hanldeSearchFunction: (param) => void,
 	hanldeVoidInputFunction: () => void,
 	handleCloseToast: () => void,
-	handleEdit: (param) => void,
-	handleDelete: (param) => void,
+	handleEdit?: (param) => void,
+	handleDelete?: (param) => void,
 	handlePaginationChange: (param) => void,
+	handleStats?: (param) => void,
+	hasEdit: boolean,
+	hasDelete: boolean,
+	hasStats: boolean
 
 
 
@@ -41,6 +45,7 @@ function ListView(props: IListViewProp) {
 			{props.createButtonText}
 		</Button>
 	}
+
 	return (
 		<div className="users-container">
 			<div className="users-container__actions">
@@ -93,15 +98,24 @@ function ListView(props: IListViewProp) {
 
 										<TableCell>
 											<Stack direction="row" spacing={2}>
-												<EditIcon
-													className="action-item-icon action-item-icon-edit"
-													onClick={() => props.handleEdit(row)}
-												></EditIcon>
-
-												<ClearIcon
-													className="action-item-icon action-item-icon-delete"
-													onClick={() => props.handleDelete(row)}
-												></ClearIcon>
+												{ props.hasEdit && 
+													<EditIcon
+														className="action-item-icon action-item-icon-edit"
+														onClick={() => props.handleEdit(row)}
+													></EditIcon>
+												}
+												{ props.hasDelete &&
+													<ClearIcon
+														className="action-item-icon action-item-icon-delete"
+														onClick={() => props.handleDelete(row)}
+													></ClearIcon>
+												}
+												{ props.hasStats && 
+													<EqualizerIcon
+														onClick={() => props.handleStats(row)}
+														className="action-item-icon action-item-icon-stats"
+													></EqualizerIcon>
+												}
 											</Stack>
 										</TableCell>
 									</TableRow>

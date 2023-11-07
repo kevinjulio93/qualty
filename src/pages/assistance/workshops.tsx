@@ -10,6 +10,10 @@ import { deleteWorkshop, getAllWorkshops, getFilePdfAttendeesWorkshop } from '..
 import Search from '../../components/search/search';
 import { SimpleDialog } from '../../components/dialog/dialog';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+import { SECTIONS } from '../../constants/sections';
+import { PERMISSIONS } from '../../constants/permissions';
+import { useSelector } from 'react-redux';
+import { checkPermissions } from '../../helpers/checkPermissions';
 
 
 function WorkshopsList() {
@@ -22,6 +26,7 @@ function WorkshopsList() {
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
+    const abilities = useSelector((state: any) => state.auth.user.abilities);
 
     useEffect(() => {
         getWorkshopsList();
@@ -88,6 +93,21 @@ function WorkshopsList() {
       }
     }
 
+    const getPermission = (key) => {
+      switch(key) {
+        case 'edit':
+          return {
+            subject: SECTIONS.ASSISTANCE,
+            action: [PERMISSIONS.UPDATE],
+          };
+        case 'delete':
+          return {
+            subject: SECTIONS.ASSISTANCE,
+            action: [PERMISSIONS.DELETE],
+          };
+      }
+    }
+
     return (
         <div className="users-container">
           <div className="users-container__actions">
@@ -141,18 +161,18 @@ function WorkshopsList() {
                         <TableCell>{workshop?.activity?.name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
-                            <EditIcon
+                            { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                               onClick={() => handleClickOpen(workshop?._id)}
                               className="action-item-icon action-item-icon-edit"
                             ></EditIcon>
-    
-                            <ClearIcon
+                            }
+                            { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
                               onClick={() =>
                                 deleteFromlist(workshop)
                               }
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
-
+                            }
                             <PictureAsPdfRoundedIcon
                               onClick={() =>getFilePdfAttendees(workshop)}
                               className="action-item-icon action-item-icon-edit"

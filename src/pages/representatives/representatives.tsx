@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import LoadingComponent from "../../components/loading/loading";
 import { SimpleDialog } from "../../components/dialog/dialog";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
 import { ERROR_MESSAGES } from "../../constants/errorMessageDictionary";
@@ -18,6 +18,9 @@ import {
   getRepresentativesList,
   updateRepresentative,
 } from "../../services/representative.service";
+import { SECTIONS } from "../../constants/sections";
+import { PERMISSIONS } from "../../constants/permissions";
+import { checkPermissions } from "../../helpers/checkPermissions";
 
 function Representatives() {
   const representativeRef = useRef(null);
@@ -28,6 +31,7 @@ function Representatives() {
   const [openDialog, setOpenDialog] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
+  const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const [toastGetRepresentativesError, setToastGetRepresentativesError] =
     useState(false);
@@ -110,6 +114,21 @@ function Representatives() {
     setOpenDialog(false);
   };
 
+  const getPermission = (key) => {
+    switch(key) {
+      case 'edit':
+        return {
+          subject: SECTIONS.REPRESENTATIVE,
+          action: [PERMISSIONS.UPDATE],
+        };
+      case 'delete':
+        return {
+          subject: SECTIONS.REPRESENTATIVE,
+          action: [PERMISSIONS.DELETE],
+        };
+    }
+  }
+
   return (
     <div className="users-container">
       <div className="users-container__actions">
@@ -185,10 +204,11 @@ function Representatives() {
                           direction="row"
                           spacing={2}
                         >
-                          <EditIcon
+                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
                             className="action-item-icon action-item-icon-edit"
                             onClick={() => handleEditAction(representative)}
                           ></EditIcon>
+                          }
                           <ClearIcon
                             className="action-item-icon action-item-icon-delete"
                             onClick={() => handleDeleteAction(representative)}
