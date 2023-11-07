@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { sectionList } from "../../constants/section-list";
 import PersonIcon from "@mui/icons-material/Person";
-import AssistWalkerIcon from "@mui/icons-material/AssistWalker";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
@@ -30,6 +29,9 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import RepartitionIcon from '@mui/icons-material/Repartition';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
+import RuleIcon from '@mui/icons-material/Rule';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import CategoryIcon from '@mui/icons-material/Category';
 
 function SideMenu(props) {
   const abilities = useSelector((state: any) => state.auth.user.abilities);
@@ -53,7 +55,7 @@ function SideMenu(props) {
     person: <PersonIcon />,
     book: <LibraryBooksIcon />,
     draft: <DraftsIcon />,
-    assist: <AssistWalkerIcon />,
+    assist: <RuleIcon />,
     eye: <RemoveRedEyeIcon />,
     smile: <InsertEmoticonIcon />,
     beneficiaries: <EmojiPeople />,
@@ -65,6 +67,8 @@ function SideMenu(props) {
     storage: <WarehouseIcon />,
     deliver: <RepartitionIcon />,
     stats: < EqualizerIcon />,
+    repres: <AssignmentIndIcon />,
+    items: <CategoryIcon />
   };
 
   const getIcon = (icon: string) => {
@@ -99,6 +103,10 @@ function SideMenu(props) {
         return iconList.deliver;
       case "stats":
           return iconList.stats;
+      case "repres":
+        return iconList.repres;
+      case "items":
+        return iconList.items;
       default:
         return iconList.draft;
     }
