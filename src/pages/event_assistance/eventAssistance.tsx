@@ -133,7 +133,7 @@ function EventAssistance() {
         >
         </VisibilityIcon>
       }else{
-        return <DoneIcon/>
+        return <DoneIcon color='success'/>
       }
     }
 
@@ -318,12 +318,12 @@ function EventAssistance() {
                         <h2>Requisitos necesarios:</h2>
                         {
                           missingRequirements.map((requitement:string,index:number)=>{
-                            return <p key={index}>{index+1}. {requitement} <WarningIcon/></p>
+                            return <p key={index}>{index+1}. {requitement} <WarningIcon color='warning'/></p>
                           })
                         }
                         <Divider />
                       </>
-                    : <><p>Este beneficiario cumple con todos los requisitos <DoneIcon/></p> </>
+                    : <><p>Este beneficiario cumple con todos los requisitos <DoneIcon color='success'/></p> </>
                   }
                      <Button autoFocus className='btn-view-requirement' onClick={()=>handOpenDialogMessage()}>
                         Ver requisitos

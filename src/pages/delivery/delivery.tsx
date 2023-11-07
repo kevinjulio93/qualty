@@ -79,8 +79,38 @@ function Delivery () {
         }else{
           setListMissingRequirements("Mayor o igual a 60 años");
         }
+
+        if(ben?.fosiga_url){
+            aux+=1
+          }else{
+            setListMissingRequirements("No posee el soporte de EPS");
+        }
+
+        if(ben?.registry_doc_url){
+            aux+=1
+          }else{
+            setListMissingRequirements("No posee el soporte de Registraduría");
+        }
+
+        if(ben?.sisben_url){
+            aux+=1
+          }else{
+            setListMissingRequirements("No posee el soporte de SISBEN");
+        }
+
+        if(ben?.id_front){
+            aux+=1
+          }else{
+            setListMissingRequirements("No posee el soporte de Cédula Frontal");
+        }
+
+        if(ben?.id_back){
+            aux+=1
+          }else{
+            setListMissingRequirements("No posee el soporte de Cédula Posterior");
+        }
   
-        if(aux===4){
+        if(aux===9){
             aux=0;
             return true;
         }else{
@@ -88,7 +118,7 @@ function Delivery () {
             return false;
         }
         
-      }
+    }
 
     const handOpenDialogRequirement=()=>{
         setOpenDialogRequeriment(!openDialogRequeriment);
@@ -145,7 +175,7 @@ function Delivery () {
     const handleAddAction = async(item) => {
         missingRequirements.length=0;
         setMissingRequirements(missingRequirements);
-        if(!checkRequirements(item)){
+        if(!checkRequirements(item) ){
             setOpenDialogMessage(true);
         }else{
             setSelectedBen(item);
@@ -357,7 +387,7 @@ function Delivery () {
                         <h2>Requisitos necesarios para este beneficiario:</h2>
                         {
                           missingRequirements.map((requitement:string,index:number)=>{
-                            return <p key={index}>{index+1}. {requitement} <WarningIcon/></p>
+                            return <p key={index}>{index+1}. {requitement} <WarningIcon color="warning"/></p>
                           })
                         }
                       </>
@@ -383,6 +413,7 @@ function Delivery () {
                         <p>2. Tener sisben del Norte de Santander</p>
                         <p>3. Tener regimen de salud Subsidiado o Cotizante beneficiario</p>
                         <p>4. Mayor o igual a 60 años</p>
+                        <p>5. Tener soportes de EPS, SISBEN, Registraduría y Cédula</p>
                     </DialogContentText>
                     </DialogContent>
                     <DialogActions>
