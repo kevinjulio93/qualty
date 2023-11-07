@@ -29,6 +29,7 @@ function RatingList() {
     const [currentRating, setCurrentRating] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const [filterRating,setFilterRating]=useState({startDate:"",endDate:"",valueTypeRating:""});
     const abilities = useSelector((state: any) => state.auth.user.abilities);
@@ -221,13 +222,15 @@ function RatingList() {
                 </Table>
                 <Pagination
                   count={totalPages}
+                  page={currentPage}
                   onChange={async (_, page) => {
                     try {
                       const { result } = await getAllRatings(
                         dataLastSearch,
                         page
                       );
-                      const { data: benfs, totalPages } = result;
+                      const { data: benfs, currentPage, totalPages } = result;
+                      setCurrentPage(currentPage);
                       setRatings(benfs);
                       setTotalPages(totalPages);
                     } catch (err) {

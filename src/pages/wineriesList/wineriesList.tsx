@@ -29,6 +29,7 @@ function WineriesList() {
   const [openDialog,setOpenDialog]=useState(false);
   const [winerieSelectedDelete,setWinerieSelectedDelete]=useState(null);
   const [messageDialog,setMessageDialog]=useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const navigate = useNavigate();
@@ -195,7 +196,8 @@ function WineriesList() {
                     dataLastSearch,
                     page
                   );
-                  const { data: wineries, totalPages } = result;
+                  const { data: wineries, currentPage, totalPages } = result.data;
+                  setCurrentPage(currentPage);
                   setWineries(wineries);
                   setTotalPages(totalPages);
                 } catch (err) {

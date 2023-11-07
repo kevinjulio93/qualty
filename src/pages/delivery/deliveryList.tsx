@@ -20,6 +20,7 @@ function DeliveryList() {
     const [isLoading, setIsLoading] = useState(true);
     const [totalPages, setTotalPages] = useState(1);
     const [dataLastSearch, setDataLastSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
     const abilities = useSelector((state: any) => state.auth.user.abilities);
 
@@ -147,13 +148,16 @@ function DeliveryList() {
                 </Table>
                 <Pagination
                   count={totalPages}
+                  page={currentPage}
                   onChange={async (_, page) => {
                     try {
                       const { result } = await getAllDelivery(
                         dataLastSearch,
                         page
                       );
-                      const { data: benfs, totalPages } = result;
+                      const { data: benfs, currentPage, totalPages } = result.data;
+                      debugger
+                      setCurrentPage(currentPage);
                       setDelivery(benfs);
                       setTotalPages(totalPages);
                     } catch (err) {

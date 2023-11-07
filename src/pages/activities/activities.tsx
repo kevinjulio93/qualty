@@ -25,6 +25,7 @@ function ActivityList() {
   const [openDialog, setOpenDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [toastGetBeneficiariesError, setToastGetBeneficiariesError] = useState(false);
   const navigate = useNavigate();
@@ -40,7 +41,8 @@ function ActivityList() {
       const response = await getAllActivities(search, page);
       if (response.status === 200) {
         setDataLastSearch(search);
-      const { data: dataList, totalPages } = response.result;
+      const { data: dataList, currentPage,  totalPages } = response.result;
+      setCurrentPage(currentPage)
       const mappedList = dataList.map((event) => {
         return {
           ...event,
@@ -117,6 +119,7 @@ function ActivityList() {
       handleEdit={(event) => handleClickOpen(event)}
       handleDelete={(param) => deleteFromlist(param)}
       handlePaginationChange={(data) => getActivitiesList('', data)}
+      currentPage={currentPage}
       hasEdit={checkPermissions(getPermission('edit'), abilities)}
       hasDelete={checkPermissions(getPermission('delete'), abilities)}
       hasStats={false}

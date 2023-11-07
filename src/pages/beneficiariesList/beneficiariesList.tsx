@@ -31,6 +31,7 @@ function BeneficiariesList() {
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [benSelected,setBenSelected]=useState(null);
   const [openDialogDelete,setOpenDialogDelete]=useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const navigate = useNavigate();
@@ -189,14 +190,16 @@ function BeneficiariesList() {
             </Table>
             <Pagination
               count={totalPages}
+              page={currentPage}
               onChange={async (_, page) => {
                 try {
                   const { result } = await getBeneficiariesList(
                     dataLastSearch,
                     page
                   );
-                  const { data: benfs, totalPages } = result;
+                  const { data: benfs, currentPage, totalPages } = result;
                   setBenfs(benfs);
+                  setCurrentPage(currentPage);
                   setTotalPages(totalPages);
                 } catch (err) {
                   setToastGetBeneficiariesError(true);

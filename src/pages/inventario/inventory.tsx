@@ -31,6 +31,7 @@ function Inventory() {
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [openDialogMessage,setOpenDialogMessage]=useState(false);
   const [messageDialog,setMessageDialog]=useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const modalRef = useRef(null);
@@ -230,11 +231,16 @@ function Inventory() {
             </Table>
             <Pagination
               count={totalPages}
+              page={currentPage}
               onChange={async (_, page) => {
                 try {
                   const { result } = await getAllItems(dataLastSearch, page);
                   const { data: items, totalPages } = result;
-                  setItems(items);
+                  const {currentPage:currentPageAfterSearch} = items;
+                  if (currentPage !== currentPageAfterSearch) {
+                    setCurrentPage(currentPageAfterSearch);
+                  }
+                  setItems(items.data);
                   setTotalPages(totalPages);
                 } catch (err) {
                   setToastGetItemsError(true);

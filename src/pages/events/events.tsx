@@ -27,6 +27,7 @@ function EventList() {
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
 
   const navigate = useNavigate();
@@ -41,7 +42,8 @@ function EventList() {
       const { result } = await getAllEvents(search, page);
       setDataLastSearch(search);
       const { data: events } = result;
-      const { data: eventList, totalPages } = events;
+      const { data: eventList, currentPage, totalPages } = events;
+      setCurrentPage(currentPage)
       const mappedList = eventList.map((event) => {
         return {
           ...event,
@@ -132,6 +134,7 @@ function EventList() {
         columnHeaders={columnAndRowkeys}
         listContent={events}
         totalPages={totalPages}
+        currentPage={currentPage}
         handleCreatebutton={() => handleClickOpen()}
         hanldeSearchFunction={(data) => getEvents(data)}
         hanldeVoidInputFunction={() => getEvents()}
