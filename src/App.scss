@@ -110,3 +110,10 @@ body {
     text-transform: uppercase !important;
     font-weight: 300 !important;
 }
+
+.ben-foto-info {
+    width: 100px;
+    height: 100px;
+    object-fit:cover;
+    border-radius: 50%;
+}

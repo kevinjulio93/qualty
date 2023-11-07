@@ -18,6 +18,7 @@ function Ratings () {
     const [selectedRating, setSelectedRating] = useState(null);
     const [selectedBen, setSelectedBen] = useState(null);
     const [notes, setNotes] = useState("");
+    const [diagnosticNote, setDiagnostic] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,10 +30,11 @@ function Ratings () {
 
     const getCurrentRating = async () => {
         const currentRating = await getRatingsById(ratingId);
-        const { rating_type, observations, attendee } = currentRating.result.data;
+        const { rating_type, observations, attendee, diagnostic } = currentRating.result.data;
         setSelectedRating(rating_type);
         setSelectedBen(attendee);
         setNotes(observations);
+        setDiagnostic(diagnostic);
     }
 
     const getBens = async () => {
@@ -70,11 +72,16 @@ function Ratings () {
         setNotes(e.target.value);
     }
 
+    const handleDiagnostic = (e) => {
+        setDiagnostic(e.target.value);
+    }
+
     const saveRatings = async () => {
         const rating = {
             rating_type: selectedRating,
             observations: notes,
             attendee: selectedBen._id,
+            diagnostic: diagnosticNote,
         }
         await createRatings(rating);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
@@ -228,8 +235,8 @@ function Ratings () {
                                     rows={6}
                                     variant="filled"
                                     sx={{width: 350}}
-                                    onChange={(e) => handleText(e)}
-                                    value={notes}
+                                    onChange={(e) => handleDiagnostic(e)}
+                                    value={diagnosticNote}
                                 />
                             </Stack>
                         </div>

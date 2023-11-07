@@ -209,10 +209,11 @@ function Representatives() {
                             onClick={() => handleEditAction(representative)}
                           ></EditIcon>
                           }
-                          <ClearIcon
+                          { checkPermissions(getPermission('delete'), abilities) &&<ClearIcon
                             className="action-item-icon action-item-icon-delete"
                             onClick={() => handleDeleteAction(representative)}
                           ></ClearIcon>
+                          }
                         </Stack>
                       </TableCell>
                     </TableRow>
