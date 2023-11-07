@@ -29,7 +29,7 @@ export const sectionList = [
     key: "assistance",
     name: "Asistencia",
     path: ROUTES.EVENTS_ASSISTANCE,
-    icon: "beneficiaries",
+    icon: "assist",
     hasChilds: false,
     permission: {
       subject: SECTIONS.EVENTS,
@@ -62,7 +62,7 @@ export const sectionList = [
     key: "eventos",
     name: "Eventos",
     path: ROUTES.EVENTS_LIST,
-    icon: "beneficiaries",
+    icon: "event",
     hasChilds: false,
     permission: {
       subject: SECTIONS.EVENTS,
@@ -84,7 +84,7 @@ export const sectionList = [
     key: "inventario",
     name: "Articulos",
     path: ROUTES.INVENTORY,
-    icon: "draft",
+    icon: "items",
     hasChilds: false,
     permission: {
       subject: SECTIONS.INVENTORY,
@@ -95,7 +95,7 @@ export const sectionList = [
     key: "talleres",
     name: "Talleres",
     path: ROUTES.WORKSHOP,
-    icon: "checklist",
+    icon: "eye",
     hasChilds: false,
     permission: {
       subject: SECTIONS.ASSISTANCE,
@@ -150,7 +150,7 @@ export const sectionList = [
     key: "representantes",
     name: "Representantes",
     path: ROUTES.REPRESENTATIVES,
-    icon: "storage",
+    icon: "repres",
     hasChilds: false,
     permission: {
       subject: SECTIONS.REPRESENTATIVE,
@@ -158,4 +158,3 @@ export const sectionList = [
     },
   },
 ];
-// import AssistWalkerIcon from '@mui/icons-material/AssistWalker';

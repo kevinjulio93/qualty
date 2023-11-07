@@ -26,6 +26,7 @@ import {
 } from "../../services/workshop.service";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
+import { workshops } from "../../constants/workshops";
 
 function Assistance() {
   const { workshopId } = useParams();
@@ -162,15 +163,16 @@ function Assistance() {
                 value={selectedWork}
                 onChange={(e) => onSelectedWorkshop(e)}
               >
-                <MenuItem
-                  key={"taller_no_1"}
-                  value="Taller de cuidado personal"
+                {workshops.map((item, index) => {
+                  return (
+                    <MenuItem
+                  key={"taller_no_" + index}
+                  value={item}
                 >
-                  Taller de cuidado personal
+                  {item}
                 </MenuItem>
-                <MenuItem key={"taller_no_2"} value="Taller de salud oral">
-                  Taller de salud oral
-                </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             <Search
