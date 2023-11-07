@@ -67,6 +67,10 @@
             height: calc(100% - 280px);
             gap: 20px;
 
+            &__section {
+                overflow: scroll;
+            }
+
             &__form {
                 display: grid;
                 width: 100%;
@@ -83,15 +87,14 @@
                     }
                 }
             }
-
-            .btn-save-beneficiarie {
+        }
+        .btn-save-beneficiarie {
+            background-color: #03a9f4;
+            color: #fff;
+            width: 200px;
+        
+            &:hover {
                 background-color: #03a9f4;
-                color: #fff;
-                width: 200px;
-
-                &:hover {
-                    background-color: #03a9f4;
-                }
             }
         }
     }
