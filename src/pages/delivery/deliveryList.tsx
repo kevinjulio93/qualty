@@ -12,6 +12,7 @@ import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
 import { useSelector } from 'react-redux';
 import { checkPermissions } from '../../helpers/checkPermissions';
+import dayjs from "dayjs";
 
 
 
@@ -33,7 +34,13 @@ function DeliveryList() {
         try {
           const { result } = await getAllDelivery();
           const { data: dataList, totalPages } = result.data;
-          console.log(dataList)
+          const mappedList = dataList.map((event) => {
+            return {
+              ...event,
+              execution_date: dayjs(event.execution_date).format("L"),
+            };
+          });
+    
           setDelivery(dataList);
           setTotalPages(totalPages);
           setIsLoading(false);
