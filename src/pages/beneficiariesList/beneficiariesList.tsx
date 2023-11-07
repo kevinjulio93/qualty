@@ -94,6 +94,11 @@ function BeneficiariesList() {
           subject: SECTIONS.BENEFICIARY,
           action: [PERMISSIONS.DELETE],
         };
+        case 'create':
+          return {
+            subject: SECTIONS.BENEFICIARY,
+            action: [PERMISSIONS.CREATE],
+          };
     }
   }
 
@@ -108,9 +113,11 @@ function BeneficiariesList() {
             Aqui podras gestionar los beneficiarios del sistema.
           </span>
         </div>
+        { checkPermissions(getPermission('create'), abilities) &&
         <Button className="btn-create" onClick={() => handleClickOpen()}>
           Crear Beneficiario
         </Button>
+        }
       </div>
 
       <div className="main-center-container">

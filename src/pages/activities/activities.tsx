@@ -95,6 +95,11 @@ function ActivityList() {
           subject: SECTIONS.ACTIVITY,
           action: [PERMISSIONS.DELETE],
         };
+      case 'create':
+        return {
+          subject: SECTIONS.ACTIVITY,
+          action: [PERMISSIONS.CREATE],
+        };
     }
   }
 
@@ -123,6 +128,7 @@ function ActivityList() {
       hasEdit={checkPermissions(getPermission('edit'), abilities)}
       hasDelete={checkPermissions(getPermission('delete'), abilities)}
       hasStats={false}
+      hasCreate={checkPermissions(getPermission('create'), abilities)}
     />
     {openDialog && (
         <SimpleDialog

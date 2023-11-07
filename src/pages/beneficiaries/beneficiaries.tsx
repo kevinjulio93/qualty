@@ -100,6 +100,7 @@ function Beneficiaries() {
     { label: "Mental-Cognitiva", value: "Mental-Cognitiva" },
     { label: "Mental-Psicosocial", value: "Mental-Psicosocial" },
     { label: "Otra", value: "Otra" },
+    { label: "Ninguna", value: "Ninguna" },
   ];
 
   const optionsOcupation = [

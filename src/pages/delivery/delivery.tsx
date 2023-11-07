@@ -51,7 +51,7 @@ function Delivery () {
         const fechaHace60Anios = new Date();
         fechaHace60Anios.setFullYear(fechaHace60Anios.getFullYear() - 60);
         return date <= fechaHace60Anios;
-      }
+    }
 
       const checkRequirements=(ben:any)=>{
         let aux=0;
@@ -132,7 +132,6 @@ function Delivery () {
     const onSelectEvent = (_, selected) => {
         const currentEvent = eventArray.find(item => item.name === selected);
         setSelectedEvent(currentEvent);
-        console.log(currentEvent);
         const inventory = currentEvent.associated_winery?.inventory;
         setItemList(inventory);
         const newCounts = new Array(inventory.length).fill(0);
@@ -170,7 +169,6 @@ function Delivery () {
             event: selectedEvent._id,
             itemList: getFinalItemList(),
         };
-        console.log(currentEvent);
         await createDelivery(currentEvent);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
     }

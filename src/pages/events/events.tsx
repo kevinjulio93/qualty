@@ -116,6 +116,11 @@ function EventList() {
           subject: SECTIONS.EVENTS,
           action: [PERMISSIONS.READ],
         };
+      case 'create':
+        return {
+          subject: SECTIONS.EVENTS,
+          action: [PERMISSIONS.CREATE],
+        };
     }
   }
 
@@ -146,6 +151,7 @@ function EventList() {
         hasEdit={checkPermissions(getPermission('edit'), abilities)}
         hasDelete={checkPermissions(getPermission('delete'), abilities)}
         hasStats={checkPermissions(getPermission('stats'), abilities)}
+        hasCreate={checkPermissions(getPermission('create'), abilities)}
       />
 
       {openDialog && (

@@ -76,6 +76,11 @@ function DeliveryList() {
             subject: SECTIONS.DELIVERY,
             action: [PERMISSIONS.DELETE],
           };
+          case 'create':
+            return {
+              subject: SECTIONS.DELIVERY,
+              action: [PERMISSIONS.CREATE],
+            };
       }
     }
 
@@ -90,9 +95,10 @@ function DeliveryList() {
                 Aqui podras gestionar las entregas realizadas.
               </span>
             </div>
-            <Button className="btn-create" onClick={() => handleClickOpen()}>
+            { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>
               Generar entrega
             </Button>
+            }
           </div>
     
           <div className="main-center-container">

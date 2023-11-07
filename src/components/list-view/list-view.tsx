@@ -33,6 +33,7 @@ interface IListViewProp {
 	hasEdit: boolean,
 	hasDelete: boolean,
 	hasStats: boolean
+	hasCreate: boolean
 
 
 
@@ -57,7 +58,7 @@ function ListView(props: IListViewProp) {
 						{props.sectionDescription}
 					</span>
 				</div>
-				{renderButton()}
+				{ props.hasCreate && renderButton()}
 			</div>
 
 			<div className="main-center-container">

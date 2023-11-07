@@ -110,6 +110,11 @@ function Roles() {
           subject: SECTIONS.ROLE,
           action: [PERMISSIONS.DELETE],
         };
+        case 'create':
+          return {
+            subject: SECTIONS.ROLE,
+            action: [PERMISSIONS.CREATE],
+          };
     }
   }
 
@@ -124,7 +129,7 @@ function Roles() {
             Aqui podras gestionar los roles de usuarios del sistema.
           </span>
         </div>
-        <Modal
+        { checkPermissions(getPermission('create'), abilities) && <Modal
           className="btn-create"
           buttonText="Crear Roles"
           title="Crear role"
@@ -134,6 +139,7 @@ function Roles() {
         >
           <RoleForm currentRole={currentRole} ref={roleRef}></RoleForm>
         </Modal>
+        }
       </div>
       <div className="main-center-container">
         <div className="panel-heading">

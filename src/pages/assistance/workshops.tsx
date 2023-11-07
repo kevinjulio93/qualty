@@ -105,6 +105,11 @@ function WorkshopsList() {
             subject: SECTIONS.ASSISTANCE,
             action: [PERMISSIONS.DELETE],
           };
+          case 'create':
+            return {
+              subject: SECTIONS.ASSISTANCE,
+              action: [PERMISSIONS.CREATE],
+            };
       }
     }
 
@@ -119,9 +124,10 @@ function WorkshopsList() {
                 Aqui podras gestionar los talleres realizados.
               </span>
             </div>
-            <Button className="btn-create" onClick={() => handleClickOpen()}>
+            { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>
               Generar asistencia
             </Button>
+            }
           </div>
     
           <div className="main-center-container">

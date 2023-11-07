@@ -126,6 +126,11 @@ function Representatives() {
           subject: SECTIONS.REPRESENTATIVE,
           action: [PERMISSIONS.DELETE],
         };
+        case 'create':
+          return {
+            subject: SECTIONS.REPRESENTATIVE,
+            action: [PERMISSIONS.CREATE],
+          };
     }
   }
 
@@ -140,7 +145,7 @@ function Representatives() {
             Aqui podras gestionar los representantes del sistema.
           </span>
         </div>
-        <Modal
+        { checkPermissions(getPermission('create'), abilities) && <Modal
           className="btn-create"
           buttonText="Crear Representante"
           title="Crear representante"
@@ -153,6 +158,7 @@ function Representatives() {
             ref={representativeRef}
           ></RepresentativeForm>
         </Modal>
+        }
       </div>
       <div className="main-center-container">
         <div className="panel-heading">

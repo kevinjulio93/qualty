@@ -88,6 +88,11 @@ function PhysicalDeliveryList() {
             subject: SECTIONS.PHYSICAL_DELIVERY,
             action: [PERMISSIONS.DELETE],
           };
+          case 'create':
+            return {
+              subject: SECTIONS.PHYSICAL_DELIVERY,
+              action: [PERMISSIONS.CREATE],
+            };
       }
     }
 
@@ -102,9 +107,10 @@ function PhysicalDeliveryList() {
                 Aqui podrás gestionar las entregas que fueron realizadas fisicamente.
               </span>
             </div>
-            <Button className="btn-create" onClick={() => handleClickOpen()}>
+            { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>
               Generar orden
             </Button>
+            }
           </div>
     
           <div className="main-center-container">

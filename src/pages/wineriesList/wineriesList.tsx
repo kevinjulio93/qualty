@@ -102,6 +102,11 @@ function WineriesList() {
           subject: SECTIONS.WINERIES,
           action: [PERMISSIONS.DELETE],
         };
+        case 'create':
+          return {
+            subject: SECTIONS.WINERIES,
+            action: [PERMISSIONS.CREATE],
+          };
     }
   }
 
@@ -116,9 +121,10 @@ function WineriesList() {
             Aqui podras gestionar las bodegas del sistema.
           </span>
         </div>
-        <Button className="btn-create" onClick={() => handleClickOpen()}>
+        { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>
           Crear Bodega
         </Button>
+        }
       </div>
 
       <div className="main-center-container">

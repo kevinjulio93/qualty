@@ -115,6 +115,11 @@ function Users() {
           subject: SECTIONS.USER,
           action: [PERMISSIONS.DELETE],
         };
+        case 'create':
+          return {
+            subject: SECTIONS.USER,
+            action: [PERMISSIONS.CREATE],
+          };
     }
   }
 
@@ -129,7 +134,7 @@ function Users() {
             Aqui podras gestionar los usuarios del sistema.
           </span>
         </div>
-        <Modal
+        { checkPermissions(getPermission('create'), abilities) && <Modal
           className="btn-create"
           buttonText="Crear Usuarios"
           title="Crear usuario"
@@ -139,6 +144,7 @@ function Users() {
         >
           <UserForm currentUser={currentUser} ref={userRef}></UserForm>
         </Modal>
+        }
       </div>
       <div className="main-center-container">
         <div className="panel-heading">

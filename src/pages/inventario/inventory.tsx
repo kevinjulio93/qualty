@@ -136,6 +136,11 @@ function Inventory() {
           subject: SECTIONS.INVENTORY,
           action: [PERMISSIONS.DELETE],
         };
+        case 'create':
+          return {
+            subject: SECTIONS.INVENTORY,
+            action: [PERMISSIONS.CREATE],
+          };
     }
   }
 
@@ -150,7 +155,7 @@ function Inventory() {
             Aqui podrás gestionar los artículos de las bodegas del sistema.
           </span>
         </div>
-        <Modal
+        { checkPermissions(getPermission('create'), abilities) && <Modal
           className="btn-create"
           buttonText="Crear artículo"
           title="Crear artículo"
@@ -160,6 +165,7 @@ function Inventory() {
           >
           <ItemForm currentItem={currentItem} ref={itemRef}></ItemForm>
         </Modal>
+        }
       </div>
       <div className="main-center-container">
         <div className="panel-heading">

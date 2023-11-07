@@ -122,6 +122,11 @@ function Associations() {
           subject: SECTIONS.ASSOCIATIONS,
           action: [PERMISSIONS.DELETE],
         };
+      case 'create':
+      return {
+        subject: SECTIONS.ASSOCIATIONS,
+        action: [PERMISSIONS.CREATE],
+      };
     }
   }
 
@@ -167,6 +172,7 @@ function Associations() {
       currentPage={currentPage}
       hasEdit={checkPermissions(getPermission('edit'), abilities)}
       hasDelete={checkPermissions(getPermission('delete'), abilities)}
+      hasCreate={checkPermissions(getPermission('delete'), abilities)}
       hasStats={false}
     />
     {openDialog && (

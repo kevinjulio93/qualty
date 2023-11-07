@@ -121,6 +121,11 @@ function RatingList() {
             subject: SECTIONS.RATINGS,
             action: [PERMISSIONS.DELETE],
           };
+          case 'create':
+            return {
+              subject: SECTIONS.RATINGS,
+              action: [PERMISSIONS.CREATE],
+            };
       }
     }
 
@@ -135,9 +140,10 @@ function RatingList() {
                 Aquí puedes gestionar las valoraciones realizadas.
               </span>
             </div>
-            <Button className="btn-create" onClick={() => handleClickOpen()}>
+            { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>
               Generar valoración
             </Button>
+            }
           </div>
     
           <div className="main-center-container">

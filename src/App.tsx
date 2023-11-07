@@ -142,7 +142,7 @@ function App() {
                   <Route path={`${ROUTES.PHYSICAL_DELIVERY}/:idDelivery`} element={<PhysicalDelivery />} />
                 </Route>
 
-                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE, action: [PERMISSIONS.CREATE] }} />}>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.REPRESENTATIVES} element={<Representatives />} />
                 </Route>
               </Route>

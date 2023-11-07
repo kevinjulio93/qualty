@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, FormControl, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, Card, FormControl, FormLabel, Grid, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import LoadingComponent from "../../components/loading/loading";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -9,22 +9,29 @@ import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import { useNavigate, useParams } from "react-router-dom";
 import { createRatings, getRatingsById } from "../../services/rating.service";
 import { ROUTES } from "../../constants/routes";
+import RemoveIcon from '@mui/icons-material/Remove';
+import AddIcon from '@mui/icons-material/Add';
+import { getAllItems } from "../../services/inventory.service";
 
 
 function Ratings () {
     const { ratingId } = useParams();
     const [bens, setBens] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedRating, setSelectedRating] = useState(null);
+    const [selectedRating, setSelectedRating] = useState("");
     const [selectedBen, setSelectedBen] = useState(null);
     const [notes, setNotes] = useState("");
     const [diagnosticNote, setDiagnostic] = useState("");
+    const [counters, setCounters] = useState([]);
+    const [itemList, setItemList] = useState([]);
+    const [forceRender, setForceRender] = useState(+ new Date());
     const navigate = useNavigate();
 
     useEffect(() => {
         if (ratingId) {
             getCurrentRating();
         }
+        getItems();
         getBens();
     }, [])
 
@@ -35,6 +42,19 @@ function Ratings () {
         setSelectedBen(attendee);
         setNotes(observations);
         setDiagnostic(diagnostic);
+    }
+
+    const getItems = async() => {
+        try {
+            const response = await getAllItems();
+            const list = response?.result?.data?.data?.filter(el => !el.isDefault);
+            const newCounts = new Array(list.length).fill(0);
+            setCounters(newCounts);
+            console.log(list);
+            setItemList(list);
+        } catch (error) {
+              console.error(error);
+        }
     }
 
     const getBens = async () => {
@@ -82,9 +102,35 @@ function Ratings () {
             observations: notes,
             attendee: selectedBen._id,
             diagnostic: diagnosticNote,
+            suggestedItems: getFinalItemList()
         }
         await createRatings(rating);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
+    }
+
+    const getFinalItemList = () => {
+        const finalList = [];
+        itemList.forEach((item, i) => {
+            if (counters[i] > 0) finalList.push({
+                item: item._id,
+                amount: counters[i],
+            });
+        });
+        return finalList;
+    }
+
+    const addCounter = (i) => {
+        const counts = counters;
+        counts[i]++;
+        setCounters(counts);
+        setForceRender(+ new Date());
+    }
+
+    const removeCounter = (i) => {
+        const counts = counters;
+        counts[i]--;
+        setCounters(counters);
+        setForceRender(+ new Date());
     }
 
     return isLoading ? (
@@ -120,13 +166,13 @@ function Ratings () {
                                 <MenuItem key={"opto"} value="Optometría">
                                     Optometría
                                 </MenuItem>
-                                <MenuItem key={"opto"} value="Optometría">
+                                <MenuItem key={"odonto"} value="Odontología">
                                     Odontología
                                 </MenuItem>
-                                <MenuItem key={"opto"} value="Optometría">
+                                <MenuItem key={"fono"} value="Fonoaudiología">
                                     Fonoaudiología
                                 </MenuItem>
-                                <MenuItem key={"opto"} value="Optometría">
+                                <MenuItem key={"anam"} value="Anamnesis">
                                     Anamnesis
                                 </MenuItem>
                             </Select>
@@ -222,9 +268,9 @@ function Ratings () {
                                     id="filled-multiline-static"
                                     label="Observaciones"
                                     multiline
-                                    rows={6}
+                                    rows={10}
                                     variant="filled"
-                                    sx={{width: 800}}
+                                    sx={{width: 400}}
                                     onChange={(e) => handleText(e)}
                                     value={notes}
                                 />
@@ -232,12 +278,55 @@ function Ratings () {
                                     id="filled-multiline-static"
                                     label="Diagnostico"
                                     multiline
-                                    rows={6}
+                                    rows={10}
                                     variant="filled"
-                                    sx={{width: 350}}
+                                    sx={{width: 250}}
                                     onChange={(e) => handleDiagnostic(e)}
                                     value={diagnosticNote}
                                 />
+                                <div className="ratings-container__form-section__info">
+                                    <div className="panel-heading"> 
+                                        Artículos sugeridos
+                                    </div>
+                                        <Card sx={{ width: 500, padding: 2 }}>
+                                            <Stack direction={"column"}>
+                                                {itemList.map((item, i) => {
+                                                    return (
+                                                        <Grid container spacing={2} key={item.name + '_' + i}>
+                                                            <Grid item xs={5}>
+                                                                <FormLabel component="legend">{item.name}</FormLabel>
+                                                            </Grid>
+                                                            <Grid item xs={3}>
+                                                                <Button
+                                                                    aria-label="reduce"
+                                                                    className="btn-counter-action"
+                                                                    onClick={() => removeCounter(i)}
+                                                                    disabled={counters[i] === 0}
+                                                                >
+                                                                    <RemoveIcon fontSize="small" />
+                                                                </Button>
+                                                            </Grid>
+                                                            <Grid item xs={1}>
+                                                                <Typography variant="overline" display="block" gutterBottom>
+                                                                    {counters[i]}
+                                                                </Typography>
+                                                            </Grid>
+                                                            <Grid item xs={3}>
+                                                                <Button
+                                                                    aria-label="increase"
+                                                                    className="btn-counter-action"
+                                                                    onClick={() => addCounter(i)}
+                                                                    disabled={counters[i] === 1}
+                                                                >
+                                                                    <AddIcon fontSize="small" />
+                                                                </Button>
+                                                            </Grid>
+                                                    </Grid>
+                                                    );
+                                                })}
+                                            </Stack>
+                                        </Card>
+                                </div>
                             </Stack>
                         </div>
                     }
