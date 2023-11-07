@@ -103,6 +103,7 @@ function Ratings () {
                                 onChange={(e) => onSelectRating(e)}
                                 value={selectedRating}
                             >
+                                {}
                                 <MenuItem key={"fisio"} value="Fisioterapia">
                                     Fisioterapia
                                 </MenuItem>
@@ -111,6 +112,15 @@ function Ratings () {
                                 </MenuItem>
                                 <MenuItem key={"opto"} value="Optometría">
                                     Optometría
+                                </MenuItem>
+                                <MenuItem key={"opto"} value="Optometría">
+                                    Odontología
+                                </MenuItem>
+                                <MenuItem key={"opto"} value="Optometría">
+                                    Fonoaudiología
+                                </MenuItem>
+                                <MenuItem key={"opto"} value="Optometría">
+                                    Anamnesis
                                 </MenuItem>
                             </Select>
                         </FormControl>

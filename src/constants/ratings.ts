@@ -4,8 +4,11 @@ export type typeBodyRequestPdf={
 	valueTypeRating:string
 }
 
-export const typesRating=[
+export const typesRating = [
 	"Fisioterapia",
 	"Psicología",
-	"Optometría"
-]
+	"Optometría",
+	"Odontología",
+	"Fonoaudiología",
+	"Anamnesis"
+];
