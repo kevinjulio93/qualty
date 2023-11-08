@@ -334,7 +334,7 @@ function Ratings () {
                     className="btn-save-ratings"
                     onClick={() => saveRatings()}
                     >
-                    Generar asistencia
+                    Generar valoración
                     </Button>
                 </Paper>
             </section>
