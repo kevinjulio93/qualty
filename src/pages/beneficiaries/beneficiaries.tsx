@@ -560,7 +560,7 @@ function Beneficiaries() {
                         style={{ width: "100%" }}
                         disablePortal
                         id="sex"
-                        options={["Hombre", "Mujer", "Otro"]}
+                        options={["M", "F"]}
                         onChange={(e: any, data: any) =>
                           formHanlder("sex", e, data)
                         }
