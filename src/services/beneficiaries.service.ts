@@ -2,7 +2,7 @@ import { FecthRequestModel } from "../models/request.model";
 
 const requestInstance = FecthRequestModel.getInstance();
 
-export async function createBeneficiary(formData: any, data: any) {
+export async function createBeneficiary(files: any, data: any) {
   // const beneficiary = JSON.stringify(data);
   // const formData = new FormData();
   // formData.append("file", file);
@@ -16,8 +16,19 @@ export async function createBeneficiary(formData: any, data: any) {
     false
   );
   if(response.status===200){
-    if(formData){
-      const idben=response.result.data._id;
+    if(files.length > 0){
+      const promises = await saveAllFiles(files, response.result.data._id);
+      Promise.all(promises).then((responses) => {
+        return responses;
+      });
+    }
+  }
+  return response;
+}
+
+const saveAllFiles = (files, idben) => {
+  return files.map(async (item, index) => {
+    const formData = getFormData(item);
       const responsePhoto = await requestInstance.post(
         "/beneficiaries/resources/"+idben,
         formData,
@@ -25,12 +36,19 @@ export async function createBeneficiary(formData: any, data: any) {
         true
       );
       return responsePhoto
-    }
-  }
-  return response;
+  });
 }
 
-export async function updateBeneficiary(formData: any, data: any) {
+
+
+  const getFormData = (file) => {
+    const formData = new FormData();
+    const keys = Object.keys(file);
+    formData.append(keys[0], file[`${keys[0]}`]);
+    return formData;
+  };
+
+export async function updateBeneficiary(files: any, data: any) {
   // const beneficiary = JSON.stringify(data);
   // const formData = new FormData();
   // formData.append("file", file);
@@ -42,15 +60,11 @@ export async function updateBeneficiary(formData: any, data: any) {
     false
   );
   if(response.status===200){
-    if(formData){
-      const idben=data._id;
-      const responsePhoto = await requestInstance.post(
-        "/beneficiaries/resources/"+idben,
-        formData,
-        false,
-        true
-      );
-      return responsePhoto
+    if(files.length > 0){
+      const promises = await saveAllFiles(files, response.result.data._id);
+      Promise.all(promises).then((responses) => {
+        return responses;
+      });
     }
   }
   return response;
