@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppUser } from "../../models/user.model";
 import SideMenu from "../../components/sideMenu/sideMenu";
 import { RootState } from "../../app/store";
+import MenuIcon from '@mui/icons-material/Menu';
 
 const DashboardLayout = () => {
   const [open, setOpen] = useState(false);
@@ -45,7 +46,7 @@ const DashboardLayout = () => {
 
   return (
     <div className="dashboard-layout">
-      <button className="show-menu-icon" onClick={toogleMenu}>show menu</button>
+      <MenuIcon className="show-menu-icon" onClick={toogleMenu} color="primary"></MenuIcon>
       <div className="dashboard-layout__page-view">
         <div className={`dashboard-layout__page-view__menu ${menuOpen ? 'show-menu' : ''}`}>
           <a href="#">Qualty</a>
@@ -59,6 +60,7 @@ const DashboardLayout = () => {
           </div>
           <SideMenu logoutF={logoutFunction} />
         </div>
+        {!menuOpen && <div className={`dashboard-layout__page-view__show-icon`}></div>}
         <main className="dashboard-layout__page-view__body-content">
           <Outlet />
         </main>
