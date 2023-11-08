@@ -1,0 +1,44 @@
+.save-container {
+  border-top: 1px solid #dcd9d9;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background-color: #fff;
+  width: calc(100% - 330px);
+  position: fixed;
+  bottom: 0;
+  height: auto;
+  padding: 10px 0;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+
+  .btn-save-winerie {
+    background-color: #449d44 !important;
+    color: #fff;
+    width: 200px;
+    position: relative;
+    left: 20px;
+
+    &:hover {
+      background-color: #03a9f4;
+    }
+  }
+
+  .btn-cancel-winerie {
+    background-color: #03a9f4;
+    color: #fff;
+    width: 200px;
+    position: relative;
+    left: 20px;
+
+    &:hover {
+      background-color: #03a9f4;
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .save-container {
+    width: calc(100% - 80px);
+  }
+}

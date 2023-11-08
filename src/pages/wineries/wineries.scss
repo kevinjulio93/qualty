@@ -1,11 +1,13 @@
 .winerie-container {
-
+  .assistance-container {
     &__form-section {
         background-color: #fff;
         height: 100vh;
         width: 100%;
         padding: 20px;
         box-sizing: border-box;
+        min-height: 600px;
+        margin-bottom: 80px;
 
         &__table {
             height: 250px;
@@ -13,30 +15,5 @@
             margin-top: 20px;
         }
     }
-
-    .btn-save-winerie {
-        background-color: #449d44 !important;
-        color: #fff;
-        width: 200px;
-        position: relative;
-        left: 20px;
-        bottom:80px;
-
-        &:hover {
-            background-color: #03a9f4;
-        }
-    }
-
-    .btn-cancel-winerie {
-        background-color: #03a9f4;
-        color: #fff;
-        width: 200px;
-        position: relative;
-        left: 20px;
-        bottom:80px;
-
-        &:hover {
-            background-color: #03a9f4;
-        }
-    }
+  }
 }
