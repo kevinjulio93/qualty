@@ -45,6 +45,8 @@ function SideMenu(props) {
   const handleSectionChange = (section: string) => {
     dispatch(setCurrentSection(section));
     setSelectedSection(section);
+    const closeMenu = new CustomEvent("closeMenu", {});
+    document.dispatchEvent(closeMenu);
   };
 
   const handleClick = () => {

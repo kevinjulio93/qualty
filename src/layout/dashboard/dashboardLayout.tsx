@@ -33,6 +33,12 @@ const DashboardLayout = () => {
     smile: <InsertEmoticonIcon />,
   };
 
+  useEffect(()=>{
+    return () =>{
+      document.removeEventListener('closeMenu',()=>{});
+    }
+  }, [])
+
   const logoutFunction = () => {
     localStorage.removeItem("user");
     const user = new AppUser();
@@ -42,6 +48,9 @@ const DashboardLayout = () => {
 
   const toogleMenu = () => {    
     setMenuOpen(!menuOpen);
+    document.addEventListener('closeMenu', ()=>{
+      setMenuOpen(false);
+    })
   }
 
   return (
