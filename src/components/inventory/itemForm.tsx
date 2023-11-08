@@ -30,6 +30,7 @@ const ItemForm = forwardRef((props: any, ref) => {
 
   const setCurrentItem = () => {
     if (props.currentItem) {
+      debugger
       setItem(props.currentItem);
     }
   };
@@ -81,8 +82,7 @@ const ItemForm = forwardRef((props: any, ref) => {
           key="item-input-value"
         />
         <FormControlLabel
-          control={<Checkbox />}
-          value={item.isDefault}
+          control={<Checkbox checked={item?.isDefault} />}
           name="isDefault"
           onChange={(e) =>
             formHanlder(e)
