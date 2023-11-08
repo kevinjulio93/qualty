@@ -347,6 +347,7 @@ function EventDetail() {
                 </TableRow>
                 {eventsAssociations.length > 0 &&
                   eventsAssociations.map((asso: any, index) => {
+                    debugger
                     return (
                       <TableRow key={index}>
                         <TableCell>

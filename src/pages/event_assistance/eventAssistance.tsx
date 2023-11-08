@@ -13,6 +13,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
+import userImage from '../../assets/user.png'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -254,7 +255,7 @@ function EventAssistance() {
                         <TableCell>
                         <img
                         className="ben-foto"
-                        src={ben?.photo_url}
+                        src={ben.photo_url?ben.photo_url:userImage}
                         alt="foto"
                           />
                         </TableCell>
