@@ -13,6 +13,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { getAllItems } from "../../services/inventory.service";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
+import userImage from '../../assets/user.png'
 
 
 function Ratings () {
@@ -206,7 +207,7 @@ function Ratings () {
                                     <TableCell>
                                         <img
                                         className="ben-foto"
-                                        src={beneficiary.photo_url}
+                                        src={beneficiary.photo_url?beneficiary.photo_url:userImage}
                                         alt="foto"
                                         />
                                     </TableCell>
