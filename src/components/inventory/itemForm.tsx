@@ -38,7 +38,7 @@ const ItemForm = forwardRef((props: any, ref) => {
     const value = e.target.value;
     const name = e.target.name;
     if(name === "isDefault") {
-      setItem({...item,[name]:e.isTrusted});
+      setItem({...item,[name]: !item[name]});
     } else {
       setItem({...item,[name]:value});
     }
@@ -81,11 +81,11 @@ const ItemForm = forwardRef((props: any, ref) => {
           key="item-input-value"
         />
         <FormControlLabel
-          control={<Checkbox checked={item?.isDefault} />}
+          control={<Checkbox 
+            checked={item?.isDefault} 
+            onChange={(e) => formHanlder(e)}
+            />}
           name="isDefault"
-          onChange={(e) =>
-            formHanlder(e)
-          }
           label="Articulo predeterminado"
         />
       </form>
