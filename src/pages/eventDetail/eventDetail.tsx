@@ -24,6 +24,7 @@ import {
   getEventById,
   updateEvent,
 } from "../../services/events.service";
+import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 
 function EventDetail() {
   const { eventId } = useParams();
@@ -383,13 +384,18 @@ function EventDetail() {
                 </div>
               )}
 
-              <Button onClick={createUpdateEvent} className="btn-save-activity">
+              {/* <Button onClick={createUpdateEvent} className="btn-save-activity">
                 Guardar evento
-              </Button>
+              </Button> */}
             </section>
           </div>
         </Paper>
       </section>
+
+      <SaveCancelControls
+        saveText="Guardar"
+        handleSave={(e) => createUpdateEvent() }
+      />
     </>
   );
 }

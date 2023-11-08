@@ -46,6 +46,7 @@ import {
 } from "../../services/activities.service";
 import { epsList } from "../../constants/epsList";
 import { isEmpty } from "../../helpers/isEmpty";
+import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -1038,15 +1039,19 @@ function Beneficiaries() {
                 </TabPanel>
               </TabContext>
             </div>
-            <Button
+            {/* <Button
               className="btn-save-beneficiarie"
               onClick={() => createBeneficiarie()}
             >
               Guardar Beneficiario
-            </Button>
+            </Button> */}
           </div>
         </Paper>
       </section>
+      <SaveCancelControls
+        saveText="Guardar"
+        handleSave={(e) => createBeneficiarie() }
+      />
     </>
   );
 }

@@ -12,6 +12,7 @@ import { ROUTES } from "../../constants/routes";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { getAllItems } from "../../services/inventory.service";
+import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 
 
 function Ratings () {
@@ -330,14 +331,18 @@ function Ratings () {
                             </Stack>
                         </div>
                     }
-                    <Button
+                    {/* <Button
                     className="btn-save-ratings"
                     onClick={() => saveRatings()}
                     >
                     Generar asistencia
-                    </Button>
+                    </Button> */}
                 </Paper>
             </section>
+            <SaveCancelControls
+                saveText="Guardar"
+                handleSave={(e) => saveRatings() }
+            />
         </>
     );
 }
