@@ -296,7 +296,7 @@ function Winerie() {
         } else {
           setNameWineries(wineries);
           const dataResponseWinerieMain = await getWinerie(
-            winerieGet.associated_winery
+            winerieGet.associated_winery._id
           );
           const winerieMainFound = dataResponseWinerieMain.result.data;
           winerieGet.associated_winery = winerieMainFound;

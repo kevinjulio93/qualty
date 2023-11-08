@@ -102,7 +102,7 @@ function Ratings () {
             observations: notes,
             attendee: selectedBen._id,
             diagnostic: diagnosticNote,
-            suggestedItems: getFinalItemList()
+            suggested_items: getFinalItemList()
         }
         await createRatings(rating);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
