@@ -12,6 +12,7 @@ import { ROUTES } from "../../constants/routes";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
 import { getAllItems } from "../../services/inventory.service";
+import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 
 
 function Ratings () {
@@ -102,7 +103,7 @@ function Ratings () {
             observations: notes,
             attendee: selectedBen._id,
             diagnostic: diagnosticNote,
-            suggestedItems: getFinalItemList()
+            suggested_items: getFinalItemList()
         }
         await createRatings(rating);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
@@ -330,14 +331,12 @@ function Ratings () {
                             </Stack>
                         </div>
                     }
-                    <Button
-                    className="btn-save-ratings"
-                    onClick={() => saveRatings()}
-                    >
-                    Generar valoración
-                    </Button>
                 </Paper>
             </section>
+            <SaveCancelControls
+                saveText="Guardar"
+                handleSave={() => saveRatings() }
+            />
         </>
     );
 }

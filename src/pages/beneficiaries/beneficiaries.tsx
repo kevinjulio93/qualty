@@ -46,6 +46,7 @@ import {
 } from "../../services/activities.service";
 import { epsList } from "../../constants/epsList";
 import { isEmpty } from "../../helpers/isEmpty";
+import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -91,6 +92,7 @@ function Beneficiaries() {
   ];
 
   const optionsDisability = [
+    { label: "Ninguna", value: "Ninguna" },
     { label: "Auditiva", value: "Auditiva" },
     { label: "Visual", value: "Visual" },
     { label: "Del gusto", value: "Del gusto" },
@@ -99,8 +101,7 @@ function Beneficiaries() {
     { label: "Multiple", value: "Multiple" },
     { label: "Mental-Cognitiva", value: "Mental-Cognitiva" },
     { label: "Mental-Psicosocial", value: "Mental-Psicosocial" },
-    { label: "Otra", value: "Otra" },
-    { label: "Ninguna", value: "Ninguna" },
+    { label: "Otra", value: "Otra" }
   ];
 
   const optionsOcupation = [
@@ -225,6 +226,15 @@ function Beneficiaries() {
     const ext = file.type.split("/")[1];
     const filePhoto = new File([file], "foto." + ext);
     setFileBen("photo_url", filePhoto);
+    setSelectedFile(file);
+  };
+
+  const handleCaptureFootprint = (imageBlob: any) => {
+    // Include the imageBlob in your FormData
+    const file = imageBlob;
+    const ext = file.type.split("/")[1];
+    const fileFootprint = new File([file], "huella." + ext);
+    setFileBen("footprint_url", fileFootprint);
     setSelectedFile(file);
   };
 
@@ -457,7 +467,7 @@ function Beneficiaries() {
               />
             </div>
             <div>
-              <DPersonaReader />
+              <DPersonaReader handleCaptureFootprint={handleCaptureFootprint} existingImage={(beneficiarie as any)?.footprint_url || null}/>
             </div>
           </div>
           <div className="beneficiaries-container__form-section__beneficiarie">
@@ -1029,15 +1039,19 @@ function Beneficiaries() {
                 </TabPanel>
               </TabContext>
             </div>
-            <Button
+            {/* <Button
               className="btn-save-beneficiarie"
               onClick={() => createBeneficiarie()}
             >
               Guardar Beneficiario
-            </Button>
+            </Button> */}
           </div>
         </Paper>
       </section>
+      <SaveCancelControls
+        saveText="Guardar"
+        handleSave={(e) => createBeneficiarie() }
+      />
     </>
   );
 }

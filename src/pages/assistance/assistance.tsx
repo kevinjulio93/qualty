@@ -28,6 +28,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { workshops } from "../../constants/workshops";
 import userImage from '../../assets/user.png'
+import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 
 function Assistance() {
   const { workshopId } = useParams();
@@ -248,7 +249,6 @@ function Assistance() {
                   <TableCell>Acciones</TableCell>
                 </TableRow>
                 {assistList.map((beneficiary: any, index) => {
-                  debugger
                   return (
                     <TableRow key={index}>
                       <TableCell>
@@ -283,11 +283,15 @@ function Assistance() {
               </Table>
             </div>
           )}
-          <Button className="btn-save-workshop" onClick={() => saveWorkshop()}>
+          {/* <Button className="btn-save-workshop" onClick={() => saveWorkshop()}>
             Generar asistencia
-          </Button>
+          </Button> */}
         </Paper>
       </section>
+      <SaveCancelControls
+        saveText="Guardar"
+        handleSave={(e) => saveWorkshop() }
+      />
     </>
   );
 }
