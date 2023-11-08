@@ -436,6 +436,7 @@ function Beneficiaries() {
   };
 
   const getFormattedDate = (newDate) => {
+    console.log(newDate);
     if (newDate.length === 8) {
       const dateTemp = dayjs(newDate, 'YYYYMMDD');
       console.log(dateTemp);
