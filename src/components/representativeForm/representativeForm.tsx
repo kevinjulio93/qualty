@@ -17,7 +17,7 @@ import {
 const RepresentativeForm = forwardRef((props: any, ref) => {
   const [representative, setRepresentative] = useState<any>({
     name: "",
-    "identification-type": "",
+    identification_type: "",
     identification: "",
     address: "",
     phone: "",

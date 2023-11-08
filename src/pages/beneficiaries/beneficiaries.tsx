@@ -47,6 +47,7 @@ import {
 import { epsList } from "../../constants/epsList";
 import { isEmpty } from "../../helpers/isEmpty";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -141,6 +142,7 @@ function Beneficiaries() {
   const [associationsList, setAssociations] = useState([]);
   const [forceRender, setForceRender] = useState(+new Date());
   const navigate = useNavigate();
+  dayjs.extend(customParseFormat);
 
   useEffect(() => {
     if (beneficiarieId !== undefined) {
@@ -433,6 +435,17 @@ function Beneficiaries() {
     return municipiesList[index];
   };
 
+  const getFormattedDate = (newDate) => {
+    console.log(newDate);
+    if (newDate.length === 8) {
+      const dateTemp = dayjs(newDate, 'YYYYMMDD');
+      console.log(dateTemp);
+      return dateTemp;
+    } else {
+      return newDate.format();
+    }
+  }
+
   return (
     <>
       <section className="beneficiaries-container">
@@ -559,8 +572,9 @@ function Beneficiaries() {
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
+                        freeSolo
                         id="sex"
-                        options={["Hombre", "Mujer", "Otro"]}
+                        options={["M", "F"]}
                         onChange={(e: any, data: any) =>
                           formHanlder("sex", e, data)
                         }
@@ -574,7 +588,7 @@ function Beneficiaries() {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
                         onChange={(newDate: Dayjs) =>
-                          formHanlder("birthday", newDate.format())
+                          formHanlder("birthday", getFormattedDate(newDate))
                         }
                         value={
                           (beneficiarie as any)?.birthday
@@ -589,6 +603,7 @@ function Beneficiaries() {
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
+                        freeSolo
                         id="blody_type"
                         options={[
                           "O+",

@@ -211,7 +211,7 @@ function Inventory() {
                         {item.code}
                       </TableCell>
                       <TableCell>
-                        {item.value}
+                        {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(item.value)}
                       </TableCell>
                       <TableCell>
                         <Stack

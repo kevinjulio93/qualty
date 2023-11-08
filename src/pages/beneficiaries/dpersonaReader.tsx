@@ -28,7 +28,6 @@ function DPersonaReader(props) {
     };
 
     const onSamplesAcquired = async (event: any) => {
-        console.log(event);
         //injectImage(event.samples[0])
         setDeviceState('acquired');
         setTimeout(function () {
@@ -36,7 +35,7 @@ function DPersonaReader(props) {
         }, 1000)
         const srcImage = injectImage(event.samples[0])
         setCapturedImage(srcImage);
-        props.onCaptureFootprint(dataURItoBlob(srcImage));
+        props.handleCaptureFootprint(dataURItoBlob(srcImage));
         await reader.stopAcquisition();
      
     };

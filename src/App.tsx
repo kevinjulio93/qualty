@@ -68,7 +68,7 @@ function App() {
                     <Route path=':activityId' element={<Beneficiaries />} />
                   </Route>
                 </Route>
-                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.INVENTORY, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.INVENTORY} element={<Inventory />} />
                 </Route>
 

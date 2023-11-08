@@ -113,10 +113,7 @@ function Ratings () {
     const getFinalItemList = () => {
         const finalList = [];
         itemList.forEach((item, i) => {
-            if (counters[i] > 0) finalList.push({
-                item: item._id,
-                amount: counters[i],
-            });
+            if (counters[i] > 0) finalList.push(item._id);
         });
         return finalList;
     }
