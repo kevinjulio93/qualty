@@ -30,7 +30,6 @@ const ItemForm = forwardRef((props: any, ref) => {
 
   const setCurrentItem = () => {
     if (props.currentItem) {
-      debugger
       setItem(props.currentItem);
     }
   };

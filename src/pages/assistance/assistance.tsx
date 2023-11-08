@@ -27,6 +27,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { workshops } from "../../constants/workshops";
+import userImage from '../../assets/user.png'
 
 function Assistance() {
   const { workshopId } = useParams();
@@ -201,7 +202,7 @@ function Assistance() {
                         <TableCell>
                           <img
                             className="ben-foto"
-                            src={beneficiary.photo_url}
+                            src={beneficiary.photo_url?beneficiary.photo_url:userImage}
                             alt="foto"
                           />
                         </TableCell>
@@ -247,12 +248,13 @@ function Assistance() {
                   <TableCell>Acciones</TableCell>
                 </TableRow>
                 {assistList.map((beneficiary: any, index) => {
+                  debugger
                   return (
                     <TableRow key={index}>
                       <TableCell>
                         <img
                           className="ben-foto"
-                          src={beneficiary.photo_url}
+                          src={beneficiary.photo_url ? beneficiary.photo_url : userImage}
                           alt="foto"
                         />
                       </TableCell>
