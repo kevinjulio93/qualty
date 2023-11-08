@@ -57,13 +57,9 @@ function Representatives() {
 
   const saveData = async () => {
     if (representativeRef.current !== null) {
-      let representative = (
+      const representative = (
         representativeRef.current as any
       ).getRepresentative();
-      representative = {
-        ...representative,
-        identification_type: representative["identification-type"],
-      };
       await createRepresentative(representative);
       setIsLoading(true);
       getRepresentatives();
