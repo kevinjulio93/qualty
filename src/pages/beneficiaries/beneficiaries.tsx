@@ -238,20 +238,13 @@ function Beneficiaries() {
     setSelectedFile(file);
   };
 
-  const getFormData = () => {
-    const formData = new FormData();
-    files.map((item, index) => {
-      const keys = Object.keys(item);
-      formData.append(keys[0], files[index][`${keys[0]}`]);
-    });
-    return formData;
-  };
+
 
   const saveBeneficiary = async (beneficiary: any) => {
     const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
     if (files || (beneficiarie as any)?.photo_url) {
       try {
-        await saveData(getFormData(), beneficiary); // Replace with your actual access token
+        await saveData(files, beneficiary); // Replace with your actual access token
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
       } catch (error) {
         console.error("Upload failed:", error);
@@ -260,7 +253,6 @@ function Beneficiaries() {
   };
 
   const createBeneficiarie = () => {
-    console.log(beneficiarie);
     saveBeneficiary(beneficiarie);
   };
 
