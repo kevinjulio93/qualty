@@ -172,7 +172,7 @@ function Associations() {
       currentPage={currentPage}
       hasEdit={checkPermissions(getPermission('edit'), abilities)}
       hasDelete={checkPermissions(getPermission('delete'), abilities)}
-      hasCreate={checkPermissions(getPermission('delete'), abilities)}
+      hasCreate={checkPermissions(getPermission('create'), abilities)}
       hasStats={false}
     />
     {openDialog && (
