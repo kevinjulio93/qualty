@@ -248,7 +248,6 @@ function Assistance() {
                   <TableCell>Acciones</TableCell>
                 </TableRow>
                 {assistList.map((beneficiary: any, index) => {
-                  debugger
                   return (
                     <TableRow key={index}>
                       <TableCell>
