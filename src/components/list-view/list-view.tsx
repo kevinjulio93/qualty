@@ -65,7 +65,7 @@ function ListView(props: IListViewProp) {
 				<div className="panel-heading">
 					{props.listTitle}
 					<Search
-						label="Buscar Eventos"
+						label="Buscar"
 						searchFunction={(data) => props.hanldeSearchFunction(data)}
 						voidInputFunction={() => props.hanldeVoidInputFunction()}
 					/>

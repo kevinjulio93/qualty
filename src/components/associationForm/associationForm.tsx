@@ -29,9 +29,7 @@ const AssociationForm = forwardRef((props: any, ref) => {
   const [municipiesList, setMunicipiesList] = useState([]);
   const [communityList, setCommunityList] = useState([]);
   const typesAssociation = [
-    "Centro de vida",
-    "Centro de bienestar",
-    "Municipio y Asociación",
+    'CENTRO VIDA', 'Centro de bienestar', 'Municipio y Asociación', 'VIDA/DÍA', 'CENTRO DÍA'
   ];
   // ["Centro de vida","Centro de bienestar","Municipio","Asociación"]
 
