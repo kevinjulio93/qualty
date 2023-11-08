@@ -1,137 +1,140 @@
-@import '../../styles/colors.scss';
+@import "../../styles/colors.scss";
 
 .dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &__page-view {
     display: flex;
-    flex-direction: column;
-    position: relative;
+    width: 100%;
+    box-sizing: border-box;
 
-    &__page-view {
+    &__menu {
+      width: 250px;
+      background: #ffffff;
+      border: none;
+      box-shadow: 10px 0px 20px 0 rgba(0, 0, 0, 0.05);
+      z-index: 99;
+      position: fixed;
+      margin-top: 0px;
+      height: 100%;
+      overflow: auto;
+      top: 0;
+      left: 0;
+
+      &__logo {
         display: flex;
-        width: 100%;
-        box-sizing: border-box;
+        align-items: center;
+        justify-content: center;
+      }
 
-        &__menu {
-            width: 250px;
-            background: #ffffff;
-            border: none;
-            box-shadow: 10px 0px 20px 0 rgba(0, 0, 0, 0.05);
-            z-index: 99;
-            position: fixed;
-            margin-top: 0px;
-            height: 100%;
-            overflow: auto;
-            top: 0;
-            left: 0;
+      & > a {
+        height: 50px;
+        font-size: 30px;
+        padding: 37px 15px;
+        line-height: 20px;
+        display: flex;
+        text-align: center;
+        color: #777;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+      }
 
-            &__logo {
-                display: flex;
-                align-items: center;
-                justify-content: center;
+      &__logo img {
+        width: 100px;
+        height: 100px;
+        display: block;
+        border-radius: 100%;
+        box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
+      }
 
-            }
+      &__info-user {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+      }
 
-            &>a {
-                height: 50px;
-                font-size: 30px;
-                padding: 37px 15px;
-                line-height: 20px;
-                display: flex;
-                text-align: center;
-                color: #777;
-                justify-content: center;
-                align-items: center;
-                text-decoration: none;
+      &__info-user h5 {
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 20px;
+        color: #000000;
+        margin-top: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
 
-            }
-
-            &__logo img {
-                width: 100px;
-                height: 100px;
-                display: block;
-                border-radius: 100%;
-                box-shadow: 0px 3px 10px 0 rgba(0, 0, 0, 0.15);
-            }
-
-            &__info-user {
-                display: flex;
-                justify-content: center;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            &__info-user h5 {
-                font-weight: 400;
-                font-size: 20px;
-                line-height: 20px;
-                color: #000000;
-                margin-top: 20px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            &__info-user p {
-                color: #607d8b;
-                font-size: 13px;
-                line-height: 15px;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-            }
-        }
-
-        &__show-icon {
-            width: 50px;
-            background: #ffffff;
-            border: none;
-            box-shadow: 10px 0px 20px 0 rgba(0, 0, 0, 0.05);
-            z-index: 99;
-            position: fixed;
-            margin-top: 0px;
-            height: 100%;
-            overflow: auto;
-            top: 0;
-            left: 0;
-            display: none;
-        }
-
-
-        &__body-content {
-            width: calc(100% - 250px);
-            margin-left: 250px;
-            padding:0 40px;
-        }
+      &__info-user p {
+        color: #607d8b;
+        font-size: 13px;
+        line-height: 15px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
     }
+
+    &__show-icon {
+      width: 50px;
+      background: #ffffff;
+      border: none;
+      box-shadow: 10px 0px 20px 0 rgba(0, 0, 0, 0.05);
+      z-index: 99;
+      position: fixed;
+      margin-top: 0px;
+      height: 100%;
+      overflow: auto;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+
+    &__body-content {
+      width: calc(100% - 250px);
+      margin-left: 250px;
+      padding: 0 40px;
+    }
+  }
+  .show-menu-icon-container {
     .show-menu-icon {
-        display: none;
-
+      display: none;
     }
+  }
 
-    .show-menu {
-        display: block !important;
-    }
+  .show-menu {
+    display: block !important;
+  }
 }
 
 @media screen and (max-width: 1200px) {
-    .dashboard-layout__page-view__menu {
-        display: none;
-    }
+  .dashboard-layout__page-view__menu {
+    display: none;
+  }
 
-    .dashboard-layout__page-view__show-icon {
-        display: block !important;
-    }
+  .dashboard-layout__page-view__show-icon {
+    display: block !important;
+  }
 
-    .dashboard-layout__page-view__body-content {
-        width: calc(100% - 50px);
-        margin-left: 30px;
-    }
-
+  .dashboard-layout__page-view__body-content {
+    width: calc(100% - 50px);
+    margin-left: 30px;
+  }
+  .show-menu-icon-container {
+    background-color: #fff;
+    height: 40px;
+    z-index: 200;
+    position: fixed;
     .show-menu-icon {
-        position: absolute;
-        z-index: 200;
-        display: block !important;
-        font-size: 40px !important;
-        margin-left: 5px;
-        position: fixed;
+      position: absolute;
+      z-index: 200;
+      display: block !important;
+      font-size: 40px !important;
+      margin-left: 5px;
+      position: fixed;
     }
   }
+}
