@@ -230,7 +230,7 @@ function Winerie () {
                     setListItemsSelected(winerieGet.inventory);
                 }else{
                     setNameWineries(wineries);
-                    const dataResponseWinerieMain=await getWinerie(winerieGet.associated_winery);
+                    const dataResponseWinerieMain=await getWinerie(winerieGet.associated_winery._id);
                     const winerieMainFound=dataResponseWinerieMain.result.data;
                     winerieGet.associated_winery=winerieMainFound;
                     setListItemsSelected(winerieGet.inventory);
@@ -257,6 +257,7 @@ function Winerie () {
         getItems();
         getWineries();
         if(params.winerieId){
+            console.log(params)
             getWineries();
             getOneWinerie(params.winerieId);
         }
