@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from "@mui/material";
 import { DeviceConnected, DeviceDisconnected, FingerprintReader, SampleFormat } from '@digitalpersona/devices';
 
-function DPersonaReader() {
+function DPersonaReader(props) {
     const reader = new FingerprintReader();
     const [deviceState, setDeviceState] = useState('initial');
     const [capturedImage, setCapturedImage] = useState(null);
@@ -16,6 +16,16 @@ function DPersonaReader() {
         console.log("disconnected", event);
         setDeviceState('disconnected');
     };
+    const dataURItoBlob = (dataURI) => {
+        const byteString = atob(dataURI.split(',')[1]);
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+    };
 
     const onSamplesAcquired = async (event: any) => {
         console.log(event);
@@ -26,6 +36,7 @@ function DPersonaReader() {
         }, 1000)
         const srcImage = injectImage(event.samples[0])
         setCapturedImage(srcImage);
+        props.onCaptureFootprint(dataURItoBlob(srcImage));
         await reader.stopAcquisition();
      
     };
@@ -58,6 +69,7 @@ function DPersonaReader() {
         <div className='content-image'>
             <div className={`content-image__borde-image ${deviceState}-border`}>
                 {(capturedImage && <img src={capturedImage} alt="Image" className='fingerprint-img' />)}
+                {(props.existingImage && <img src={props.existingImage} alt="Image" className='fingerprint-img' />)}
             </div>
             <div className='content-image__buttons'>
                 <Button className='btn-image--capture' onClick={loadReader}>{(!capturedImage ? 'Capturar huella': 'Borrar huella')}</Button>
