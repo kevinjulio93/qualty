@@ -17,6 +17,10 @@ import {
   CardMedia,
   CardContent,
   CardActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import "./beneficiaries.scss";
 import SelectDropdown from "../../components/select";
@@ -569,19 +573,29 @@ function Beneficiaries() {
                     </div>
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                      <Autocomplete
-                        style={{ width: "100%" }}
-                        disablePortal
-                        id="sex"
-                        options={["M", "F"]}
-                        onChange={(e: any, data: any) =>
-                          formHanlder("sex", e, data)
-                        }
-                        renderInput={(params) => (
-                          <TextField {...params} label="Sexo" />
-                        )}
-                        value={(beneficiarie as any)?.sex || ""}
-                      />
+                      <FormControl sx={{ width: "100%" }}>
+                        <InputLabel id="demo-simple-select-label">Sexo</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          label="Sexo"
+                          value={(beneficiarie as any)?.sex || ""}
+                          onChange={(e) => formHanlder('sex', e)}
+                        >
+                          <MenuItem
+                            key={"sexF"}
+                            value={"F"}
+                          >
+                            F
+                          </MenuItem>
+                          <MenuItem
+                            key={"sexM"}
+                            value={"M"}
+                          >
+                            M
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
                     </div>
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
