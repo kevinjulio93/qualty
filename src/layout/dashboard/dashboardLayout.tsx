@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppUser } from "../../models/user.model";
 import SideMenu from "../../components/sideMenu/sideMenu";
 import { RootState } from "../../app/store";
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu";
 
 const DashboardLayout = () => {
   const [open, setOpen] = useState(false);
@@ -33,11 +33,11 @@ const DashboardLayout = () => {
     smile: <InsertEmoticonIcon />,
   };
 
-  useEffect(()=>{
-    return () =>{
-      document.removeEventListener('closeMenu',()=>{});
-    }
-  }, [])
+  useEffect(() => {
+    return () => {
+      document.removeEventListener("closeMenu", () => {});
+    };
+  }, []);
 
   const logoutFunction = () => {
     localStorage.removeItem("user");
@@ -46,18 +46,28 @@ const DashboardLayout = () => {
     navigate(ROUTES.DASHBOARD);
   };
 
-  const toogleMenu = () => {    
+  const toogleMenu = () => {
     setMenuOpen(!menuOpen);
-    document.addEventListener('closeMenu', ()=>{
+    document.addEventListener("closeMenu", () => {
       setMenuOpen(false);
-    })
-  }
+    });
+  };
 
   return (
     <div className="dashboard-layout">
-      <MenuIcon className="show-menu-icon" onClick={toogleMenu} color="primary"></MenuIcon>
+      <div className="show-menu-icon-container" style={{'width': menuOpen ? '245px' : '0'}}>
+        <MenuIcon
+          className="show-menu-icon"
+          onClick={toogleMenu}
+          color="primary"
+        ></MenuIcon>
+      </div>
       <div className="dashboard-layout__page-view">
-        <div className={`dashboard-layout__page-view__menu ${menuOpen ? 'show-menu' : ''}`}>
+        <div
+          className={`dashboard-layout__page-view__menu ${
+            menuOpen ? "show-menu" : ""
+          }`}
+        >
           <a href="#">Qualty</a>
           <div className="dashboard-layout__page-view__menu__logo">
             {" "}
@@ -69,7 +79,9 @@ const DashboardLayout = () => {
           </div>
           <SideMenu logoutF={logoutFunction} />
         </div>
-        {!menuOpen && <div className={`dashboard-layout__page-view__show-icon`}></div>}
+        {!menuOpen && (
+          <div className={`dashboard-layout__page-view__show-icon`}></div>
+        )}
         <main className="dashboard-layout__page-view__body-content">
           <Outlet />
         </main>

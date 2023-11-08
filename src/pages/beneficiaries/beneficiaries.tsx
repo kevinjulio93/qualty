@@ -154,15 +154,15 @@ function Beneficiaries() {
   }, []);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) getMuns();
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie))  (async ()=> await getMuns())();
   }, [beneficiarie]);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(municipiesList)) getComs();
+    if (!isEmpty(beneficiarieId) && !isEmpty(municipiesList)) (async ()=> await getComs())();
   }, [municipiesList]);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(communityList)) getAsos();
+    if (!isEmpty(beneficiarieId) && !isEmpty(communityList)) (async ()=> await getAsos())();
   }, [communityList]);
 
   const getMuns = async () => {
