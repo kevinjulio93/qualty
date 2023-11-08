@@ -8,7 +8,7 @@
   bottom: 0;
   height: auto;
   padding: 10px 0;
-  z-index: 1000;
+  z-index: 98;
   display: flex;
   gap: 10px;
 
@@ -39,6 +39,6 @@
 
 @media screen and (max-width: 1200px) {
   .save-container {
-    width: calc(100% - 80px);
+    width: calc(100% - 110px);
   }
 }
