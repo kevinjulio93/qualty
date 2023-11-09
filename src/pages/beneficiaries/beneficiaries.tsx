@@ -153,10 +153,20 @@ function Beneficiaries() {
     } else {
       getDepartamentsList();
     }
+    
+    setValuesDefaultBeneficiarie();
   }, []);
+
+  const setValuesDefaultBeneficiarie=()=>{
+    let ben=beneficiarie;
+    ben["identification_type"]="cc";
+    ben["disability"]="Ninguna";
+    setBeneficiarie(ben);
+  }
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie))  (async ()=> await getMuns())();
+    console.log(beneficiarie)
   }, [beneficiarie]);
 
   useEffect(() => {
@@ -364,6 +374,8 @@ function Beneficiaries() {
     try {
       const response = await getDepartments();
       if (response && response.length > 0) {
+        const departamentDefaultForm=response.find((dep)=>dep.name==="Norte de Santander");
+        getMunicipiesList("residence_department",departamentDefaultForm);
         setDepartmentsList(response);
       }
     } catch (error) {
@@ -493,7 +505,8 @@ function Beneficiaries() {
                   <form className="beneficiaries-container__form-section__beneficiarie__form">
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
-                        selectValue={(beneficiarie as any)?.identification_type}
+                        selectValue={(beneficiarie as any)?.identification_type || "cc"}
+                        id="tipo_de_documento"
                         label="Tipo de documento"
                         options={documentTypes}
                         targetKey="identification_type"
@@ -519,7 +532,7 @@ function Beneficiaries() {
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <TextField
                         id="primerap"
-                        className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                        className="beneficiaries-container__form-section__beneficiarie__form__field__input input_form_ben"
                         name="primerap"
                         placeholder="Zapata"
                         type="text"
@@ -643,6 +656,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="genero"
                         selectValue={(beneficiarie as any)?.gender}
                         label="Género"
                         options={optionsGender}
@@ -653,6 +667,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="estado_civil"
                         selectValue={(beneficiarie as any)?.civil_status}
                         label="Estado Civil"
                         options={optionsCivilStatus}
@@ -665,6 +680,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="pertenencia_etnica"
                         selectValue={(beneficiarie as any)?.ethnicity}
                         label="Pertenencia Étnica"
                         options={optionsEthnicity}
@@ -675,6 +691,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="nivel_educativo"
                         selectValue={(beneficiarie as any)?.education_level}
                         label="Nivel Educativo"
                         options={optionsEducationLevel}
@@ -687,6 +704,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="ocupacion"
                         selectValue={(beneficiarie as any)?.ocupation}
                         label="Ocupación"
                         options={optionsOcupation}
@@ -697,6 +715,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="discapacidad"
                         selectValue={(beneficiarie as any)?.disability}
                         label="Discapacidad"
                         options={optionsDisability}
@@ -709,6 +728,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="departamento"
                         selectValue={
                           getSelectedValueDep("residence_department")?.id
                         }
@@ -725,6 +745,7 @@ function Beneficiaries() {
 
                     <div className="activities-container__form-section__assitants__form-2__field">
                       <SelectDropdown
+                        id="municipio"
                         selectValue={getSelectedValueMun("municipality")?.id}
                         label="Municipio"
                         options={municipiesList}
@@ -739,6 +760,7 @@ function Beneficiaries() {
 
                     <div className="activities-container__form-section__assitants__form-2__field">
                       <SelectDropdown
+                        id="comuna"
                         selectValue={
                           (beneficiarie as any)?.community?._id ||
                           (beneficiarie as any)?.community
@@ -756,6 +778,7 @@ function Beneficiaries() {
 
                     <div className="activities-container__form-section__assitants__form-2__field">
                       <SelectDropdown
+                        id="asociacion"
                         selectValue={
                           (beneficiarie as any)?.association?._id ||
                           (beneficiarie as any)?.association
@@ -786,6 +809,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="departamento_SISBEN"
                         selectValue={
                           getSelectedValueDep("sisben_department")?.id
                         }
@@ -802,9 +826,9 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <Autocomplete
+                        id="eps"
                         style={{ width: "100%" }}
                         disablePortal
-                        id="eps"
                         options={epsList}
                         onChange={(e: any, data: any) =>
                           formHanlder("eps", e, data)
@@ -833,6 +857,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="regimen_salud"
                         selectValue={(beneficiarie as any)?.health_regimen}
                         label="Régimen de Salud"
                         options={optionsRegimenHealth}
