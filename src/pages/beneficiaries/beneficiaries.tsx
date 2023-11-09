@@ -17,6 +17,12 @@ import {
   CardMedia,
   CardContent,
   CardActions,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import "./beneficiaries.scss";
 import SelectDropdown from "../../components/select";
@@ -39,6 +45,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import {
+  getAllActivities,
   getAssociationsByCommunity,
   getComunaByMunicipie,
   getDepartments,
@@ -141,6 +148,10 @@ function Beneficiaries() {
   const [communityList, setCommunityList] = useState([]);
   const [associationsList, setAssociations] = useState([]);
   const [forceRender, setForceRender] = useState(+new Date());
+  const [activities, setActivities] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [inAct, setInAct] = useState("");
+  const [displayedImage, setDisplayedImage] = useState("");
   const navigate = useNavigate();
   dayjs.extend(customParseFormat);
 
@@ -152,11 +163,22 @@ function Beneficiaries() {
       })();
     } else {
       getDepartamentsList();
+      getActivitiesList();
     }
+    
+    setValuesDefaultBeneficiarie();
   }, []);
+
+  const setValuesDefaultBeneficiarie=()=>{
+    let ben=beneficiarie;
+    ben["identification_type"]="cc";
+    ben["disability"]="Ninguna";
+    setBeneficiarie(ben);
+  }
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie))  (async ()=> await getMuns())();
+    console.log(beneficiarie)
   }, [beneficiarie]);
 
   useEffect(() => {
@@ -188,6 +210,18 @@ function Beneficiaries() {
     setAssociations(responseAso.result.data);
     setForceRender(+new Date());
   };
+
+  const getActivitiesList = async () => {
+    try {
+      const response = await getAllActivities();
+      if (response.status === 200) {
+      const { data: dataList } = response.result;
+        setActivities(dataList);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const getBeneficiary = async () => {
     try {
@@ -364,6 +398,8 @@ function Beneficiaries() {
     try {
       const response = await getDepartments();
       if (response && response.length > 0) {
+        const departamentDefaultForm=response.find((dep)=>dep.name==="Norte de Santander");
+        getMunicipiesList("residence_department",departamentDefaultForm);
         setDepartmentsList(response);
       }
     } catch (error) {
@@ -446,6 +482,21 @@ function Beneficiaries() {
     }
   }
 
+  const getSelectedActivity = (data) => {
+    const currentAct = activities.find(item => item.name === data);
+    return currentAct._id;
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setDisplayedImage("");
+  };
+
+  const displayImage = (image) => {
+    setDisplayedImage(image);
+    setOpenModal(true);
+  }
+
   return (
     <>
       <section className="beneficiaries-container">
@@ -493,7 +544,8 @@ function Beneficiaries() {
                   <form className="beneficiaries-container__form-section__beneficiarie__form">
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
-                        selectValue={(beneficiarie as any)?.identification_type}
+                        selectValue={(beneficiarie as any)?.identification_type || "cc"}
+                        id="tipo_de_documento"
                         label="Tipo de documento"
                         options={documentTypes}
                         targetKey="identification_type"
@@ -519,7 +571,7 @@ function Beneficiaries() {
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <TextField
                         id="primerap"
-                        className="beneficiaries-container__form-section__beneficiarie__form__field__input"
+                        className="beneficiaries-container__form-section__beneficiarie__form__field__input input_form_ben"
                         name="primerap"
                         placeholder="Zapata"
                         type="text"
@@ -624,6 +676,47 @@ function Beneficiaries() {
                         )}
                       />
                     </div>
+
+                    { !beneficiarieId && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                      <FormControl sx={{width: "100%"}}>
+                        <InputLabel id="demo-simple-select-label">
+                          ¿Registrado en Actividad?
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          label="Tipo de asociacion"
+                          onChange={(e) => setInAct(e.target.value)}
+                          value={inAct || ""}
+                        >
+                          <MenuItem key={"inActYes"} value={"SI"}>
+                            SI
+                          </MenuItem>
+                          <MenuItem key={"inActNo"} value={"NO"}>
+                            NO
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+                    }
+                    { !beneficiarieId && inAct === "SI" && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                      <Autocomplete
+                        style={{ width: "100%" }}
+                        disablePortal
+                        freeSolo
+                        id="activity"
+                        options={activities.map(item => item.name)}
+                        onChange={(e: any, data: any) => {
+                          formHanlder("actividad", getSelectedActivity(data))
+                        }
+                        }
+                        value={(beneficiarie as any)?.activity || ""}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Actividad" />
+                        )}
+                      />
+                    </div> 
+                    }
                   </form>
                 </TabPanel>
                 <TabPanel value="2">
@@ -643,6 +736,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="genero"
                         selectValue={(beneficiarie as any)?.gender}
                         label="Género"
                         options={optionsGender}
@@ -653,6 +747,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="estado_civil"
                         selectValue={(beneficiarie as any)?.civil_status}
                         label="Estado Civil"
                         options={optionsCivilStatus}
@@ -665,6 +760,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="pertenencia_etnica"
                         selectValue={(beneficiarie as any)?.ethnicity}
                         label="Pertenencia Étnica"
                         options={optionsEthnicity}
@@ -675,6 +771,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="nivel_educativo"
                         selectValue={(beneficiarie as any)?.education_level}
                         label="Nivel Educativo"
                         options={optionsEducationLevel}
@@ -687,6 +784,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="ocupacion"
                         selectValue={(beneficiarie as any)?.ocupation}
                         label="Ocupación"
                         options={optionsOcupation}
@@ -697,6 +795,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="discapacidad"
                         selectValue={(beneficiarie as any)?.disability}
                         label="Discapacidad"
                         options={optionsDisability}
@@ -709,6 +808,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="departamento"
                         selectValue={
                           getSelectedValueDep("residence_department")?.id
                         }
@@ -725,6 +825,7 @@ function Beneficiaries() {
 
                     <div className="activities-container__form-section__assitants__form-2__field">
                       <SelectDropdown
+                        id="municipio"
                         selectValue={getSelectedValueMun("municipality")?.id}
                         label="Municipio"
                         options={municipiesList}
@@ -739,6 +840,7 @@ function Beneficiaries() {
 
                     <div className="activities-container__form-section__assitants__form-2__field">
                       <SelectDropdown
+                        id="comuna"
                         selectValue={
                           (beneficiarie as any)?.community?._id ||
                           (beneficiarie as any)?.community
@@ -756,6 +858,7 @@ function Beneficiaries() {
 
                     <div className="activities-container__form-section__assitants__form-2__field">
                       <SelectDropdown
+                        id="asociacion"
                         selectValue={
                           (beneficiarie as any)?.association?._id ||
                           (beneficiarie as any)?.association
@@ -786,6 +889,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="departamento_SISBEN"
                         selectValue={
                           getSelectedValueDep("sisben_department")?.id
                         }
@@ -802,9 +906,9 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <Autocomplete
+                        id="eps"
                         style={{ width: "100%" }}
                         disablePortal
-                        id="eps"
                         options={epsList}
                         onChange={(e: any, data: any) =>
                           formHanlder("eps", e, data)
@@ -833,6 +937,7 @@ function Beneficiaries() {
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
+                        id="regimen_salud"
                         selectValue={(beneficiarie as any)?.health_regimen}
                         label="Régimen de Salud"
                         options={optionsRegimenHealth}
@@ -882,6 +987,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={cedFront || cameraImg}
                         title="Cedula frontal"
+                        onClick={() => displayImage(cedFront)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -915,6 +1021,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={cedBack || cameraImg}
                         title="Cedula lateral"
+                        onClick={() => displayImage(cedBack)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -948,6 +1055,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={docEps || documentImg}
                         title="Cedula frontal"
+                        onClick={() => displayImage(docEps)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -981,6 +1089,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={docSis || documentImg}
                         title="Cedula lateral"
+                        onClick={() => displayImage(docSis)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -1014,6 +1123,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={docReg || documentImg}
                         title="Cedula lateral"
+                        onClick={() => displayImage(docReg)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -1059,6 +1169,22 @@ function Beneficiaries() {
         saveText="Guardar"
         handleSave={(e) => createBeneficiarie() }
       />
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullWidth
+      >
+        <DialogContent>
+          <img
+            src={displayedImage}
+            alt="support"
+            width={"100%"}
+            height={"100%"}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
