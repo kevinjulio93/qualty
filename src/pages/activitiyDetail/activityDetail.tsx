@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import "./activityDetail.scss";
 import { useEffect, useState } from "react";
-import { Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Paper, Stack, TextField, Typography } from "@mui/material";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import SelectDropdown from "../../components/select";
 import {

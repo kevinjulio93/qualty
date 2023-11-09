@@ -7,7 +7,7 @@ import Search from "../../components/search/search";
 import "./ratings.scss";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import { useNavigate, useParams } from "react-router-dom";
-import { createRatings, getRatingsById } from "../../services/rating.service";
+import { createRatings, getRatingsById, updateCurrentRating } from "../../services/rating.service";
 import { ROUTES } from "../../constants/routes";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
@@ -27,6 +27,8 @@ function Ratings () {
     const [counters, setCounters] = useState([]);
     const [itemList, setItemList] = useState([]);
     const [forceRender, setForceRender] = useState(+ new Date());
+    const [updatedItems, setUpdatedItems] = useState([]);
+    const [currentRating, setCurrentRating] = useState({});
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,13 +39,23 @@ function Ratings () {
         getBens();
     }, [])
 
+    useEffect(() => {
+        if (ratingId) {
+            setCurrentCounters();
+        }
+    }, [itemList, updatedItems])
+
+    
+
     const getCurrentRating = async () => {
-        const currentRating = await getRatingsById(ratingId);
-        const { rating_type, observations, attendee, diagnostic } = currentRating.result.data;
+        const current = await getRatingsById(ratingId);
+        const { rating_type, observations, attendee, diagnostic, suggested_items } = current.result.data;
+        setCurrentRating(current.result.data);
         setSelectedRating(rating_type);
         setSelectedBen(attendee);
         setNotes(observations);
         setDiagnostic(diagnostic);
+        setUpdatedItems(suggested_items);
     }
 
     const getItems = async() => {
@@ -52,11 +64,21 @@ function Ratings () {
             const list = response?.result?.data?.data?.filter(el => !el.isDefault);
             const newCounts = new Array(list.length).fill(0);
             setCounters(newCounts);
-            console.log(list);
             setItemList(list);
         } catch (error) {
               console.error(error);
         }
+    }
+
+    const setCurrentCounters = () => {
+        itemList.forEach((item, i) => {
+            if (updatedItems.includes(item._id) && counters[i] === 0) {
+                const counts = counters;
+                counts[i]++;
+                setCounters(counters);
+            }
+        });
+        setForceRender(+ new Date());
     }
 
     const getBens = async () => {
@@ -107,6 +129,19 @@ function Ratings () {
             suggested_items: getFinalItemList()
         }
         await createRatings(rating);
+        navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
+    }
+
+    const updateRatings = async () => {
+        const rating = {
+            ...currentRating,
+            rating_type: selectedRating,
+            observations: notes,
+            attendee: selectedBen._id,
+            diagnostic: diagnosticNote,
+            suggested_items: getFinalItemList()
+        }
+        await updateCurrentRating(rating);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.RATING_LIST}`);
     }
 
@@ -333,7 +368,7 @@ function Ratings () {
             </section>
             <SaveCancelControls
                 saveText="Guardar"
-                handleSave={() => saveRatings() }
+                handleSave={() => ratingId ? updateRatings() : saveRatings() }
             />
         </>
     );
