@@ -21,6 +21,8 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import "./beneficiaries.scss";
 import SelectDropdown from "../../components/select";
@@ -147,7 +149,9 @@ function Beneficiaries() {
   const [associationsList, setAssociations] = useState([]);
   const [forceRender, setForceRender] = useState(+new Date());
   const [activities, setActivities] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
   const [inAct, setInAct] = useState("");
+  const [displayedImage, setDisplayedImage] = useState("");
   const navigate = useNavigate();
   dayjs.extend(customParseFormat);
 
@@ -469,6 +473,16 @@ function Beneficiaries() {
   const getSelectedActivity = (data) => {
     const currentAct = activities.find(item => item.name === data);
     return currentAct._id;
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setDisplayedImage("");
+  };
+
+  const displayImage = (image) => {
+    setDisplayedImage(image);
+    setOpenModal(true);
   }
 
   return (
@@ -948,6 +962,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={cedFront || cameraImg}
                         title="Cedula frontal"
+                        onClick={() => displayImage(cedFront)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -981,6 +996,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={cedBack || cameraImg}
                         title="Cedula lateral"
+                        onClick={() => displayImage(cedBack)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -1014,6 +1030,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={docEps || documentImg}
                         title="Cedula frontal"
+                        onClick={() => displayImage(docEps)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -1047,6 +1064,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={docSis || documentImg}
                         title="Cedula lateral"
+                        onClick={() => displayImage(docSis)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -1080,6 +1098,7 @@ function Beneficiaries() {
                         sx={{ width: 100, height: 100 }}
                         image={docReg || documentImg}
                         title="Cedula lateral"
+                        onClick={() => displayImage(docReg)}
                       />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
@@ -1125,6 +1144,22 @@ function Beneficiaries() {
         saveText="Guardar"
         handleSave={(e) => createBeneficiarie() }
       />
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullWidth
+      >
+        <DialogContent>
+          <img
+            src={displayedImage}
+            alt="support"
+            width={"100%"}
+            height={"100%"}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
