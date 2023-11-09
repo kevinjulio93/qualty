@@ -8,8 +8,8 @@ export async function createRatings(item:any) {
     return response;
 }
 
-export async function updateRatings(item:any) {
-    const response = await ratings.put('/ratings', item);
+export async function updateCurrentRating(item:any) {
+    const response = await ratings.put(`/ratings/${item._id}`, item);
     return response;
 }
 
