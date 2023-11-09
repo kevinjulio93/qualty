@@ -587,7 +587,7 @@ function Winerie() {
                       <TableRow header>
                         <TableCell>Nombre</TableCell>
                         <TableCell>Código</TableCell>
-                        <TableCell>value</TableCell>
+                        <TableCell>Valor</TableCell>
                         <TableCell>Cantidad</TableCell>
                         <TableCell>Acciones</TableCell>
                       </TableRow>
@@ -596,7 +596,7 @@ function Winerie() {
                           <TableRow key={index}>
                             <TableCell>{item?.name}</TableCell>
                             <TableCell>{item?.code}</TableCell>
-                            <TableCell>{item?.value}</TableCell>
+                            <TableCell>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(item?.value)}</TableCell>
                             <TableCell>{item?.amount}</TableCell>
 
                             <TableCell>
