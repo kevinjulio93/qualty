@@ -1,4 +1,14 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  ListSubheader,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { useState } from "react";
 
 interface IProp {
   label?: string;
@@ -12,36 +22,85 @@ interface IProp {
 }
 
 function SelectDropdown(props: IProp) {
+  const [filteredOptions, setFilteredOptions] = useState([...props.options]);
 
-    const selectValue = (e: any) => {
-        const propKey = props.keyValue || 'value';
-        const selectedItem = props.options?.find(item => item[propKey] === e.target.value);
-        props.handleValue(selectedItem, e);
+  const selectValue = (e: any) => {
+    const propKey = props.keyValue || "value";
+    const selectedItem = props.options?.find(
+      (item) => item[propKey] === e.target.value
+    );
+    props.handleValue(selectedItem, e);
+  };
+
+  const containsText = (text, searchText) =>
+    text.toLowerCase().indexOf(searchText.toLowerCase()) > -1;
+
+  const returnFilteredOptions = (text: string) => {
+    if (text === "") {
+      setFilteredOptions([...props.options]);
+      return;
     }
 
-    return (
-        <FormControl style={{ width: '100%' }}>
-            <InputLabel id={props.value}>{props.label}</InputLabel>
-            <Select
-                labelId={props.value}
-                id={props.label}
-                label={props.label}
-                onChange={(e) => selectValue(e)}
-                value={props.selectValue || ''}
-            >
-                {props.options?.length >0  && props.options.map((option: any, index: number) => {
-                    return (
-                        <MenuItem
-                            key={index}
-                            defaultValue={''}
-                            value={props.keyValue ? option[props.keyValue as string] : option.value}>
-                            {props.keyLabel ? option[props.keyLabel as string] : option.label}
-                        </MenuItem>
-                    )
-                })}
-            </Select>
-        </FormControl>
-    )
+    const filterResult = props.options.filter((opt) =>
+      containsText(opt[props.keyLabel] ?? opt.label, text)
+    );
+    setFilteredOptions(filterResult);
+  };
+
+  return (
+    <FormControl style={{ width: "100%" }}>
+      <InputLabel id={props.value}>{props.label}</InputLabel>
+      <Select
+        labelId={props.value}
+        id={props.label}
+        label={props.label}
+        onChange={(e) => selectValue(e)}
+        onClose={() => returnFilteredOptions("")}
+        value={props.selectValue || ""}
+      >
+        <ListSubheader>
+          <TextField
+            size="small"
+            // Autofocus on textfield
+            autoFocus
+            placeholder="Tu busqueda..."
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={(e) => returnFilteredOptions(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key !== "Escape") {
+                e.stopPropagation();
+              }
+            }}
+          />
+        </ListSubheader>
+        {filteredOptions.length > 0 &&
+          filteredOptions.map((option: any, index: number) => {
+            return (
+              <MenuItem
+                key={index}
+                defaultValue={""}
+                value={
+                  props.keyValue
+                    ? option[props.keyValue as string]
+                    : option.value
+                }
+              >
+                {props.keyLabel
+                  ? option[props.keyLabel as string]
+                  : option.label}
+              </MenuItem>
+            );
+          })}
+      </Select>
+    </FormControl>
+  );
 }
 
 export default SelectDropdown;
