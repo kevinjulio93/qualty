@@ -9,6 +9,7 @@ interface IProp {
   handleValue?: any;
   targetKey?: string;
   selectValue?: string;
+  id:string
 }
 
 function SelectDropdown(props: IProp) {
@@ -24,7 +25,7 @@ function SelectDropdown(props: IProp) {
             <InputLabel id={props.value}>{props.label}</InputLabel>
             <Select
                 labelId={props.value}
-                id={props.label}
+                id={props.id}
                 label={props.label}
                 onChange={(e) => selectValue(e)}
                 value={props.selectValue || ''}

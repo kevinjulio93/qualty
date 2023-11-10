@@ -103,6 +103,13 @@
 
 }
 
+#primerap, #segundoap, #primernom , #segundonom , 
+#tipo_de_documento, #genero , #estado_civil, 
+#pertenencia_etnica, #nivel_educativo, #ocupacion, #discapacidad, #departamento, 
+#municipio, #comuna, #asociacion, #direccion, #departamento_SISBEN, #eps, #puntajesisben,#regimen_salud{
+    text-transform: uppercase;
+}
+
 .set__file{
     border: 1px solid black;
     border-radius: 4px;
