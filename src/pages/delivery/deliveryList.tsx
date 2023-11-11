@@ -92,7 +92,7 @@ function DeliveryList() {
                 Administrar entregas
               </Typography>
               <span className="page-subtitle">
-                Aqui podras gestionar las entregas realizadas.
+                Aquí podras gestionar las entregas realizadas.
               </span>
             </div>
             { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>

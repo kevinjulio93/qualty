@@ -129,7 +129,7 @@ function EventList() {
     <>
       <ListView
         sectionTitle="Administrar Eventos"
-        sectionDescription="Aqui podras gestionar los eventos del sistema."
+        sectionDescription="Aquí podras gestionar los eventos del sistema."
         createButtonText="Crear evento"
         listTitle="Listado de Eventos"
         openToast={false}

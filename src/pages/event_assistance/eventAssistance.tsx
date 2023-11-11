@@ -193,7 +193,7 @@ function EventAssistance() {
                 Administrar asistencias
               </Typography>
               <span className="page-subtitle">
-                Aqui podras gestionar las asistencias de eventos
+                Aquí podras gestionar las asistencias de eventos
               </span>
             </div>
           </div>

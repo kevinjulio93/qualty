@@ -163,49 +163,53 @@ function Beneficiaries() {
   dayjs.extend(customParseFormat);
 
   useEffect(() => {
+    getDepartamentsList();
+    getActivitiesList();
     if (beneficiarieId !== undefined) {
-      getDepartamentsList();
       (async () => {
         await getBeneficiary();
       })();
-    } else {
-      getDepartamentsList();
-      getActivitiesList();
     }
     
     //setValuesDefaultBeneficiarie();
   }, []);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie))  (async ()=> await getMuns())();
-  }, [beneficiarie]);
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
+      (async ()=> await getMuns())();
+    }
+  }, [beneficiarie, departmentsList]);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(municipiesList)) (async ()=> await getComs())();
-  }, [municipiesList]);
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
+      (async ()=> await getComs())();
+    }
+  }, [beneficiarie, municipiesList]);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(communityList)) (async ()=> await getAsos())();
-  }, [communityList]);
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
+      (async ()=> await getAsos())();
+    }
+  }, [beneficiarie, communityList]);
 
   const getMuns = async () => {
     const currentDep = getSelectedValueDep("residence_department");
-    if (currentDep === undefined) return;
+    if (isEmpty(currentDep)) return;
     const responseMuns = await getMunicipies(currentDep.id);
     setMunicipiesList(responseMuns);
   };
 
   const getComs = async () => {
     const currentMun = getSelectedValueMun("municipality");
-    if (currentMun === undefined) return;
+    if (isEmpty(currentMun)) return;
     const responseCom = await getComunaByMunicipie(currentMun.id);
     setCommunityList(responseCom.result.data);
   };
 
   const getAsos = async () => {
-    const responseAso = await getAssociationsByCommunity(
-      (beneficiarie as any).community
-    );
+    const benCommunity = (beneficiarie as any).community;
+    if (isEmpty(benCommunity)) return;
+    const responseAso = await getAssociationsByCommunity(benCommunity);
     setAssociations(responseAso.result.data);
     setForceRender(+new Date());
   };
@@ -226,8 +230,11 @@ function Beneficiaries() {
     try {
       const response = await getBeneficiarieById(beneficiarieId);
       if (response.status === 200) {
-        setBeneficiarie(response.result.data);
-        setFilesBen(response.result.data);
+        const currentBen = response.result.data;
+        setBeneficiarie(currentBen);
+        setFilesBen(currentBen);
+        if (currentBen.activity) setInAct("SI");
+        else setInAct("NO");
       }
     } catch (error) {
       console.error(error);
@@ -509,7 +516,7 @@ function Beneficiaries() {
               Administrar beneficiarios
             </Typography>
             <span className="page-subtitle">
-              Aqui podras gestionar los usuarios del sistema.
+              Aquí podras gestionar los usuarios del sistema.
             </span>
           </div>
         </header>
@@ -627,7 +634,6 @@ function Beneficiaries() {
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
-                        freeSolo
                         id="sex"
                         options={["M", "F"]}
                         onChange={(e: any, data: any) =>
@@ -658,7 +664,6 @@ function Beneficiaries() {
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
-                        freeSolo
                         id="blody_type"
                         options={[
                           "O+",
@@ -680,7 +685,7 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    { !beneficiarieId && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <FormControl sx={{width: "100%"}}>
                         <InputLabel id="demo-simple-select-label">
                           ¿Registrado en Actividad?
@@ -701,12 +706,10 @@ function Beneficiaries() {
                         </Select>
                       </FormControl>
                     </div>
-                    }
-                    { !beneficiarieId && inAct === "SI" && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                     { inAct === "SI" && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
-                        freeSolo
                         id="activity"
                         options={activities.map(item => item.name)}
                         onChange={(e: any, data: any) => {
@@ -876,7 +879,6 @@ function Beneficiaries() {
                         }
                       />
                     </div>
-
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <TextField
                         id="direccion"

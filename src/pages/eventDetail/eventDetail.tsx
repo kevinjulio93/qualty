@@ -204,7 +204,7 @@ function EventDetail() {
               {title} Evento
             </Typography>
             <span className="page-subtitle">
-              Aqui podras gestionar los eventos del sistema.
+              Aquí podras gestionar los eventos del sistema.
             </span>
           </div>
         </header>
@@ -356,7 +356,7 @@ function EventDetail() {
                           {asso?.municipality?.label ?? asso?.municipality}
                         </TableCell>
                         <TableCell>
-                          {asso?.community?.label ?? asso?.community}
+                          {asso?.community?.label ?? asso?.community?.name}
                         </TableCell>
                         <TableCell>
                           {asso?.association?.label ?? asso?.name}

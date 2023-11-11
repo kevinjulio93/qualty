@@ -29,6 +29,7 @@ import { ROUTES } from "../../constants/routes";
 import { workshops } from "../../constants/workshops";
 import userImage from '../../assets/user.png'
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
+import DoneIcon from '@mui/icons-material/Done';
 
 function Assistance() {
   const { workshopId } = useParams();
@@ -97,10 +98,14 @@ function Assistance() {
     setSelectedAct(currentAct);
   };
 
-  const handleAddAction = async (item) => {
-    const exist = assistList.length
+  const benExist = (item) => {
+    return assistList.length
       ? assistList.some((ben) => ben._id === item._id)
       : false;
+  }
+
+  const handleAddAction = async (item) => {
+    const exist = benExist(item);
     if (exist) return;
     setAssistList([...assistList, item]);
   };
@@ -220,10 +225,13 @@ function Assistance() {
                             direction="row"
                             spacing={2}
                           >
-                            <AddCircleIcon
+                            { !benExist(beneficiary) && <AddCircleIcon
                               className="action-item-icon action-item-icon-add"
                               onClick={() => handleAddAction(beneficiary)}
-                            ></AddCircleIcon>
+                            ></AddCircleIcon>}
+                            { benExist(beneficiary) && <DoneIcon
+                              className="action-item-icon action-item-icon-edit"
+                            ></DoneIcon>}
                           </Stack>
                         </TableCell>
                       </TableRow>
