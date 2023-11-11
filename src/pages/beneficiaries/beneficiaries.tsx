@@ -163,14 +163,12 @@ function Beneficiaries() {
   dayjs.extend(customParseFormat);
 
   useEffect(() => {
+    getDepartamentsList();
+    getActivitiesList();
     if (beneficiarieId !== undefined) {
-      getDepartamentsList();
       (async () => {
         await getBeneficiary();
       })();
-    } else {
-      getDepartamentsList();
-      getActivitiesList();
     }
     
     //setValuesDefaultBeneficiarie();
@@ -234,8 +232,10 @@ function Beneficiaries() {
     try {
       const response = await getBeneficiarieById(beneficiarieId);
       if (response.status === 200) {
-        setBeneficiarie(response.result.data);
-        setFilesBen(response.result.data);
+        const currentBen = response.result.data;
+        setBeneficiarie(currentBen);
+        setFilesBen(currentBen);
+        if(currentBen.activity) setInAct("SI");
       }
     } catch (error) {
       console.error(error);
@@ -635,7 +635,6 @@ function Beneficiaries() {
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
-                        freeSolo
                         id="sex"
                         options={["M", "F"]}
                         onChange={(e: any, data: any) =>
@@ -666,7 +665,6 @@ function Beneficiaries() {
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
-                        freeSolo
                         id="blody_type"
                         options={[
                           "O+",
@@ -688,7 +686,7 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    { !beneficiarieId && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <FormControl sx={{width: "100%"}}>
                         <InputLabel id="demo-simple-select-label">
                           ¿Registrado en Actividad?
@@ -699,6 +697,7 @@ function Beneficiaries() {
                           label="Tipo de asociacion"
                           onChange={(e) => setInAct(e.target.value)}
                           value={inAct || ""}
+                          disabled={!isEmpty(beneficiarieId)}
                         >
                           <MenuItem key={"inActYes"} value={"SI"}>
                             SI
@@ -709,12 +708,11 @@ function Beneficiaries() {
                         </Select>
                       </FormControl>
                     </div>
-                    }
-                    { !beneficiarieId && inAct === "SI" && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                     { inAct === "SI" && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
-                        freeSolo
+                        disabled={!isEmpty(beneficiarieId)}
                         id="activity"
                         options={activities.map(item => item.name)}
                         onChange={(e: any, data: any) => {
