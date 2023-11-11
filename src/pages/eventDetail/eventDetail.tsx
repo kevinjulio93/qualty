@@ -179,7 +179,6 @@ function EventDetail() {
 
     try {
       const response = await saveEvent(payload);
-      console.log("Evento creado");
       navigate(`${ROUTES.DASHBOARD}/${ROUTES.EVENTS_LIST}`);
     } catch (error) {
       console.log("no se creó la asociacion");

@@ -127,9 +127,17 @@ function Beneficiaries() {
     { label: "Otro", value: "Otro" },
   ];
 
+  const sisbenList = [
+    "A1", "A2", "A3", "A4", "A5",
+    "B1", "B2", "B3", "B4", "B5", "B6", "B7",
+    "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18",
+    "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21"
+  ];
+
+  const mandatoryFields = ["identification_type", "identification", "first_last_name", "first_name", "sex", "birthday", "blody_type"]
+
   const [beneficiarie, setBeneficiarie] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isSisbenValid, setIsSisbenValid] = useState(true);
   const [isVictimArmedConflict, setIsVictimArmedConflict] = useState(true);
   const [selectedTab, setSelectedTab] = useState("1");
   const [cedFront, setCedFront] = useState(null);
@@ -138,7 +146,6 @@ function Beneficiaries() {
   const [docSis, setDocSis] = useState(null);
   const [docReg, setDocReg] = useState(null);
   const { beneficiarieId } = useParams();
-  const sisbenRegex = /^(A[1-5]|B[1-7]|C[1-18]|D[1-21])$/;
   const [openCamaraSupports, setOpenCamaraSupports] = useState(false);
   const webcamRef = useRef(null);
   const [typeSupport, setTypeSupport] = useState(null);
@@ -151,7 +158,7 @@ function Beneficiaries() {
   const [activities, setActivities] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [inAct, setInAct] = useState("");
-  const [displayedImage, setDisplayedImage] = useState("");
+  const [displayedImage, setDisplayedImage] = useState(null);
   const navigate = useNavigate();
   dayjs.extend(customParseFormat);
 
@@ -166,19 +173,11 @@ function Beneficiaries() {
       getActivitiesList();
     }
     
-    setValuesDefaultBeneficiarie();
+    //setValuesDefaultBeneficiarie();
   }, []);
-
-  const setValuesDefaultBeneficiarie=()=>{
-    let ben=beneficiarie;
-    ben["identification_type"]="cc";
-    ben["disability"]="Ninguna";
-    setBeneficiarie(ben);
-  }
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie))  (async ()=> await getMuns())();
-    console.log(beneficiarie)
   }, [beneficiarie]);
 
   useEffect(() => {
@@ -252,7 +251,6 @@ function Beneficiaries() {
         setIsVictimArmedConflict(!isVictimArmedConflict);
       const value = e.target ? e.target.value : e.value || e;
       setBeneficiarie({ ...beneficiarie, [target]: value });
-      if (target === "sisben_score") setIsSisbenValid(sisbenRegex.test(value));
     }
   };
 
@@ -398,8 +396,6 @@ function Beneficiaries() {
     try {
       const response = await getDepartments();
       if (response && response.length > 0) {
-        const departamentDefaultForm=response.find((dep)=>dep.name==="Norte de Santander");
-        getMunicipiesList("residence_department",departamentDefaultForm);
         setDepartmentsList(response);
       }
     } catch (error) {
@@ -472,10 +468,8 @@ function Beneficiaries() {
   };
 
   const getFormattedDate = (newDate) => {
-    console.log(newDate);
     if (newDate.length === 8) {
       const dateTemp = dayjs(newDate, 'YYYYMMDD');
-      console.log(dateTemp);
       return dateTemp;
     } else {
       return newDate.format();
@@ -495,6 +489,15 @@ function Beneficiaries() {
   const displayImage = (image) => {
     setDisplayedImage(image);
     setOpenModal(true);
+  }
+
+  const validateFields = () => {
+    return mandatoryFields.some(item => isEmpty(beneficiarie[item]));
+  }
+
+  const getCurrentActivity = (act) => {
+    const index = activities.findIndex((item) => item._id === act);
+    return activities[index]?.name || "";
   }
 
   return (
@@ -544,7 +547,7 @@ function Beneficiaries() {
                   <form className="beneficiaries-container__form-section__beneficiarie__form">
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
-                        selectValue={(beneficiarie as any)?.identification_type || "cc"}
+                        selectValue={(beneficiarie as any)?.identification_type || ""}
                         id="tipo_de_documento"
                         label="Tipo de documento"
                         options={documentTypes}
@@ -707,10 +710,10 @@ function Beneficiaries() {
                         id="activity"
                         options={activities.map(item => item.name)}
                         onChange={(e: any, data: any) => {
-                          formHanlder("actividad", getSelectedActivity(data))
+                          formHanlder("activity", getSelectedActivity(data))
                         }
                         }
-                        value={(beneficiarie as any)?.activity || ""}
+                        value={getCurrentActivity((beneficiarie as any)?.activity)}
                         renderInput={(params) => (
                           <TextField {...params} label="Actividad" />
                         )}
@@ -921,16 +924,17 @@ function Beneficiaries() {
                     </div>
 
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                      <TextField
-                        id="puntajesisben"
-                        className="beneficiaries-container__form-section__beneficiarie__form__field__input"
-                        name="puntajesisben"
-                        placeholder="A1"
-                        type="text"
-                        label="Categoria SISBEN"
-                        onChange={(e) => formHanlder("sisben_score", e)}
-                        error={!isSisbenValid}
-                        helperText={!isSisbenValid ? "Categoria no valida" : ""}
+                      <Autocomplete
+                        style={{ width: "100%" }}
+                        disablePortal
+                        id="sisben_score"
+                        options={sisbenList}
+                        onChange={(e: any, data: any) =>
+                          formHanlder("sisben_score", e, data)
+                        }
+                        renderInput={(params) => (
+                          <TextField {...params} label="Puntaje SISBEN" />
+                        )}
                         value={(beneficiarie as any)?.sisben_score || ""}
                       />
                     </div>
@@ -1168,6 +1172,7 @@ function Beneficiaries() {
       <SaveCancelControls
         saveText="Guardar"
         handleSave={(e) => createBeneficiarie() }
+        disabled={validateFields()}
       />
       <Dialog
         open={openModal}

@@ -164,6 +164,7 @@ function WorkshopsList() {
                     <TableCell>Nombre</TableCell>
                     <TableCell>Fecha</TableCell>
                     <TableCell>Actividad</TableCell>
+                    <TableCell>Autor</TableCell>
                     <TableCell>Acciones</TableCell>
                   </TableRow>
                   {workshops.map((workshop: any) => {
@@ -172,6 +173,7 @@ function WorkshopsList() {
                         <TableCell>{workshop?.name}</TableCell>
                         <TableCell>{workshop?.execution_date}</TableCell>
                         <TableCell>{workshop?.activity?.name}</TableCell>
+                        <TableCell>{workshop?.author?.name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
                             { checkPermissions(getPermission('edit'), abilities) && <EditIcon

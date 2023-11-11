@@ -19,7 +19,6 @@ import PermissionGuard from './guards/permission.guard';
 import Unauthorized from './pages/unauthorized/unauthorized';
 import { SECTIONS } from './constants/sections';
 import { PERMISSIONS } from './constants/permissions';
-import Permissions from './pages/permissions/permissions';
 import Ratings from './pages/ratings/ratings';
 import Associations from './pages/associations/associations';
 import ActivityDetail from './pages/activitiyDetail/activityDetail';
@@ -93,9 +92,6 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.ROLES} element={<Roles />} />
-                </Route>
-                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ROLE, action: [PERMISSIONS.CREATE] }} />}>
-                  <Route path={ROUTES.PERMISSIONS} element={<Permissions />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.ASSISTANCE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.WORKSHOP} element={<WorkshopsList />} />

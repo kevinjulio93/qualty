@@ -6,6 +6,7 @@ interface ISaveCancelControls {
   saveText: string;
   handleSave: (e) => void;
   hanldeCancel?: (e) => void;
+  disabled?: boolean;
 }
 
 function SaveCancelControls(props: ISaveCancelControls) {
@@ -17,7 +18,7 @@ function SaveCancelControls(props: ISaveCancelControls) {
         </Button>
       )}
 
-      <Button className="btn-save-winerie" onClick={(e) => props.handleSave(e) }>
+      <Button className="btn-save-winerie" disabled={props.disabled} onClick={(e) => props.handleSave(e) }>
         {props.saveText}
       </Button>
     </div>
