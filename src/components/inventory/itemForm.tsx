@@ -12,7 +12,7 @@ import {
 } from "react";
 
 const ItemForm = forwardRef((props: any, ref) => {
-  const [item, setItem] = useState({name:"",code:"",value:"", isDefault: false});
+  const [item, setItem] = useState({name:"",code:"",value:"", isDefault: false, associationItem: false});
 
   useImperativeHandle(ref, () => {
     return {
@@ -37,8 +37,8 @@ const ItemForm = forwardRef((props: any, ref) => {
   const formHanlder = (e: any) => {
     const value = e.target.value;
     const name = e.target.name;
-    if(name === "isDefault") {
-      setItem({...item,[name]: !item[name]});
+    if(name === "isDefault" || name === "associationItem") {
+      setItem({...item, [name]: !item[name]});
     } else {
       setItem({...item,[name]:value});
     }
@@ -88,6 +88,14 @@ const ItemForm = forwardRef((props: any, ref) => {
           name="isDefault"
           label="Articulo predeterminado"
         />
+        <FormControlLabel
+        control={<Checkbox 
+          checked={item?.associationItem} 
+          onChange={(e) => formHanlder(e)}
+          />}
+        name="associationItem"
+        label="Articulo de Asociación"
+      />
       </form>
     </>
   );

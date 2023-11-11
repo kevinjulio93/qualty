@@ -118,7 +118,7 @@ function WineriesList() {
             Administrar las bodegas
           </Typography>
           <span className="page-subtitle">
-            Aqui podras gestionar las bodegas del sistema.
+            Aquí podras gestionar las bodegas del sistema.
           </span>
         </div>
         { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>

@@ -179,7 +179,7 @@ function ActivityDetail() {
               {title} Actividad
             </Typography>
             <span className="page-subtitle">
-              Aqui podras gestionar los usuarios del sistema.
+              Aquí podras gestionar los usuarios del sistema.
             </span>
           </div>
         </header>
@@ -314,7 +314,7 @@ function ActivityDetail() {
                           {asso?.municipality?.label ?? asso?.municipality}
                         </TableCell>
                         <TableCell>
-                          {asso?.community?.label ?? asso?.community}
+                          {asso?.community?.label ?? asso?.community?.name}
                         </TableCell>
                         <TableCell>
                           {asso?.association?.label ?? asso?.name}

@@ -131,7 +131,7 @@ function Users() {
             Administrar usuarios
           </Typography>
           <span className="page-subtitle">
-            Aqui podras gestionar los usuarios del sistema.
+            Aquí podras gestionar los usuarios del sistema.
           </span>
         </div>
         { checkPermissions(getPermission('create'), abilities) && <Modal

@@ -61,7 +61,7 @@ function Ratings () {
     const getItems = async() => {
         try {
             const response = await getAllItems();
-            const list = response?.result?.data?.data?.filter(el => !el.isDefault);
+            const list = response?.result?.data?.data?.filter(el => !el.isDefault && !el.associationItem);
             const newCounts = new Array(list.length).fill(0);
             setCounters(newCounts);
             setItemList(list);

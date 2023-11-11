@@ -128,7 +128,7 @@ function WorkshopsList() {
                 Administrar Talleres
               </Typography>
               <span className="page-subtitle">
-                Aqui podras gestionar los talleres realizados.
+                Aquí podras gestionar los talleres realizados.
               </span>
             </div>
             { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>

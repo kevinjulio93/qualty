@@ -138,7 +138,7 @@ function Representatives() {
             Administrar representantes
           </Typography>
           <span className="page-subtitle">
-            Aqui podras gestionar los representantes del sistema.
+            Aquí podras gestionar los representantes del sistema.
           </span>
         </div>
         { checkPermissions(getPermission('create'), abilities) && <Modal

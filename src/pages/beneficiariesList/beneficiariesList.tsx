@@ -110,7 +110,7 @@ function BeneficiariesList() {
             Administrar beneficiarios
           </Typography>
           <span className="page-subtitle">
-            Aqui podras gestionar los beneficiarios del sistema.
+            Aquí podras gestionar los beneficiarios del sistema.
           </span>
         </div>
         { checkPermissions(getPermission('create'), abilities) &&

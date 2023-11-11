@@ -17,6 +17,6 @@ export const epsList = [
     "SALUD TOTAL S.A.  E.P.S.",
     "SALUDVIDA S.A. E.P.S",
     "SAVIA SALUD EPS",
-    "CONFAORIENTE",
+    "COMFAORIENTE",
     "COOSALUD"
 ];

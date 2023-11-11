@@ -126,7 +126,7 @@ function Roles() {
             Administrar Roles
           </Typography>
           <span className="page-subtitle">
-            Aqui podras gestionar los roles de usuarios del sistema.
+            Aquí podras gestionar los roles de usuarios del sistema.
           </span>
         </div>
         { checkPermissions(getPermission('create'), abilities) && <Modal

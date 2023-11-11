@@ -194,24 +194,22 @@ function Beneficiaries() {
 
   const getMuns = async () => {
     const currentDep = getSelectedValueDep("residence_department");
-    console.log(currentDep);
-    if (currentDep === undefined) return;
+    if (isEmpty(currentDep)) return;
     const responseMuns = await getMunicipies(currentDep.id);
     setMunicipiesList(responseMuns);
   };
 
   const getComs = async () => {
     const currentMun = getSelectedValueMun("municipality");
-    console.log(currentMun);
-    if (currentMun === undefined) return;
+    if (isEmpty(currentMun)) return;
     const responseCom = await getComunaByMunicipie(currentMun.id);
     setCommunityList(responseCom.result.data);
   };
 
   const getAsos = async () => {
-    const responseAso = await getAssociationsByCommunity(
-      (beneficiarie as any).community
-    );
+    const benCommunity = (beneficiarie as any).community;
+    if (isEmpty(benCommunity)) return;
+    const responseAso = await getAssociationsByCommunity(benCommunity);
     setAssociations(responseAso.result.data);
     setForceRender(+new Date());
   };
@@ -235,7 +233,8 @@ function Beneficiaries() {
         const currentBen = response.result.data;
         setBeneficiarie(currentBen);
         setFilesBen(currentBen);
-        if(currentBen.activity) setInAct("SI");
+        if (currentBen.activity) setInAct("SI");
+        else setInAct("NO");
       }
     } catch (error) {
       console.error(error);
@@ -517,7 +516,7 @@ function Beneficiaries() {
               Administrar beneficiarios
             </Typography>
             <span className="page-subtitle">
-              Aqui podras gestionar los usuarios del sistema.
+              Aquí podras gestionar los usuarios del sistema.
             </span>
           </div>
         </header>
@@ -697,7 +696,6 @@ function Beneficiaries() {
                           label="Tipo de asociacion"
                           onChange={(e) => setInAct(e.target.value)}
                           value={inAct || ""}
-                          disabled={!isEmpty(beneficiarieId)}
                         >
                           <MenuItem key={"inActYes"} value={"SI"}>
                             SI
@@ -712,7 +710,6 @@ function Beneficiaries() {
                       <Autocomplete
                         style={{ width: "100%" }}
                         disablePortal
-                        disabled={!isEmpty(beneficiarieId)}
                         id="activity"
                         options={activities.map(item => item.name)}
                         onChange={(e: any, data: any) => {
