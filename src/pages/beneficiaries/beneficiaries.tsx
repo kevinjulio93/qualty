@@ -177,19 +177,26 @@ function Beneficiaries() {
   }, []);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie))  (async ()=> await getMuns())();
-  }, [beneficiarie]);
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
+      (async ()=> await getMuns())();
+    }
+  }, [beneficiarie, departmentsList]);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(municipiesList)) (async ()=> await getComs())();
-  }, [municipiesList]);
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
+      (async ()=> await getComs())();
+    }
+  }, [beneficiarie, municipiesList]);
 
   useEffect(() => {
-    if (!isEmpty(beneficiarieId) && !isEmpty(communityList)) (async ()=> await getAsos())();
-  }, [communityList]);
+    if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
+      (async ()=> await getAsos())();
+    }
+  }, [beneficiarie, communityList]);
 
   const getMuns = async () => {
     const currentDep = getSelectedValueDep("residence_department");
+    console.log(currentDep);
     if (currentDep === undefined) return;
     const responseMuns = await getMunicipies(currentDep.id);
     setMunicipiesList(responseMuns);
@@ -197,6 +204,7 @@ function Beneficiaries() {
 
   const getComs = async () => {
     const currentMun = getSelectedValueMun("municipality");
+    console.log(currentMun);
     if (currentMun === undefined) return;
     const responseCom = await getComunaByMunicipie(currentMun.id);
     setCommunityList(responseCom.result.data);
@@ -876,7 +884,6 @@ function Beneficiaries() {
                         }
                       />
                     </div>
-
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <TextField
                         id="direccion"
