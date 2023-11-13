@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
+import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
 
 function Inventory() {
   const itemRef = useRef(null);
@@ -211,7 +212,7 @@ function Inventory() {
                         {item.code}
                       </TableCell>
                       <TableCell>
-                        {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(item.value)}
+                        {formatCurrencyNummber(item.value)}
                       </TableCell>
                       <TableCell>
                         <Stack

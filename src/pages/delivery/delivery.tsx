@@ -15,6 +15,9 @@ import { createDelivery } from "../../services/delivery.service";
 import WarningIcon from '@mui/icons-material/Warning';
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
+import { getRatingsByBeneficiary } from "../../services/rating.service";
+import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
+import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
 
 function Delivery () {
     const [events, setEvents] = useState([]);
@@ -26,11 +29,12 @@ function Delivery () {
     const [itemList, setItemList] = useState([]);
     const [counters, setCounters] = useState([]);
     const [forceRender, setForceRender] = useState(+ new Date());
-    const [levelSisben,setLevelSisben]=useState(["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"]);
-    const [regimeHealthList,setRegimeHealthList]=useState(["Subsidiado","Cotizante Beneficiario"]);
-    const [missingRequirements,setMissingRequirements]=useState([]);
-    const [openDialogMessage,setOpenDialogMessage]=useState(false);
-    const [openDialogRequeriment,setOpenDialogRequeriment]=useState(false);
+    const levelSisben =["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"];
+    const regimeHealthList = ["Subsidiado","Cotizante Beneficiario"];
+    const [missingRequirements, setMissingRequirements]=useState([]);
+    const [openDialogMessage, setOpenDialogMessage] = useState(false);
+    const [openDialogRequeriment, setOpenDialogRequeriment] = useState(false);
+    const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
     const navigate = useNavigate();
 
     //const navigate = useNavigate();
@@ -162,10 +166,6 @@ function Delivery () {
     const onSelectEvent = (_, selected) => {
         const currentEvent = eventArray.find(item => item.name === selected);
         setSelectedEvent(currentEvent);
-        const inventory = currentEvent.associated_winery?.inventory;
-        setItemList(inventory);
-        const newCounts = new Array(inventory.length).fill(0);
-        setCounters(newCounts);
     }
 
     const handOpenDialogMessage=()=>{
@@ -178,11 +178,25 @@ function Delivery () {
         if(!checkRequirements(item) ){
             setOpenDialogMessage(true);
         }else{
+            getAllRatingsByBen(item._id);
             setSelectedBen(item);
         }
     }
 
-    const getFinalItemList = () => {
+    const getAllRatingsByBen = async(id: string) => {
+        const response = await getRatingsByBeneficiary(id);
+        const todosSuggestedItems = response.result.data.reduce((acc, item) => {
+            const suggestedItemsElement = item.suggested_items || [];
+            acc = acc.concat(suggestedItemsElement);
+            return acc;
+          }, []);
+        const inventory = [...new Map(todosSuggestedItems.map(item => [item._id, item])).values()];
+        setItemList(inventory);
+        const newCounts = new Array(inventory.length).fill(0);
+        setCounters(newCounts);
+    }
+
+    const getFinalItemList = (): any[] => {
         const finalList = [];
         itemList.forEach((item, i) => {
             if (counters[i] > 0) finalList.push({
@@ -193,7 +207,18 @@ function Delivery () {
         return finalList;
     }
 
-    const saveDelivery = async () => {
+    const getItemsDetail = () => {
+        const finalList = [];
+        itemList.forEach((item, i) => {
+            if (counters[i] > 0) finalList.push({
+                item: item.name,
+                value: item.value,
+            });
+        });
+        return finalList;
+    }
+
+    const confirmSaveDelivery = async () => {
         const currentEvent = {
             beneficiary: selectedBen._id,
             event: selectedEvent._id,
@@ -201,6 +226,10 @@ function Delivery () {
         };
         await createDelivery(currentEvent);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
+    }
+
+    const saveDelivery = () => {
+        setOpenDialogConfirm(!openDialogConfirm);
     }
 
     const addCounter = (i) => {
@@ -294,7 +323,7 @@ function Delivery () {
                     </div>
                     }
                     {selectedBen &&
-                    <div className="assistance-container__form-section__table">
+                    <div className="assistance-container__form-section__table__info">
                         <div className="panel-heading"> 
                             Beneficiario seleccionado
                         </div>
@@ -323,18 +352,18 @@ function Delivery () {
                         </Table>
                     </div>
                     }
-                    {selectedBen &&
+                    {itemList.length > 0 &&
                         <div className="ratings-container__form-section__info">
                             <div className="panel-heading"> 
-                                Articulos a entregar
+                                Articulos seguridos en valoraciones
                             </div>
                                 <Card sx={{ width: 500, padding: 2 }}>
                                     <Stack direction={"column"}>
                                         {itemList.map((item, i) => {
                                             return (
-                                                <Grid container spacing={2} key={item.item.name + '_' + i}>
+                                                <Grid container spacing={2} key={item.name + '_' + i}>
                                                     <Grid item xs={5}>
-                                                        <FormLabel component="legend">{item.item.name}</FormLabel>
+                                                        <FormLabel component="legend">{item.name}</FormLabel>
                                                     </Grid>
                                                     <Grid item xs={3}>
                                                         <Button
@@ -367,15 +396,15 @@ function Delivery () {
                                     </Stack>
                                 </Card>
                         </div>
-                    }
-                    {selectedBen && 
+                                    }
+                    {/*selectedBen && 
                         <Button
                             className="btn-save-delivery"
                             onClick={() => saveDelivery()}
                             >
                             Generar entrega
                         </Button>
-                    }
+                                */}
                 </Paper>
                 <Dialog open={openDialogMessage} >
                     <DialogTitle>Advertencia</DialogTitle>
@@ -422,7 +451,33 @@ function Delivery () {
                     </Button>
                     </DialogActions>
                 </Dialog>
+
+                <Dialog open={openDialogConfirm} >
+                    <DialogTitle>Confirmar entrega</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        { getItemsDetail().map((item, index) => {
+                            console.log(item);
+                            return (
+                                <p>{index}. {item.item} - {formatCurrencyNummber(item.value)}</p>
+                            );
+                        })}
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={() => setOpenDialogConfirm(false)} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={()=>confirmSaveDelivery()} color="primary">
+                        Aceptar
+                    </Button>
+                    </DialogActions>
+                </Dialog>
             </section>
+            <SaveCancelControls
+                saveText="Guardar"
+                handleSave={() => saveDelivery() }
+            />
         </>
     );
 }

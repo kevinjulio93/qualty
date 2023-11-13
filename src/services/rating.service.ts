@@ -42,3 +42,8 @@ export const getFilePdfRatings=async (body:typeBodyRequestPdf)=>{
     const response = await ratings.getBlob('/ratings/pdf',body);
     return response;
 }
+
+export async function getRatingsByBeneficiary(beneficiryId: any) {
+  const response = await ratings.get(`/ratings/beneficiary/${beneficiryId}`);
+  return response;
+}
