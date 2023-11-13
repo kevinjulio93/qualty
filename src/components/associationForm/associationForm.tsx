@@ -48,6 +48,7 @@ const AssociationForm = forwardRef((props: any, ref) => {
 
 
   const setCurrentAssociation = () => {
+    debugger
     if (props.currentAssociation) {
       setAssociation({
         ...props.currentAssociation,
