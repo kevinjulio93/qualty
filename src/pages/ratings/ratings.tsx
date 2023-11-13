@@ -72,7 +72,7 @@ function Ratings () {
 
     const setCurrentCounters = () => {
         itemList.forEach((item, i) => {
-            if (updatedItems.includes(item._id) && counters[i] === 0) {
+            if (updatedItems.map(item => item._id).includes(item._id) && counters[i] === 0) {
                 const counts = counters;
                 counts[i]++;
                 setCounters(counters);

@@ -33,6 +33,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { typesWineries } from "../../constants/winerie";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
+import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
 
 function Winerie() {
   //code
@@ -596,7 +597,7 @@ function Winerie() {
                           <TableRow key={index}>
                             <TableCell>{item?.name}</TableCell>
                             <TableCell>{item?.code}</TableCell>
-                            <TableCell>{new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(item?.value)}</TableCell>
+                            <TableCell>{formatCurrencyNummber(item.value)}</TableCell>
                             <TableCell>{item?.amount}</TableCell>
 
                             <TableCell>
