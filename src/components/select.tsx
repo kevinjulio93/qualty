@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IProp {
   label?: string;
@@ -23,7 +23,11 @@ interface IProp {
 }
 
 function SelectDropdown(props: IProp) {
-  const [filteredOptions, setFilteredOptions] = useState([...props.options]);
+  const [filteredOptions, setFilteredOptions] = useState([]);
+
+  useEffect(()=>{
+    setFilteredOptions([...props.options]);
+  }, [props.options])
 
   const selectValue = (e: any) => {
     const propKey = props.keyValue || "value";
