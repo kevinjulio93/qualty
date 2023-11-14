@@ -167,7 +167,7 @@ function EventAssistance() {
 
     const confirmAssistance=async ()=>{
       const eventFound=events.find((event)=>event._id===eventSelected);
-      eventFound.attendees=[...eventFound.attendees,benSelected?._id];
+      eventFound.attendees=[benSelected?._id];
       await updateEvent(eventFound?._id,eventFound);
       setOpenModal(false);
       refressInfo();

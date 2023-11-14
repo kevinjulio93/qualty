@@ -162,7 +162,7 @@ function EventDetail() {
   const getAllStorages = async () => {
     const { result } = await getAllWineries();
     const storageList = result?.data?.data;
-    setStorages(storageList);
+    setStorages(storageList.filter(item => item.type === "Secundaria"));
   };
 
   const createUpdateEvent = async () => {

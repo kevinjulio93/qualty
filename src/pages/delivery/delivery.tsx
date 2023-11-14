@@ -217,7 +217,8 @@ function Delivery () {
             acc = acc.concat(suggestedItemsElement);
             return acc;
           }, []);
-        const inventory = [...new Map(todosSuggestedItems.map(item => [item._id, item])).values()];
+        const mapResponse = [...new Map(todosSuggestedItems.map(item => [item._id, item])).values()];
+        const inventory = (mapResponse as any).filter(el => !el.isDefault && !el.associationItem);
         setItemList(inventory);
         const newCounts = new Array(inventory.length).fill(0);
         setCounters(newCounts);
