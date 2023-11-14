@@ -25,11 +25,16 @@ export async function getAllEvents(
 }
 
 export async function getEventById(id:string) {
-  const response= await events.get("/events/"+id);
+  const response= await events.get(`/events/${id}`);
   return response;
 }
 
-export async function deleteEvent(id: any) {
+export async function deleteEvent(id: string) {
   const response = await events.delete(`/events/${id}`);
+  return response;
+}
+
+export async function getEventStats(id: string) {
+  const response = await events.get(`/events/stats/${id}`);
   return response;
 }
