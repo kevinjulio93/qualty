@@ -36,6 +36,8 @@ import EventList from './pages/events/events';
 import EventDetail from './pages/eventDetail/eventDetail';
 import EventAssistance from './pages/event_assistance/eventAssistance';
 import Stats from './pages/stats/stats';
+import RepDeliveryList from './pages/repDeliveryList/repDeliveryList';
+import RepDeliveryDetail from './pages/repDeliveryDetail/repDeliveryDetail';
 
 
 function App() {
@@ -129,6 +131,14 @@ function App() {
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.DELIVERY} element={<Delivery />} />
                   <Route path={ROUTES.DELIVERY+'/:deliveryId'} element={<Delivery />} />
+                </Route>
+
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE_DELIVERY, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.REPRESENTATIVE_DELIVERY_LIST} element={<RepDeliveryList />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE_DELIVERY, action: [PERMISSIONS.CREATE] }} />}>
+                  <Route path={ROUTES.REPRESENTATIVE_DELIVERY_DETAIL} element={<RepDeliveryDetail />} />
+                  <Route path={ROUTES.REPRESENTATIVE_DELIVERY_DETAIL+'/:deliveryId'} element={<RepDeliveryDetail />} />
                 </Route>
 
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>

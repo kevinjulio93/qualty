@@ -115,12 +115,23 @@ export const sectionList = [
   },
   {
     key: "entregas",
-    name: "Entregas",
+    name: "Entregas A Beneficiarios",
     path: ROUTES.DELIVERY_LIST,
     icon: "deliver",
     hasChilds: false,
     permission: {
       subject: SECTIONS.DELIVERY,
+      action: [PERMISSIONS.READ],
+    },
+  },
+  {
+    key: "entregas representantes",
+    name: "Entregas A Representates",
+    path: ROUTES.REPRESENTATIVE_DELIVERY_LIST,
+    icon: "deliver",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.REPRESENTATIVE_DELIVERY,
       action: [PERMISSIONS.READ],
     },
   },
