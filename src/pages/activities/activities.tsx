@@ -18,7 +18,8 @@ function ActivityList() {
   const columnAndRowkeys = [
     { label: 'Nombre', rowKey: 'name' }, 
     { label: 'Fecha de ejecución', rowKey: 'execution_date' }, 
-    { label: 'Asistencia estimada', rowKey: 'estimate_attendance' }
+    { label: 'Asistencia estimada', rowKey: 'estimate_attendance' },
+    { label: 'Asistencia confirmada', rowKey: 'attending_beneficiary' }
   ];
   const [actitivies, setActivities] = useState([]);
   const [currentAct, setCurrentAct] = useState(null);
