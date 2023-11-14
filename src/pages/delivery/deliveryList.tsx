@@ -2,17 +2,18 @@ import { Button, Pagination, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants/routes';
 import { Table, TableCell, TableRow } from '../../components/table/table';
-import EditIcon from '@mui/icons-material/Edit';
-import ClearIcon from '@mui/icons-material/Clear';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DoNotDisturbOffIcon from '@mui/icons-material/DoNotDisturbOff';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
-import { deleteDelivery, getAllDelivery } from '../../services/delivery.service';
+import { getAllDelivery, updateDelivery } from '../../services/delivery.service';
 import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
 import { useSelector } from 'react-redux';
 import { checkPermissions } from '../../helpers/checkPermissions';
 import dayjs from "dayjs";
+import { SimpleDialog } from '../../components/dialog/dialog';
 
 
 
@@ -22,6 +23,8 @@ function DeliveryList() {
     const [totalPages, setTotalPages] = useState(1);
     const [dataLastSearch, setDataLastSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [currentDelivery, setCurrentDelivery] = useState(null);
     const navigate = useNavigate();
     const abilities = useSelector((state: any) => state.auth.user.abilities);
 
@@ -53,15 +56,28 @@ function DeliveryList() {
         navigate(redirectTo);
     };
 
-    const deleteFromlist = async (id: string) => {
+    const deleteFromlist = async (dev: string) => {
+      setCurrentDelivery(dev);
+      setOpenDialog(true);
+    };
+
+    const confirmDelete = async () => {
+      setIsLoading(true);
+      setOpenDialog(false);
       try {
-        const response = await deleteDelivery(id);
+        const response = await updateDelivery(currentDelivery._id);
         if (response.status === 200) {
-            getDeliveryList();
+          setCurrentDelivery(null);
+          getDeliveryList();
         }
       } catch (error) {
         throw new Error("the beneficieary doesn't exist");
-      }
+      } 
+    };
+
+    const cancelDelete = () => {
+      setCurrentDelivery(null);
+      setOpenDialog(false);
     };
 
     const getPermission = (key) => {
@@ -146,17 +162,17 @@ function DeliveryList() {
                         <TableCell>{dev?.author?.user_name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
-                            { checkPermissions(getPermission('edit'), abilities) && <EditIcon
+                            { checkPermissions(getPermission('edit'), abilities) && <VisibilityIcon
                               onClick={() => handleClickOpen(dev?._id)}
                               className="action-item-icon action-item-icon-edit"
-                            ></EditIcon>
+                            ></VisibilityIcon>
                             }
-                            { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
+                            { checkPermissions(getPermission('delete'), abilities) && <DoNotDisturbOffIcon
                               onClick={() =>
-                                deleteFromlist(dev?._id)
+                                deleteFromlist(dev)
                               }
                               className="action-item-icon action-item-icon-delete"
-                            ></ClearIcon>
+                            ></DoNotDisturbOffIcon>
                             }
                           </Stack>
                         </TableCell>
@@ -191,6 +207,17 @@ function DeliveryList() {
               </>
             )}
           </div>
+          {openDialog && (
+        <SimpleDialog
+          title="Anular entrega"
+          bodyContent="¿Está seguro que desea anular esta entrega?"
+          mainBtnText="Confirmar"
+          secondBtnText="Cancelar"
+          mainBtnHandler={confirmDelete}
+          secondBtnHandler={cancelDelete}
+          open={openDialog}
+        ></SimpleDialog>
+      )}
         </div>
       );
 }

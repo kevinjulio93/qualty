@@ -455,7 +455,7 @@ function Winerie() {
                         <TableRow key={index}>
                           <TableCell>{item?.name}</TableCell>
                           <TableCell>{item?.code}</TableCell>
-                          <TableCell>{item?.value}</TableCell>
+                          <TableCell>{formatCurrencyNummber(item?.value)}</TableCell>
                           <TableCell>
                             <Stack
                               className="actions-cell"
@@ -495,7 +495,7 @@ function Winerie() {
                       <TableRow key={index}>
                         <TableCell>{item?.name}</TableCell>
                         <TableCell>{item?.code}</TableCell>
-                        <TableCell>{item?.value}</TableCell>
+                        <TableCell>{formatCurrencyNummber(item?.value)}</TableCell>
                         <TableCell>{item?.amount}</TableCell>
 
                         <TableCell>
@@ -552,7 +552,7 @@ function Winerie() {
                             <TableRow key={index}>
                               <TableCell>{data.item?.name}</TableCell>
                               <TableCell>{data.item?.code}</TableCell>
-                              <TableCell>{data.item?.value}</TableCell>
+                              <TableCell>{formatCurrencyNummber(data.item?.value)}</TableCell>
                               <TableCell>{data?.amount}</TableCell>
                               <TableCell>
                                 <Stack

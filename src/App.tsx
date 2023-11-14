@@ -128,6 +128,7 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.DELIVERY} element={<Delivery />} />
+                  <Route path={ROUTES.DELIVERY+'/:deliveryId'} element={<Delivery />} />
                 </Route>
 
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>

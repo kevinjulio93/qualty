@@ -7,8 +7,8 @@ export async function createDelivery(item:any) {
     return response;
 }
 
-export async function updateDelivery(item:any) {
-    const response = await delivery.put('/deliverys', item);
+export async function updateDelivery(id) {
+    const response = await delivery.put(`/deliverys/${id}`, {});
     return response;
 }
 
@@ -29,4 +29,9 @@ export async function getAllDelivery(
 export async function deleteDelivery(id: string) {
     const response = await delivery.delete(`/deliverys/${id}`);
     return response;
+}
+
+export async function getDeliveryById(id:string) {
+  const response= await delivery.get("/deliverys/"+id);
+  return response;
 }

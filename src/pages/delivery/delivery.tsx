@@ -11,15 +11,17 @@ import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import { getAllEvents } from "../../services/events.service";
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
-import { createDelivery } from "../../services/delivery.service";
+import { createDelivery, getDeliveryById } from "../../services/delivery.service";
 import WarningIcon from '@mui/icons-material/Warning';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { getRatingsByBeneficiary } from "../../services/rating.service";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
+import { isEmpty } from "../../helpers/isEmpty";
 
 function Delivery () {
+    const { deliveryId } = useParams();
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [bens, setBens] = useState([]);
@@ -35,6 +37,7 @@ function Delivery () {
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const [openDialogRequeriment, setOpenDialogRequeriment] = useState(false);
     const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
+    const [updatedDelivery, setUpdatedDelivery] = useState({});
     const navigate = useNavigate();
 
     //const navigate = useNavigate();
@@ -42,7 +45,31 @@ function Delivery () {
     useEffect(() => {
         getEvents();
         getBens();
-    }, [])
+        if (deliveryId) {
+            getCurrentDelivery();
+        }
+    }, []);
+
+    useEffect(() => {
+        if (deliveryId && !isEmpty(selectedBen)) {
+            getAllRatingsByBen(selectedBen._id);
+        }
+    }, [selectedBen]);
+
+    useEffect(() => {
+        if (deliveryId && !isEmpty(itemList)) {
+            setCurrentCounter();
+        }
+    }, [itemList]);
+
+    const getCurrentDelivery = async() => {
+        const response = await getDeliveryById(deliveryId);
+        const currentDelivery = response.result.data;
+        const { event, beneficiary } = currentDelivery;
+        setSelectedBen(beneficiary);
+        setSelectedEvent(event);
+        setUpdatedDelivery(currentDelivery);
+    }
 
     const setListMissingRequirements=(message:string)=>{
         const list=missingRequirements;
@@ -198,13 +225,13 @@ function Delivery () {
 
     const getFinalItemList = (): any[] => {
         const finalList = [];
-        itemList.forEach((item, i) => {
+        itemList.filter(el => !el.isDefault && !el.associationItem).forEach((item, i) => {
             if (counters[i] > 0) finalList.push({
                 item: item._id,
                 amount: counters[i],
             });
         });
-        return finalList;
+        return finalList
     }
 
     const getItemsDetail = () => {
@@ -219,12 +246,14 @@ function Delivery () {
     }
 
     const confirmSaveDelivery = async () => {
-        const currentEvent = {
+        setOpenDialogConfirm(false)
+        const currentDevlivery = {
             beneficiary: selectedBen._id,
             event: selectedEvent._id,
             itemList: getFinalItemList(),
+            associated_winery: selectedEvent.associated_winery._id
         };
-        await createDelivery(currentEvent);
+        await createDelivery(currentDevlivery);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
     }
 
@@ -243,6 +272,19 @@ function Delivery () {
         const counts = counters;
         counts[i]--;
         setCounters(counters);
+        setForceRender(+ new Date());
+    }
+
+    const setCurrentCounter = () => {
+        const counts = counters;
+        const items = (updatedDelivery as any)?.itemList || [];
+        const itemIds = itemList.map(item => item._id);
+        itemIds.forEach((item, i) => {
+            if (items.some(element =>  element.item === item)) {
+                counts[i]++;
+            }
+        });
+        setCounters(counts);
         setForceRender(+ new Date());
     }
 
@@ -267,16 +309,18 @@ function Delivery () {
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} label="Evento" />}
                             onChange={onSelectEvent}
+                            value={(selectedEvent as any)?.name || ""}
+                            disabled={!isEmpty(deliveryId)}
                         />
-                        <Search
+                        {!deliveryId && <Search
                             label="Buscar beneficiario"
                             buttonText="Buscar"
                             searchFunction={(data: any) => searchBeneficiaries(data)}
                             width={450}
                             voidInputFunction={getBens}
-                        />
+                        />}
                     </Stack>
-                    {selectedEvent &&
+                    {selectedEvent && !deliveryId &&
                     <div className="assistance-container__form-section__table">
                         <div className="panel-heading"> 
                             Resultados de la busqueda
@@ -370,7 +414,7 @@ function Delivery () {
                                                             aria-label="reduce"
                                                             className="btn-counter-action"
                                                             onClick={() => removeCounter(i)}
-                                                            disabled={counters[i] === 0}
+                                                            disabled={counters[i] === 0 || !isEmpty(deliveryId)}
                                                         >
                                                             <RemoveIcon fontSize="small" />
                                                         </Button>
@@ -385,7 +429,7 @@ function Delivery () {
                                                             aria-label="increase"
                                                             className="btn-counter-action"
                                                             onClick={() => addCounter(i)}
-                                                            disabled={counters[i] === 1}
+                                                            disabled={counters[i] === 1 || !isEmpty(deliveryId)}
                                                         >
                                                             <AddIcon fontSize="small" />
                                                         </Button>
@@ -457,7 +501,6 @@ function Delivery () {
                     <DialogContent>
                     <DialogContentText>
                         { getItemsDetail().map((item, index) => {
-                            console.log(item);
                             return (
                                 <p>{index}. {item.item} - {formatCurrencyNummber(item.value)}</p>
                             );
@@ -474,10 +517,10 @@ function Delivery () {
                     </DialogActions>
                 </Dialog>
             </section>
-            <SaveCancelControls
+            {!deliveryId && <SaveCancelControls
                 saveText="Guardar"
                 handleSave={() => saveDelivery() }
-            />
+            />}
         </>
     );
 }
