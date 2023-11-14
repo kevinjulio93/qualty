@@ -5,8 +5,8 @@ export class FecthRequestModel {
     
     constructor() {
         //this.url = import.meta.env.VITE_NODE_ENV === 'production'? import.meta.env.VITE_PROD_API_URL:import.meta.env.VITE_DEV_API_URL;
-        // this.url = "https://upedcucuta.com/api";
-        this.url = "http://localhost:3000";
+        this.url = "https://upedcucuta.com/api";
+        //this.url = "http://localhost:3000";
     }
 
 
