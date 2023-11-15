@@ -7,13 +7,14 @@ import DoNotDisturbOffIcon from '@mui/icons-material/DoNotDisturbOff';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
-import { getAllDelivery, updateDelivery } from '../../services/delivery.service';
+import { getAllDeliveryByBen, getDeliveryPdf, updateDelivery } from '../../services/delivery.service';
 import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
 import { useSelector } from 'react-redux';
 import { checkPermissions } from '../../helpers/checkPermissions';
 import dayjs from "dayjs";
 import { SimpleDialog } from '../../components/dialog/dialog';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 
 
@@ -35,7 +36,7 @@ function DeliveryList() {
     const getDeliveryList = async () => {
       setIsLoading(true);
         try {
-          const { result } = await getAllDelivery();
+          const { result } = await getAllDeliveryByBen();
           const { data: dataList, totalPages } = result.data;
           const mappedList = dataList.map((event) => {
             return {
@@ -100,6 +101,10 @@ function DeliveryList() {
       }
     }
 
+    const generatePdf = async(dev) => {
+      await getDeliveryPdf(dev._id);
+    }
+
     return (
         <div className="users-container">
           <div className="users-container__actions">
@@ -124,7 +129,7 @@ function DeliveryList() {
               label="Buscar beneficiario"
               searchFunction={async (data: string) => {
               try {
-                const { result } = await getAllDelivery(data);
+                const { result } = await getAllDeliveryByBen(data);
                 setDataLastSearch(data);
                 const { data: list } = result;
                 const mappedList = list.map((event) => {
@@ -174,6 +179,12 @@ function DeliveryList() {
                               className="action-item-icon action-item-icon-delete"
                             ></DoNotDisturbOffIcon>
                             }
+                            <PictureAsPdfIcon
+                              onClick={() =>
+                                generatePdf(dev)
+                              }
+                              className="action-item-icon action-item-icon-edit"
+                            ></PictureAsPdfIcon>
                           </Stack>
                         </TableCell>
                       </TableRow>
@@ -185,7 +196,7 @@ function DeliveryList() {
                   page={currentPage}
                   onChange={async (_, page) => {
                     try {
-                      const { result } = await getAllDelivery(
+                      const { result } = await getAllDeliveryByBen(
                         dataLastSearch,
                         page
                       );

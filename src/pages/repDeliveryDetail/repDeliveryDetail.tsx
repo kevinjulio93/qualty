@@ -27,7 +27,6 @@ import {
   createDelivery,
   getDeliveryById,
 } from "../../services/delivery.service";
-import WarningIcon from "@mui/icons-material/Warning";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { getRatingsByBeneficiary } from "../../services/rating.service";
@@ -35,6 +34,8 @@ import SaveCancelControls from "../../components/saveActionComponent/saveCancelC
 import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getRepresentativesList } from "../../services/representative.service";
+import { getWinerie } from "../../services/winerie.service";
+import { Inventory } from "@mui/icons-material";
 
 function RepDeliveryDetail() {
   const { deliveryId } = useParams();
@@ -44,33 +45,12 @@ function RepDeliveryDetail() {
   const [selectedRepre, setSelectedRepre] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventArray, setEventArray] = useState([]);
-  const [itemList, setItemList] = useState([]);
   const [counters, setCounters] = useState([]);
-  const [forceRender, setForceRender] = useState(+new Date());
-  const levelSisben = [
-    "A1",
-    "A2",
-    "A3",
-    "A4",
-    "A5",
-    "B1",
-    "B2",
-    "B3",
-    "B4",
-    "B5",
-    "B6",
-    "B7",
-    "C1",
-  ];
-  const regimeHealthList = ["Subsidiado"];
-  const [missingRequirements, setMissingRequirements] = useState([]);
-  const [openDialogMessage, setOpenDialogMessage] = useState(false);
-  const [openDialogRequeriment, setOpenDialogRequeriment] = useState(false);
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
   const [updatedDelivery, setUpdatedDelivery] = useState({});
+  const [currentInventory, setCurrentInventory] = useState(null);
   const navigate = useNavigate();
 
-  //const navigate = useNavigate();
 
   useEffect(() => {
     getEvents();
@@ -80,17 +60,6 @@ function RepDeliveryDetail() {
     }
   }, []);
 
-  useEffect(() => {
-    if (deliveryId && !isEmpty(selectedRepre)) {
-      getAllRatingsByBen(selectedRepre._id);
-    }
-  }, [selectedRepre]);
-
-  useEffect(() => {
-    if (deliveryId && !isEmpty(itemList)) {
-      setCurrentCounter();
-    }
-  }, [itemList]);
 
   const getCurrentDelivery = async () => {
     const response = await getDeliveryById(deliveryId);
@@ -99,23 +68,6 @@ function RepDeliveryDetail() {
     setSelectedRepre(beneficiary);
     setSelectedEvent(event);
     setUpdatedDelivery(currentDelivery);
-  };
-
-  const setListMissingRequirements = (message: string) => {
-    const list = missingRequirements;
-    list.push(message);
-    setMissingRequirements(list);
-  };
-
-  function isAgeBenValid(date) {
-    date = new Date(date);
-    const fechaHace60Anios = new Date();
-    fechaHace60Anios.setFullYear(fechaHace60Anios.getFullYear() - 60);
-    return date <= fechaHace60Anios;
-  }
-
-  const handOpenDialogRequirement = () => {
-    setOpenDialogRequeriment(!openDialogRequeriment);
   };
 
   const getEvents = async () => {
@@ -143,7 +95,7 @@ function RepDeliveryDetail() {
     }
   };
 
-  const searchBeneficiaries = async (data) => {
+  const searchRepresentants = async (data) => {
     try {
       const { result } = await getRepresentativesList(data);
       const { data: representants } = result.data;
@@ -156,40 +108,30 @@ function RepDeliveryDetail() {
   const onSelectEvent = (_, selected) => {
     const currentEvent = eventArray.find((item) => item.name === selected);
     setSelectedEvent(currentEvent);
+    getAssociatedWinery(currentEvent.associated_winery._id);
   };
 
-  const handOpenDialogMessage = () => {
-    setOpenDialogMessage(!openDialogMessage);
-  };
+  const getAssociatedWinery = async(id) => {
+    const response = await getWinerie(id);
+    const inventory = response.result.data.inventory.filter(item => item.item.associationItem === true);
+    setCurrentInventory(inventory);
+    const newCounts = new Array(inventory.length).fill(0);
+    setCounters(newCounts);
+  }
 
   const handleAddAction = async (item) => {
-    getAllRatingsByBen(item._id);
     setSelectedRepre(item);
   };
 
-  const getAllRatingsByBen = async (id: string) => {
-    const response = await getRatingsByBeneficiary(id);
-    const todosSuggestedItems = response.result.data.reduce((acc, item) => {
-      const suggestedItemsElement = item.suggested_items || [];
-      acc = acc.concat(suggestedItemsElement);
-      return acc;
-    }, []);
-    const inventory = [
-      ...new Map(todosSuggestedItems.map((item) => [item._id, item])).values(),
-    ];
-    setItemList(inventory);
-    const newCounts = new Array(inventory.length).fill(0);
-    setCounters(newCounts);
-  };
 
   const getFinalItemList = (): any[] => {
     const finalList = [];
-    itemList
-      .filter((el) => !el.isDefault && !el.associationItem)
+    currentInventory
+      ?.filter((el) => !el.isDefault && !el.associationItem)
       .forEach((item, i) => {
         if (counters[i] > 0)
           finalList.push({
-            item: item._id,
+            item: item.item._id,
             amount: counters[i],
           });
       });
@@ -198,24 +140,27 @@ function RepDeliveryDetail() {
 
   const getItemsDetail = () => {
     const finalList = [];
-    itemList.forEach((item, i) => {
+    currentInventory?.forEach((item, i) => {
       if (counters[i] > 0)
         finalList.push({
-          item: item.name,
-          value: item.value,
+          item: item.item.name,
+          value: item.item.value,
         });
     });
+    console.log(finalList)
     return finalList;
   };
 
   const confirmSaveDelivery = async () => {
     setOpenDialogConfirm(false);
     const currentDevlivery = {
-      beneficiary: selectedRepre._id,
+      representant: selectedRepre._id,
       event: selectedEvent._id,
       itemList: getFinalItemList(),
       associated_winery: selectedEvent.associated_winery._id,
+      type: "representant"
     };
+    console.log(currentDevlivery);
     await createDelivery(currentDevlivery);
     navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
   };
@@ -224,32 +169,11 @@ function RepDeliveryDetail() {
     setOpenDialogConfirm(!openDialogConfirm);
   };
 
-  const addCounter = (i) => {
+  const setValue = (value, i) => {
     const counts = counters;
-    counts[i]++;
+    counts[i] = value;
     setCounters(counts);
-    setForceRender(+new Date());
-  };
-
-  const removeCounter = (i) => {
-    const counts = counters;
-    counts[i]--;
-    setCounters(counters);
-    setForceRender(+new Date());
-  };
-
-  const setCurrentCounter = () => {
-    const counts = counters;
-    const items = (updatedDelivery as any)?.itemList || [];
-    const itemIds = itemList.map((item) => item._id);
-    itemIds.forEach((item, i) => {
-      if (items.some((element) => element.item === item)) {
-        counts[i]++;
-      }
-    });
-    setCounters(counts);
-    setForceRender(+new Date());
-  };
+}
 
   return isLoading ? (
     <LoadingComponent></LoadingComponent>
@@ -283,7 +207,7 @@ function RepDeliveryDetail() {
               <Search
                 label="Buscar representante"
                 buttonText="Buscar"
-                searchFunction={(data: any) => searchBeneficiaries(data)}
+                searchFunction={(data: any) => searchRepresentants(data)}
                 width={450}
                 voidInputFunction={getRepresentants}
               />
@@ -350,47 +274,28 @@ function RepDeliveryDetail() {
               </Table>
             </div>
           )}
-          {itemList.length > 0 && (
+          {currentInventory?.length > 0 && selectedRepre && (
             <div className="ratings-container__form-section__info">
               <div className="panel-heading">
-                Articulos seguridos en valoraciones
+                Articulos a entregar
               </div>
-              <Card sx={{ width: 500, padding: 2 }}>
+              <Card sx={{ width: 300, padding: 2 }}>
                 <Stack direction={"column"}>
-                  {itemList.map((item, i) => {
+                  {currentInventory.map((item, i) => {
                     return (
-                      <Grid container spacing={2} key={item.name + "_" + i}>
+                      <Grid container spacing={2} key={item?.item?.name + "_" + i}>
                         <Grid item xs={5}>
-                          <FormLabel component="legend">{item.name}</FormLabel>
+                          <FormLabel component="legend">{item?.item?.name || ""}</FormLabel>
                         </Grid>
-                        <Grid item xs={3}>
-                          <Button
-                            aria-label="reduce"
-                            className="btn-counter-action"
-                            onClick={() => removeCounter(i)}
-                            disabled={counters[i] === 0 || !isEmpty(deliveryId)}
-                          >
-                            <RemoveIcon fontSize="small" />
-                          </Button>
-                        </Grid>
-                        <Grid item xs={1}>
-                          <Typography
-                            variant="overline"
-                            display="block"
-                            gutterBottom
-                          >
-                            {counters[i]}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Button
-                            aria-label="increase"
-                            className="btn-counter-action"
-                            onClick={() => addCounter(i)}
-                            disabled={counters[i] === 1 || !isEmpty(deliveryId)}
-                          >
-                            <AddIcon fontSize="small" />
-                          </Button>
+                        <Grid item xs={2}>
+                          <TextField
+                            id="outlined-number"
+                            sx={{width: 100}}
+                            label="Cantidad"
+                            type="number"
+                            size="small"
+                            onChange={(e) => setValue(e.target.value, i)}
+                          />
                         </Grid>
                       </Grid>
                     );
@@ -399,70 +304,7 @@ function RepDeliveryDetail() {
               </Card>
             </div>
           )}
-          {/*selectedBen && 
-                        <Button
-                            className="btn-save-delivery"
-                            onClick={() => saveDelivery()}
-                            >
-                            Generar entrega
-                        </Button>
-                                */}
         </Paper>
-        <Dialog open={openDialogMessage}>
-          <DialogTitle>Advertencia</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {missingRequirements.length > 0 ? (
-                <>
-                  <h2>Requisitos necesarios para este beneficiario:</h2>
-                  {missingRequirements.map(
-                    (requitement: string, index: number) => {
-                      return (
-                        <p key={index}>
-                          {index + 1}. {requitement}{" "}
-                          <WarningIcon color="warning" />
-                        </p>
-                      );
-                    }
-                  )}
-                </>
-              ) : (
-                ""
-              )}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => handOpenDialogMessage()} color="primary">
-              Aceptar
-            </Button>
-            <Button onClick={() => handOpenDialogRequirement()} color="primary">
-              Ver requisitos
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Dialog open={openDialogRequeriment}>
-          <DialogTitle>Requisitos</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <p>
-                1. Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6,
-                B7, C1
-              </p>
-              <p>2. Tener sisben del Norte de Santander</p>
-              <p>
-                3. Tener regimen de salud Subsidiado o Cotizante beneficiario
-              </p>
-              <p>4. Mayor o igual a 60 años</p>
-              <p>5. Tener soportes de EPS, SISBEN, Registraduría y Cédula</p>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => handOpenDialogRequirement()} color="primary">
-              Aceptar
-            </Button>
-          </DialogActions>
-        </Dialog>
 
         <Dialog open={openDialogConfirm}>
           <DialogTitle>Confirmar entrega</DialogTitle>
@@ -470,9 +312,9 @@ function RepDeliveryDetail() {
             <DialogContentText>
               {getItemsDetail().map((item, index) => {
                 return (
-                  <p>
-                    {index}. {item.item} - {formatCurrencyNummber(item.value)}
-                  </p>
+                  <span key={item.item + '_' + index}>
+                    {index + 1}. {item.item} - {formatCurrencyNummber(item.value)}
+                  </span>
                 );
               })}
             </DialogContentText>

@@ -7,7 +7,7 @@ import DoNotDisturbOffIcon from '@mui/icons-material/DoNotDisturbOff';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
-import { getAllDelivery, updateDelivery } from '../../services/delivery.service';
+import { getAllDeliveryByRep, updateDelivery } from '../../services/delivery.service';
 import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
 import { useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ function RepDeliveryList() {
     const getDeliveryList = async () => {
       setIsLoading(true);
         try {
-          const { result } = await getAllDelivery();
+          const { result } = await getAllDeliveryByRep();
           const { data: dataList, totalPages } = result.data;
           const mappedList = dataList.map((event) => {
             return {
@@ -124,7 +124,7 @@ function RepDeliveryList() {
               label="Buscar beneficiario"
               searchFunction={async (data: string) => {
               try {
-                const { result } = await getAllDelivery(data);
+                const { result } = await getAllDeliveryByRep(data);
                 setDataLastSearch(data);
                 const { data: list } = result;
                 const mappedList = list.map((event) => {
@@ -159,7 +159,7 @@ function RepDeliveryList() {
                       <TableRow key={dev._id}>
                         <TableCell>{dev?.event?.name}</TableCell>
                         <TableCell>{dev?.createdAt}</TableCell>
-                        <TableCell>{dev?.beneficiary?.first_name} {dev?.beneficiary?.first_last_name}</TableCell>
+                        <TableCell>{dev?.representant?.name}</TableCell>
                         <TableCell>{dev?.beneficiary?.association ?? 'predeterminado'}</TableCell>
                         <TableCell>{dev?.author?.user_name}</TableCell>
                         <TableCell>
@@ -187,7 +187,7 @@ function RepDeliveryList() {
                   page={currentPage}
                   onChange={async (_, page) => {
                     try {
-                      const { result } = await getAllDelivery(
+                      const { result } = await getAllDeliveryByRep(
                         dataLastSearch,
                         page
                       );

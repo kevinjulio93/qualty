@@ -115,7 +115,7 @@ export const sectionList = [
   },
   {
     key: "entregas",
-    name: "Entregas A Beneficiarios",
+    name: "Entr. A Beneficiarios",
     path: ROUTES.DELIVERY_LIST,
     icon: "deliver",
     hasChilds: false,
@@ -126,7 +126,7 @@ export const sectionList = [
   },
   {
     key: "entregas representantes",
-    name: "Entregas A Representates",
+    name: "Entr. A Representates",
     path: ROUTES.REPRESENTATIVE_DELIVERY_LIST,
     icon: "deliver",
     hasChilds: false,

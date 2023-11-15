@@ -25,6 +25,30 @@ export async function getAllDelivery(
     return response;
   }
 
+  export async function getAllDeliveryByRep(
+    queryString?: string,
+    page: number = 1,
+    perPage: number = 20,
+  ) {
+    const params = `page=${page}&perPage=${perPage}${
+      queryString ? `&queryString=${queryString}` : ""
+    }`;
+    const response = await delivery.get(`/deliverys/type/representant/?${params}`);
+    return response;
+  }
+
+  export async function getAllDeliveryByBen(
+    queryString?: string,
+    page: number = 1,
+    perPage: number = 20,
+  ) {
+    const params = `page=${page}&perPage=${perPage}${
+      queryString ? `&queryString=${queryString}` : ""
+    }`;
+    const response = await delivery.get(`/deliverys/type/beneficiary/?${params}`);
+    return response;
+  }
+
 
 export async function deleteDelivery(id: string) {
     const response = await delivery.delete(`/deliverys/${id}`);
@@ -33,5 +57,10 @@ export async function deleteDelivery(id: string) {
 
 export async function getDeliveryById(id:string) {
   const response= await delivery.get("/deliverys/"+id);
+  return response;
+}
+
+export async function getDeliveryPdf(id:string) {
+  const response= await delivery.get("/deliverys/pdf/"+id);
   return response;
 }

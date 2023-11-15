@@ -95,7 +95,7 @@ function Stats() {
       },
       series: [
         {
-          name: 'Access From',
+          name: 'Articulos entregados',
           type: 'pie',
           radius: '50%',
           data: mappedITems,

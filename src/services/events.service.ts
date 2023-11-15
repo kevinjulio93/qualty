@@ -24,6 +24,18 @@ export async function getAllEvents(
   return response;
 }
 
+export async function getAllEventsByType(
+  queryString?: string,
+  page: number = 1,
+  perPage: number = 20,
+) {
+  const params = `page=${page}&perPage=${perPage}${
+    queryString ? `&queryString=${queryString}` : ""
+  }`;
+  const response = await events.get("/events/?" + params);
+  return response;
+}
+
 export async function getEventById(id:string) {
   const response= await events.get(`/events/${id}`);
   return response;

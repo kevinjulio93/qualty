@@ -252,7 +252,8 @@ function Delivery () {
             beneficiary: selectedBen._id,
             event: selectedEvent._id,
             itemList: getFinalItemList(),
-            associated_winery: selectedEvent.associated_winery._id
+            associated_winery: selectedEvent.associated_winery._id,
+            type: 'beneficiary'
         };
         await createDelivery(currentDevlivery);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
@@ -442,14 +443,6 @@ function Delivery () {
                                 </Card>
                         </div>
                                     }
-                    {/*selectedBen && 
-                        <Button
-                            className="btn-save-delivery"
-                            onClick={() => saveDelivery()}
-                            >
-                            Generar entrega
-                        </Button>
-                                */}
                 </Paper>
                 <Dialog open={openDialogMessage} >
                     <DialogTitle>Advertencia</DialogTitle>
@@ -503,7 +496,7 @@ function Delivery () {
                     <DialogContentText>
                         { getItemsDetail().map((item, index) => {
                             return (
-                                <p>{index}. {item.item} - {formatCurrencyNummber(item.value)}</p>
+                                <p>{index + 1}. {item.item} - {formatCurrencyNummber(item.value)}</p>
                             );
                         })}
                     </DialogContentText>

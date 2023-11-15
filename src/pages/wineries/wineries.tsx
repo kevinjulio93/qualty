@@ -446,6 +446,7 @@ function Winerie() {
                   <TableRow header>
                     <TableCell>Nombre</TableCell>
                     <TableCell>Código</TableCell>
+                    <TableCell>Tipo</TableCell>
                     <TableCell>value</TableCell>
                     <TableCell>Acciones</TableCell>
                   </TableRow>
@@ -455,6 +456,7 @@ function Winerie() {
                         <TableRow key={index}>
                           <TableCell>{item?.name}</TableCell>
                           <TableCell>{item?.code}</TableCell>
+                          <TableCell>{item.isDefault ? 'Predeterminado' : item.associationItem ? 'De asociación'  : 'De Valoración'}</TableCell>
                           <TableCell>{formatCurrencyNummber(item?.value)}</TableCell>
                           <TableCell>
                             <Stack
@@ -486,6 +488,7 @@ function Winerie() {
                   <TableRow header>
                     <TableCell>Nombre</TableCell>
                     <TableCell>Código</TableCell>
+                    <TableCell>Tipo</TableCell>
                     <TableCell>value</TableCell>
                     <TableCell>Cantidad</TableCell>
                     <TableCell>Acciones</TableCell>
@@ -495,6 +498,7 @@ function Winerie() {
                       <TableRow key={index}>
                         <TableCell>{item?.name}</TableCell>
                         <TableCell>{item?.code}</TableCell>
+                        <TableCell>{item.isDefault ? 'Predeterminado' : item.associationItem ? 'De asociación'  : 'De Valoración'}</TableCell>
                         <TableCell>{formatCurrencyNummber(item?.value)}</TableCell>
                         <TableCell>{item?.amount}</TableCell>
 
