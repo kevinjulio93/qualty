@@ -7,18 +7,17 @@ import DoNotDisturbOffIcon from '@mui/icons-material/DoNotDisturbOff';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
-import { getAllDeliveryByBen, getDeliveryPdf, updateDelivery } from '../../services/delivery.service';
+import { getAllDeliveryByRep, updateDelivery } from '../../services/delivery.service';
 import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
 import { useSelector } from 'react-redux';
 import { checkPermissions } from '../../helpers/checkPermissions';
 import dayjs from "dayjs";
 import { SimpleDialog } from '../../components/dialog/dialog';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 
 
-function DeliveryList() {
+function RepDeliveryList() {
     const [delivery, setDelivery] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [totalPages, setTotalPages] = useState(1);
@@ -36,7 +35,7 @@ function DeliveryList() {
     const getDeliveryList = async () => {
       setIsLoading(true);
         try {
-          const { result } = await getAllDeliveryByBen();
+          const { result } = await getAllDeliveryByRep();
           const { data: dataList, totalPages } = result.data;
           const mappedList = dataList.map((event) => {
             return {
@@ -53,7 +52,7 @@ function DeliveryList() {
     }
 
     const handleClickOpen = (id?: string) => {
-        const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.DELIVERY}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.DELIVERY}`
+        const redirectTo = id ? `${ROUTES.DASHBOARD}/${ROUTES.REPRESENTATIVE_DELIVERY_DETAIL}/${id}` : `${ROUTES.DASHBOARD}/${ROUTES.REPRESENTATIVE_DELIVERY_DETAIL}`
         navigate(redirectTo);
     };
 
@@ -101,16 +100,12 @@ function DeliveryList() {
       }
     }
 
-    const generatePdf = async(dev) => {
-      await getDeliveryPdf(dev._id);
-    }
-
     return (
         <div className="users-container">
           <div className="users-container__actions">
             <div className="content-page-title">
               <Typography variant="h5" className="page-header">
-                Administrar entregas
+              Administrar entregas a representantes
               </Typography>
               <span className="page-subtitle">
                 Aquí podras gestionar las entregas realizadas.
@@ -129,7 +124,7 @@ function DeliveryList() {
               label="Buscar beneficiario"
               searchFunction={async (data: string) => {
               try {
-                const { result } = await getAllDeliveryByBen(data);
+                const { result } = await getAllDeliveryByRep(data);
                 setDataLastSearch(data);
                 const { data: list } = result;
                 const mappedList = list.map((event) => {
@@ -154,7 +149,8 @@ function DeliveryList() {
                   <TableRow header>
                     <TableCell>Evento</TableCell>
                     <TableCell>Fecha</TableCell>
-                    <TableCell>Beneficiario</TableCell>
+                    <TableCell>Representante</TableCell>
+                    <TableCell>Asociación</TableCell>
                     <TableCell>Autor</TableCell>
                     <TableCell>Acciones</TableCell>
                   </TableRow>
@@ -163,7 +159,8 @@ function DeliveryList() {
                       <TableRow key={dev._id}>
                         <TableCell>{dev?.event?.name}</TableCell>
                         <TableCell>{dev?.createdAt}</TableCell>
-                        <TableCell>{dev?.beneficiary?.first_name} {dev?.beneficiary?.first_last_name}</TableCell>
+                        <TableCell>{dev?.representant?.name}</TableCell>
+                        <TableCell>{dev?.beneficiary?.association ?? 'predeterminado'}</TableCell>
                         <TableCell>{dev?.author?.user_name}</TableCell>
                         <TableCell>
                           <Stack direction="row" spacing={2}>
@@ -179,12 +176,6 @@ function DeliveryList() {
                               className="action-item-icon action-item-icon-delete"
                             ></DoNotDisturbOffIcon>
                             }
-                            <PictureAsPdfIcon
-                              onClick={() =>
-                                generatePdf(dev)
-                              }
-                              className="action-item-icon action-item-icon-edit"
-                            ></PictureAsPdfIcon>
                           </Stack>
                         </TableCell>
                       </TableRow>
@@ -196,7 +187,7 @@ function DeliveryList() {
                   page={currentPage}
                   onChange={async (_, page) => {
                     try {
-                      const { result } = await getAllDeliveryByBen(
+                      const { result } = await getAllDeliveryByRep(
                         dataLastSearch,
                         page
                       );
@@ -233,4 +224,4 @@ function DeliveryList() {
       );
 }
 
-export default DeliveryList;
+export default RepDeliveryList;

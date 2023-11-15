@@ -32,7 +32,7 @@ function Delivery () {
     const [counters, setCounters] = useState([]);
     const [forceRender, setForceRender] = useState(+ new Date());
     const levelSisben =["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"];
-    const regimeHealthList = ["Subsidiado","Cotizante Beneficiario"];
+    const regimeHealthList = ["Subsidiado"];
     const [missingRequirements, setMissingRequirements]=useState([]);
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const [openDialogRequeriment, setOpenDialogRequeriment] = useState(false);
@@ -217,7 +217,8 @@ function Delivery () {
             acc = acc.concat(suggestedItemsElement);
             return acc;
           }, []);
-        const inventory = [...new Map(todosSuggestedItems.map(item => [item._id, item])).values()];
+        const mapResponse = [...new Map(todosSuggestedItems.map(item => [item._id, item])).values()];
+        const inventory = (mapResponse as any).filter(el => !el.isDefault && !el.associationItem);
         setItemList(inventory);
         const newCounts = new Array(inventory.length).fill(0);
         setCounters(newCounts);
@@ -251,7 +252,8 @@ function Delivery () {
             beneficiary: selectedBen._id,
             event: selectedEvent._id,
             itemList: getFinalItemList(),
-            associated_winery: selectedEvent.associated_winery._id
+            associated_winery: selectedEvent.associated_winery._id,
+            type: 'beneficiary'
         };
         await createDelivery(currentDevlivery);
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
@@ -441,14 +443,6 @@ function Delivery () {
                                 </Card>
                         </div>
                                     }
-                    {/*selectedBen && 
-                        <Button
-                            className="btn-save-delivery"
-                            onClick={() => saveDelivery()}
-                            >
-                            Generar entrega
-                        </Button>
-                                */}
                 </Paper>
                 <Dialog open={openDialogMessage} >
                     <DialogTitle>Advertencia</DialogTitle>
@@ -502,7 +496,7 @@ function Delivery () {
                     <DialogContentText>
                         { getItemsDetail().map((item, index) => {
                             return (
-                                <p>{index}. {item.item} - {formatCurrencyNummber(item.value)}</p>
+                                <p>{index + 1}. {item.item} - {formatCurrencyNummber(item.value)}</p>
                             );
                         })}
                     </DialogContentText>

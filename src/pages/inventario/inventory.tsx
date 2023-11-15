@@ -201,6 +201,7 @@ function Inventory() {
                 <TableCell>Nombre</TableCell>
                 <TableCell>Código</TableCell>
                 <TableCell>Valor</TableCell>
+                <TableCell>Tipo</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
               {items.length > 0 &&
@@ -214,6 +215,7 @@ function Inventory() {
                       <TableCell>
                         {formatCurrencyNummber(item.value)}
                       </TableCell>
+                      <TableCell>{item.isDefault ? 'Predeterminado' : item.associationItem ? 'De asociación'  : 'De Valoración'}</TableCell>
                       <TableCell>
                         <Stack
                           className="actions-cell"

@@ -82,15 +82,17 @@ function ListView(props: IListViewProp) {
 					<>
 						<Table>
 							<TableRow header>
+								<TableCell key={"numer_header"}>#</TableCell>
 								{props.columnHeaders.map((column, index) => {
 									return (
 										<TableCell key={column.label+index}>{column.label}</TableCell>
 									)
 								})}
 							</TableRow>
-							{props.listContent.map((row: any) => {
+							{props.listContent.map((row: any, i) => {
 								return (
 									<TableRow key={row._id}>
+										<TableCell key={"number_"+i}>{i+1 + ((props.currentPage - 1) * 20)}</TableCell>
 										{
 											props.columnHeaders.map((column, index) => {
 												return (<TableCell key={column.rowKey+index}>{row[column.rowKey]}</TableCell>)

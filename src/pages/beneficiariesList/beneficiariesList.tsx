@@ -150,6 +150,7 @@ function BeneficiariesList() {
           <>
             <Table>
               <TableRow header>
+                <TableCell>#</TableCell>
                 <TableCell>Foto</TableCell>
                 <TableCell>Nombre</TableCell>
                 <TableCell>Cedula</TableCell>
@@ -157,9 +158,10 @@ function BeneficiariesList() {
                 <TableCell>SISBEN</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
-              {benfs.map((beneficiary: any) => {
+              {benfs.map((beneficiary: any, i) => {
                 return (
                   <TableRow key={beneficiary._id}>
+                    <TableCell>{i+1 + ((currentPage - 1) * 20)}</TableCell>
                     <TableCell>
                       <img
                         className="ben-foto"

@@ -26,5 +26,8 @@ export const ROUTES = {
     EVENTS_LIST: 'events-list',
     EVENTS_ASSISTANCE: 'events-assistance',
     EVENTS: 'events',
-    STATS: 'stats'
+    STATS: 'stats',
+    REPRESENTATIVE_DELIVERY_LIST: 'rep-delivery-list',
+    REPRESENTATIVE_DELIVERY_DETAIL: 'rep-delivery-detail',
+
 }
