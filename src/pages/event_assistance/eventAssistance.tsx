@@ -88,7 +88,7 @@ function EventAssistance() {
       date = new Date(date);
       const fechaHace60Anios = new Date();
       fechaHace60Anios.setFullYear(fechaHace60Anios.getFullYear() - 60);
-      return date <= fechaHace60Anios;
+      return date < fechaHace60Anios;
     }
 
     const getValuesAutocomplete=(data:[])=>{
