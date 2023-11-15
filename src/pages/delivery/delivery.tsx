@@ -116,13 +116,13 @@ function Delivery () {
           }else{
             setListMissingRequirements("No posee el soporte de EPS");
         }
-
+        /*
         if(ben?.registry_doc_url){
             aux+=1
           }else{
             setListMissingRequirements("No posee el soporte de Registraduría");
         }
-
+        */
         if(ben?.sisben_url){
             aux+=1
           }else{
@@ -141,7 +141,7 @@ function Delivery () {
             setListMissingRequirements("No posee el soporte de Cédula Posterior");
         }
   
-        if(aux===9){
+        if(aux===8){
             aux=0;
             return true;
         }else{
