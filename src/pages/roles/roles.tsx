@@ -150,7 +150,8 @@ function Roles() {
               try {
                 const { result } = await getAllroles(data);
                 setDataLastSearch(data);
-                const { data: roles } = result;
+                const { data: roles, totalPages } = result;
+                setTotalPages(totalPages);
                 setRoles(roles);
               } catch (err) {
                 setToastGetRolesError(true);

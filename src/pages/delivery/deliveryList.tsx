@@ -131,13 +131,14 @@ function DeliveryList() {
               try {
                 const { result } = await getAllDeliveryByBen(data);
                 setDataLastSearch(data);
-                const { data: list } = result;
+                const { data: list, totalPages } = result;
                 const mappedList = list.map((event) => {
                   return {
                     ...event,
                     createdAt: dayjs(event.createdAt).format("L"),
                   };
                 });
+                setTotalPages(totalPages);
                 setDelivery(mappedList);
               } catch (err) {
                 console.error(err)

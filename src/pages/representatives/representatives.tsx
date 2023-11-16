@@ -165,7 +165,8 @@ function Representatives() {
               try {
                 const { result } = await getRepresentativesList(data);
                 setDataLastSearch(data);
-                const { data: representatives } = result;
+                const { data: representatives, totalPages } = result;
+                setTotalPages(totalPages);
                 setRepresentatives(representatives);
               } catch (err) {
                 setToastGetRepresentativesError(true);

@@ -38,6 +38,7 @@ function EventAssistance() {
     const [missingRequirements,setMissingRequirements]=useState([]);
     const [openDialogMessage,setOpenDialogMessage]=useState(false);
     const [openDialogMessageAction,setOpenDialogMessageAction]=useState(false);
+    const [isConfirmed, setIsConfirmed] = useState(false);
 
     const [levelSisben,setLevelSisben]=useState(["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"]);
     const [regimeHealthList,setRegimeHealthList]=useState(["Subsidiado","Cotizante Beneficiario"]);
@@ -147,6 +148,7 @@ function EventAssistance() {
     }
 
     const handleClickOpen=(ben:any)=>{
+      setIsConfirmed(false);
       checkRequirements(ben);
       setBenSelected(ben);
       setOpenModal(!openModal);
@@ -166,6 +168,7 @@ function EventAssistance() {
     }
 
     const confirmAssistance=async ()=>{
+      setIsConfirmed(true);
       const eventFound=events.find((event)=>event._id===eventSelected);
       eventFound.attendees=[benSelected?._id];
       await updateEvent(eventFound?._id,eventFound);
@@ -227,7 +230,8 @@ function EventAssistance() {
                   try {
                     const { result } = await getBeneficiariesList(data);
                     setDataLastSearch(data);
-                    const { data: works } = result;
+                    const { data: works, totalPages } = result;
+                    setTotalPages(totalPages);
                     setBeneficiaries(works);
                   } catch (err) {
                     console.error(err)
@@ -437,7 +441,7 @@ function EventAssistance() {
                     </Button>
                     {
                       enableButtonAdd ===true ?
-                      <Button autoFocus onClick={()=>confirmAssistance()}>
+                      <Button autoFocus disabled={isConfirmed} onClick={()=>confirmAssistance()}>
                         Confirmar asistencia
                       </Button>
                       : ""

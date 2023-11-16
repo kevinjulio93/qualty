@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { getAllActivities } from "../../services/activities.service";
 import {
   Autocomplete,
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
+  Pagination,
   Paper,
   Select,
   Stack,
@@ -18,7 +18,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Search from "../../components/search/search";
 import "./assistance.scss";
-import { getBeneficiariesList } from "../../services/beneficiaries.service";
+import { getBeneficiaryByActivity } from "../../services/beneficiaries.service";
 import {
   createWorkshop,
   getWorkshopById,
@@ -35,11 +35,13 @@ function Assistance() {
   const { workshopId } = useParams();
   const [activities, setActivities] = useState([]);
   const [actArray, setActArray] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [bens, setBens] = useState([]);
   const [selectedAct, setSelectedAct] = useState(null);
   const [selectedWork, setSelectedWork] = useState(null);
   const [assistList, setAssistList] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [dataLastSearch, setDataLastSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,8 +49,13 @@ function Assistance() {
       getCurrentWorkshop();
     }
     getActivities();
-    getBens();
   }, []);
+
+  useEffect(() => {
+    if (selectedAct) {
+      getBenfs();
+    }
+  }, [selectedAct]);
 
   const getCurrentWorkshop = async () => {
     const currentWork = await getWorkshopById(workshopId);
@@ -59,7 +66,6 @@ function Assistance() {
   };
 
   const getActivities = async () => {
-    setIsLoading(true);
     try {
       const response = await getAllActivities();
       if (response.status === 200) {
@@ -70,28 +76,20 @@ function Assistance() {
     } catch (error) {
       console.error(error);
     }
-    setIsLoading(false);
   };
 
-  const getBens = async () => {
-    try {
-      const response = await getBeneficiariesList();
-      const benList = response.result.data;
-      setBens(benList);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
-  const searchBeneficiaries = async (data) => {
+  const getBenfs = async () => {
     try {
-      const { result } = await getBeneficiariesList(data);
-      const { data: beneficiaries } = result;
-      setBens(beneficiaries);
+      const { result } = await getBeneficiaryByActivity(selectedAct._id);
+      const { data: benfsList, totalPages } = result.data;
+      setBens(benfsList);
+      setTotalPages(totalPages);
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   };
+
 
   const onSelectActivity = (_, selected) => {
     const currentAct = actArray.find((item) => item.name === selected);
@@ -132,9 +130,7 @@ function Assistance() {
     navigate(`${ROUTES.DASHBOARD}/${ROUTES.WORKSHOP}`);
   };
 
-  return isLoading ? (
-    <LoadingComponent></LoadingComponent>
-  ) : (
+  return (
     <>
       <section className="assistance-container">
         <header className="assistance-container__actions">
@@ -183,14 +179,22 @@ function Assistance() {
               </Select>
             </FormControl>
             <Search
-              label="Buscar beneficiario"
-              buttonText="Buscar"
-              searchFunction={(data: any) => searchBeneficiaries(data)}
-              width={450}
-              voidInputFunction={getBens}
-            />
+            label="Buscar beneficiario"
+            searchFunction={async (data: string) => {
+              try {
+                const { result } = await getBeneficiaryByActivity(data);
+                setDataLastSearch(data);
+                const { data: beneficiaries, totalPages } = result.data;
+                setTotalPages(totalPages);
+                setBens(beneficiaries);
+              } catch (err) {
+                console.log(err);
+              }
+            }}
+            voidInputFunction={getBenfs}
+          />
           </Stack>
-          {selectedAct && selectedWork && (
+          {selectedAct && selectedWork &&  bens?.length > 0 && (
             <div className="assistance-container__form-section__table">
               <div className="panel-heading">Resultados de la busqueda</div>
               <Table>
@@ -243,6 +247,24 @@ function Assistance() {
                   </TableRow>
                 )}
               </Table>
+              <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={async (_, page) => {
+                try {
+                  const { result } = await getBeneficiaryByActivity(
+                    dataLastSearch,null,
+                    page
+                  );
+                  const { data: benfs, currentPage, totalPages } = result.data;
+                  setBens(benfs);
+                  setCurrentPage(currentPage);
+                  setTotalPages(totalPages);
+                } catch (err) {
+                  console.log(err);
+                }
+              }}
+            />
             </div>
           )}
           {selectedAct && selectedWork && (
@@ -291,14 +313,11 @@ function Assistance() {
               </Table>
             </div>
           )}
-          {/* <Button className="btn-save-workshop" onClick={() => saveWorkshop()}>
-            Generar asistencia
-          </Button> */}
         </Paper>
       </section>
       <SaveCancelControls
         saveText="Guardar"
-        handleSave={(e) => saveWorkshop() }
+        handleSave={() => saveWorkshop() }
       />
     </>
   );

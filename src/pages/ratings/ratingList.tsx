@@ -155,13 +155,14 @@ function RatingList() {
               try {
                 const { result } = await getAllRatings(data);
                 setDataLastSearch(data);
-                const { data: list } = result;
+                const { data: list, totalPages } = result;
                 const mappedList = list.map((event) => {
                   return {
                     ...event,
                     createdAt: dayjs(event.createdAt).format("L"),
                   };
                 });
+                setTotalPages(totalPages);
                 setRatings(mappedList);
               } catch (err) {
                 console.error(err)

@@ -155,7 +155,8 @@ function Users() {
               try {
                 const { result } = await getUserList(data);
                 setDataLastSearch(data);
-                const { data: users } = result;
+                const { data: users, totalPages } = result;
+                setTotalPages(totalPages);
                 setUsers(users);
               } catch (err) {
                 setToastGetUsersError(true);
