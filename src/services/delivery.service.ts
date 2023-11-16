@@ -12,28 +12,28 @@ export async function updateDelivery(id) {
     return response;
 }
 
-export async function getPdfDeliveryBeneficiarie(idEvent:string,idBeneficiarie:string) {
-  const response = await delivery.getBlobWithParams(`/deliverys/pdf/${idEvent}/${idBeneficiarie}`,);
-  return response;
-  /**
-   Esta respuesta da un blob a continuacion 
-   dejo un codigo que reciebiendo el blob descarga el archivo automaticamente :
+export async function getPdfDeliveryBeneficiarie(idEvent: string, idBeneficiarie: string) {
+  try {
+    const url = `/deliverys/pdf/${idEvent}/${idBeneficiarie}`;
+    const response = await fetch(url);
 
-    const responseRequest=await getPdfDeliveryBeneficiarie(arg1,arg2);
-    const blob = await responseRequest.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "delivery__"+Date.now()+"_.pdf";
-    a.style.display = "none";
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
 
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const pdfBuffer = await response.arrayBuffer();
+    console.log(pdfBuffer);
+    const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(pdfBlob);
 
-    window.URL.revokeObjectURL(url);
-   */
+    // Abrir el PDF en una nueva ventana del navegador
+    window.open(pdfUrl, '_blank');
+  } catch (error) {
+    console.error("Error fetching PDF:", error);
+    // Handle the error as needed
+  }
 }
+
 
 export async function getAllDelivery(
     queryString?: string,
