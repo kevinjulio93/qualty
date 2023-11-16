@@ -93,3 +93,15 @@ export async function deleteBeneficiary(id: string | undefined) {
   return response;
 }
 
+export async function getBeneficiaryByActivity(
+  actId: string,
+  queryString?: string,
+  page: number = 1,
+  perPage: number = 20,
+) {
+  const params = `page=${page}&perPage=${perPage}${
+    queryString ? `&queryString=${queryString}` : ""
+  }`;
+  const response = await requestInstance.get(`/beneficiaries/activity/${actId}/?` + params);
+  return response;
+}

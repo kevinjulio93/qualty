@@ -82,7 +82,7 @@ function Delivery() {
         date = new Date(date);
         const fechaHace60Anios = new Date();
         fechaHace60Anios.setFullYear(fechaHace60Anios.getFullYear() - 60);
-        return date <= fechaHace60Anios;
+        return date < fechaHace60Anios;
     }
 
     const checkRequirements = (ben: any) => {
@@ -117,16 +117,16 @@ function Delivery() {
         } else {
             setListMissingRequirements("No posee el soporte de EPS");
         }
-
-        if (ben?.registry_doc_url) {
-            aux += 1
-        } else {
+        /*
+        if(ben?.registry_doc_url){
+            aux+=1
+          }else{
             setListMissingRequirements("No posee el soporte de Registraduría");
         }
-
-        if (ben?.sisben_url) {
-            aux += 1
-        } else {
+        */
+        if(ben?.sisben_url){
+            aux+=1
+          }else{
             setListMissingRequirements("No posee el soporte de SISBEN");
         }
 
@@ -141,9 +141,9 @@ function Delivery() {
         } else {
             setListMissingRequirements("No posee el soporte de Cédula Posterior");
         }
-
-        if (aux === 9) {
-            aux = 0;
+  
+        if(aux===9){
+            aux=0;
             return true;
         } else {
             aux = 0;
