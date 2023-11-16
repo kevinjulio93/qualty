@@ -20,7 +20,7 @@ import SaveCancelControls from "../../components/saveActionComponent/saveCancelC
 import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
 import { isEmpty } from "../../helpers/isEmpty";
 
-function Delivery () {
+function Delivery() {
     const { deliveryId } = useParams();
     const [events, setEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -31,13 +31,14 @@ function Delivery () {
     const [itemList, setItemList] = useState([]);
     const [counters, setCounters] = useState([]);
     const [forceRender, setForceRender] = useState(+ new Date());
-    const levelSisben =["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"];
+    const levelSisben = ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "C1"];
     const regimeHealthList = ["Subsidiado"];
-    const [missingRequirements, setMissingRequirements]=useState([]);
+    const [missingRequirements, setMissingRequirements] = useState([]);
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const [openDialogRequeriment, setOpenDialogRequeriment] = useState(false);
     const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
     const [updatedDelivery, setUpdatedDelivery] = useState({});
+    const [openLeftModal, setOpenLeftModal] = useState(false);
     const navigate = useNavigate();
 
     //const navigate = useNavigate();
@@ -62,7 +63,7 @@ function Delivery () {
         }
     }, [itemList]);
 
-    const getCurrentDelivery = async() => {
+    const getCurrentDelivery = async () => {
         const response = await getDeliveryById(deliveryId);
         const currentDelivery = response.result.data;
         const { event, beneficiary } = currentDelivery;
@@ -71,11 +72,11 @@ function Delivery () {
         setUpdatedDelivery(currentDelivery);
     }
 
-    const setListMissingRequirements=(message:string)=>{
-        const list=missingRequirements;
+    const setListMissingRequirements = (message: string) => {
+        const list = missingRequirements;
         list.push(message);
         setMissingRequirements(list);
-      }
+    }
 
     function isAgeBenValid(date) {
         date = new Date(date);
@@ -84,74 +85,74 @@ function Delivery () {
         return date <= fechaHace60Anios;
     }
 
-      const checkRequirements=(ben:any)=>{
-        let aux=0;
-  
-        if(ben?.sisben_score && levelSisben.includes(ben?.sisben_score)===true){
-          aux+=1
-        }else{
-          setListMissingRequirements("Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1");
-        }
-  
-        if(ben?.sisben_department && ben?.sisben_department.includes("Norte de Santander")===true){
-          aux+=1
-        }else{
-          setListMissingRequirements("Tener sisben del Norte de Santander");
-        }
-  
-        if( ben?.health_regimen && regimeHealthList.includes(ben?.health_regimen)===true){
-          aux+=1
-        }else{
-          setListMissingRequirements("Tener regimen de salud Subsidiado o Cotizante beneficiario");
-        }
-  
-        if(ben?.birthday && isAgeBenValid(ben?.birthday)===true){
-          aux+=1
-        }else{
-          setListMissingRequirements("Mayor o igual a 60 años");
+    const checkRequirements = (ben: any) => {
+        let aux = 0;
+
+        if (ben?.sisben_score && levelSisben.includes(ben?.sisben_score) === true) {
+            aux += 1
+        } else {
+            setListMissingRequirements("Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1");
         }
 
-        if(ben?.fosiga_url){
-            aux+=1
-          }else{
+        if (ben?.sisben_department && ben?.sisben_department.includes("Norte de Santander") === true) {
+            aux += 1
+        } else {
+            setListMissingRequirements("Tener sisben del Norte de Santander");
+        }
+
+        if (ben?.health_regimen && regimeHealthList.includes(ben?.health_regimen) === true) {
+            aux += 1
+        } else {
+            setListMissingRequirements("Tener regimen de salud Subsidiado o Cotizante beneficiario");
+        }
+
+        if (ben?.birthday && isAgeBenValid(ben?.birthday) === true) {
+            aux += 1
+        } else {
+            setListMissingRequirements("Mayor o igual a 60 años");
+        }
+
+        if (ben?.fosiga_url) {
+            aux += 1
+        } else {
             setListMissingRequirements("No posee el soporte de EPS");
         }
 
-        if(ben?.registry_doc_url){
-            aux+=1
-          }else{
+        if (ben?.registry_doc_url) {
+            aux += 1
+        } else {
             setListMissingRequirements("No posee el soporte de Registraduría");
         }
 
-        if(ben?.sisben_url){
-            aux+=1
-          }else{
+        if (ben?.sisben_url) {
+            aux += 1
+        } else {
             setListMissingRequirements("No posee el soporte de SISBEN");
         }
 
-        if(ben?.id_front){
-            aux+=1
-          }else{
+        if (ben?.id_front) {
+            aux += 1
+        } else {
             setListMissingRequirements("No posee el soporte de Cédula Frontal");
         }
 
-        if(ben?.id_back){
-            aux+=1
-          }else{
+        if (ben?.id_back) {
+            aux += 1
+        } else {
             setListMissingRequirements("No posee el soporte de Cédula Posterior");
         }
-  
-        if(aux===9){
-            aux=0;
+
+        if (aux === 9) {
+            aux = 0;
             return true;
-        }else{
-            aux=0;
+        } else {
+            aux = 0;
             return false;
         }
-        
+
     }
 
-    const handOpenDialogRequirement=()=>{
+    const handOpenDialogRequirement = () => {
         setOpenDialogRequeriment(!openDialogRequeriment);
     }
 
@@ -165,16 +166,16 @@ function Delivery () {
                 setEventArray(response.result.data.data);
             }
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
         setIsLoading(false);
     }
 
     const getBens = async () => {
         try {
-          const response = await getBeneficiariesList();
-          const benList = response.result.data;
-          setBens(benList);
+            const response = await getBeneficiariesList();
+            const benList = response.result.data;
+            setBens(benList);
         } catch (error) {
             console.error(error);
         }
@@ -195,28 +196,30 @@ function Delivery () {
         setSelectedEvent(currentEvent);
     }
 
-    const handOpenDialogMessage=()=>{
-        setOpenDialogMessage(!openDialogMessage);        
+    const handOpenDialogMessage = () => {
+        setOpenDialogMessage(!openDialogMessage);
     }
 
-    const handleAddAction = async(item) => {
-        missingRequirements.length=0;
+    const handleAddAction = async (item) => {
+        missingRequirements.length = 0;
         setMissingRequirements(missingRequirements);
-        if(!checkRequirements(item) ){
+        if (!checkRequirements(item)) {
             setOpenDialogMessage(true);
-        }else{
+        } else {
             getAllRatingsByBen(item._id);
             setSelectedBen(item);
+            setOpenLeftModal(!openLeftModal)
         }
+        
     }
 
-    const getAllRatingsByBen = async(id: string) => {
+    const getAllRatingsByBen = async (id: string) => {
         const response = await getRatingsByBeneficiary(id);
         const todosSuggestedItems = response.result.data.reduce((acc, item) => {
             const suggestedItemsElement = item.suggested_items || [];
             acc = acc.concat(suggestedItemsElement);
             return acc;
-          }, []);
+        }, []);
         const mapResponse = [...new Map(todosSuggestedItems.map(item => [item._id, item])).values()];
         const inventory = (mapResponse as any).filter(el => !el.isDefault && !el.associationItem);
         setItemList(inventory);
@@ -282,7 +285,7 @@ function Delivery () {
         const items = (updatedDelivery as any)?.itemList || [];
         const itemIds = itemList.map(item => item._id);
         itemIds.forEach((item, i) => {
-            if (items.some(element =>  element.item === item)) {
+            if (items.some(element => element.item === item)) {
                 counts[i]++;
             }
         });
@@ -290,9 +293,14 @@ function Delivery () {
         setForceRender(+ new Date());
     }
 
+    const closeLefModal = () =>{
+        setSelectedBen(null);
+        setOpenLeftModal(!openLeftModal);
+    }
+
     return isLoading ? (
         <LoadingComponent></LoadingComponent>
-      ) : (
+    ) : (
         <>
             <section className='delivery-container'>
                 <header className="delivery-container__actions">
@@ -322,198 +330,210 @@ function Delivery () {
                             voidInputFunction={getBens}
                         />}
                     </Stack>
-                    {selectedEvent && !deliveryId &&
-                    <div className="assistance-container__form-section__table">
-                        <div className="panel-heading"> 
-                            Resultados de la busqueda
-                        </div>
-                        <Table>
-                            <TableRow header>
-                                <TableCell>Foto</TableCell>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>Cedula</TableCell>
-                                <TableCell>Asociación</TableCell>
-                                <TableCell>Acciones</TableCell>
-                            </TableRow>
-                            {bens.length > 0 ?
-                            bens.map((beneficiary: any, index) => {
-                                return (
-                                <TableRow key={index}>
-                                    <TableCell>
-                                        <img
-                                        className="ben-foto"
-                                        src={beneficiary.photo_url}
-                                        alt="foto"
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        {beneficiary?.first_name} {beneficiary.second_name}{" "}
-                                        {beneficiary.first_last_name} {beneficiary.second_last_name}
-                                    </TableCell>
-                                    <TableCell>{beneficiary?.identification}</TableCell>
-                                    <TableCell>{beneficiary?.association?.name}</TableCell>
-                                    <TableCell>
-                                    <Stack className="actions-cell" direction="row" spacing={2}>
-                                        <AddCircleIcon
-                                        className="action-item-icon action-item-icon-add"
-                                        onClick={() => handleAddAction(beneficiary)}
-                                        ></AddCircleIcon>
-                                    </Stack>
-                                    </TableCell>
-                                </TableRow>
-                                );
-                            }) : <TableRow>
-                                    <TableCell>No hay registros disponible</TableCell>
-                                </TableRow>}
-                        </Table>
-                    </div>
-                    }
-                    {selectedBen &&
-                    <div className="assistance-container__form-section__table__info">
-                        <div className="panel-heading"> 
-                            Beneficiario seleccionado
-                        </div>
-                        <Table>
-                            <TableRow header>
-                                <TableCell>Foto</TableCell>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>Cedula</TableCell>
-                                <TableCell>Asociación</TableCell>
-                            </TableRow>
-                            <TableRow key={selectedBen.id}>
-                                    <TableCell>
-                                        <img
-                                        className="ben-foto-info"
-                                        src={selectedBen.photo_url}
-                                        alt="foto"
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        {selectedBen?.first_name} {selectedBen.second_name}{" "}
-                                        {selectedBen.first_last_name} {selectedBen.second_last_name}
-                                    </TableCell>
-                                    <TableCell>{selectedBen?.identification}</TableCell>
-                                    <TableCell>{selectedBen?.association?.name}</TableCell>
-                                </TableRow>
-                        </Table>
-                    </div>
-                    }
-                    {itemList.length > 0 &&
-                        <div className="ratings-container__form-section__info">
-                            <div className="panel-heading"> 
-                                Articulos seguridos en valoraciones
-                            </div>
-                                <Card sx={{ width: 500, padding: 2 }}>
-                                    <Stack direction={"column"}>
-                                        {itemList.map((item, i) => {
+                    <div className="content-deliveries">
+                        {selectedEvent && !deliveryId &&
+                            <div className="assistance-container__form-section__table">
+                                <div className="panel-heading">
+                                    Resultados de la busqueda
+                                </div>
+                                <Table>
+                                    <TableRow header>
+                                        <TableCell>Foto</TableCell>
+                                        <TableCell>Nombre</TableCell>
+                                        <TableCell>Cedula</TableCell>
+                                        <TableCell>Asociación</TableCell>
+                                        <TableCell>Acciones</TableCell>
+                                    </TableRow>
+                                    {bens.length > 0 ?
+                                        bens.map((beneficiary: any, index) => {
                                             return (
-                                                <Grid container spacing={2} key={item.name + '_' + i}>
-                                                    <Grid item xs={5}>
-                                                        <FormLabel component="legend">{item.name}</FormLabel>
-                                                    </Grid>
-                                                    <Grid item xs={3}>
-                                                        <Button
-                                                            aria-label="reduce"
-                                                            className="btn-counter-action"
-                                                            onClick={() => removeCounter(i)}
-                                                            disabled={counters[i] === 0 || !isEmpty(deliveryId)}
-                                                        >
-                                                            <RemoveIcon fontSize="small" />
-                                                        </Button>
-                                                    </Grid>
-                                                    <Grid item xs={1}>
-                                                        <Typography variant="overline" display="block" gutterBottom>
-                                                            {counters[i]}
-                                                        </Typography>
-                                                    </Grid>
-                                                    <Grid item xs={3}>
-                                                        <Button
-                                                            aria-label="increase"
-                                                            className="btn-counter-action"
-                                                            onClick={() => addCounter(i)}
-                                                            disabled={counters[i] === 1 || !isEmpty(deliveryId)}
-                                                        >
-                                                            <AddIcon fontSize="small" />
-                                                        </Button>
-                                                    </Grid>
-                                              </Grid>
+                                                <TableRow key={index}>
+                                                    <TableCell>
+                                                        <img
+                                                            className="ben-foto"
+                                                            src={beneficiary.photo_url}
+                                                            alt="foto"
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {beneficiary?.first_name} {beneficiary.second_name}{" "}
+                                                        {beneficiary.first_last_name} {beneficiary.second_last_name}
+                                                    </TableCell>
+                                                    <TableCell>{beneficiary?.identification}</TableCell>
+                                                    <TableCell>{beneficiary?.association?.name}</TableCell>
+                                                    <TableCell>
+                                                        <Stack className="actions-cell" direction="row" spacing={2}>
+                                                            <AddCircleIcon
+                                                                className="action-item-icon action-item-icon-add"
+                                                                onClick={() => handleAddAction(beneficiary)}
+                                                            ></AddCircleIcon>
+                                                        </Stack>
+                                                    </TableCell>
+                                                </TableRow>
                                             );
-                                        })}
-                                    </Stack>
-                                </Card>
+                                        }) : <TableRow>
+                                            <TableCell>No hay registros disponible</TableCell>
+                                        </TableRow>}
+                                </Table>
+                            </div>
+                        }
+                       {selectedBen && openLeftModal && <div className="section-table-butom">
+                            <div className="panel-heading">
+                                Beneficiario seleccionado
+                                <button className="btn-close-left" onClick={()=>closeLefModal()}>x</button>
+                            </div>
+                            <div className="content-scroll">
+
+
+                                
+                                    <div className="assistance-container__form-section__table__info">
+
+                                        <Table>
+                                            <TableRow header>
+                                                <TableCell>Foto</TableCell>
+                                                <TableCell>Nombre</TableCell>
+                                                <TableCell>Cedula</TableCell>
+                                                <TableCell>Asociación</TableCell>
+                                            </TableRow>
+                                            <TableRow key={selectedBen.id}>
+                                                <TableCell>
+                                                    <img
+                                                        className="ben-foto-info"
+                                                        src={selectedBen.photo_url}
+                                                        alt="foto"
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    {selectedBen?.first_name} {selectedBen.second_name}{" "}
+                                                    {selectedBen.first_last_name} {selectedBen.second_last_name}
+                                                </TableCell>
+                                                <TableCell>{selectedBen?.identification}</TableCell>
+                                                <TableCell>{selectedBen?.association?.name}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </div>
+                               
+                                {itemList.length > 0 &&
+                                    <div className="ratings-container__form-section__info">
+                                        <div className="panel-heading">
+                                            Articulos seguridos en valoraciones
+                                        </div>
+                                        <Card sx={{ width: 500, padding: 2 }}>
+                                            <Stack direction={"column"}>
+                                                {itemList.map((item, i) => {
+                                                    return (
+                                                        <Grid container spacing={2} key={item.name + '_' + i}>
+                                                            <Grid item xs={5}>
+                                                                <FormLabel component="legend">{item.name}</FormLabel>
+                                                            </Grid>
+                                                            <Grid item xs={3}>
+                                                                <Button
+                                                                    aria-label="reduce"
+                                                                    className="btn-counter-action"
+                                                                    onClick={() => removeCounter(i)}
+                                                                    disabled={counters[i] === 0 || !isEmpty(deliveryId)}
+                                                                >
+                                                                    <RemoveIcon fontSize="small" />
+                                                                </Button>
+                                                            </Grid>
+                                                            <Grid item xs={1}>
+                                                                <Typography variant="overline" display="block" gutterBottom>
+                                                                    {counters[i]}
+                                                                </Typography>
+                                                            </Grid>
+                                                            <Grid item xs={3}>
+                                                                <Button
+                                                                    aria-label="increase"
+                                                                    className="btn-counter-action"
+                                                                    onClick={() => addCounter(i)}
+                                                                    disabled={counters[i] === 1 || !isEmpty(deliveryId)}
+                                                                >
+                                                                    <AddIcon fontSize="small" />
+                                                                </Button>
+                                                            </Grid>
+                                                        </Grid>
+                                                    );
+                                                })}
+                                            </Stack>
+                                        </Card>
+                                    </div>
+                                }
+                            </div>
                         </div>
-                                    }
+                         }
+                    </div>
+
                 </Paper>
                 <Dialog open={openDialogMessage} >
                     <DialogTitle>Advertencia</DialogTitle>
                     <DialogContent>
-                    <DialogContentText>
-                    {
-                    missingRequirements.length > 0 ? 
-                      <>
-                        <h2>Requisitos necesarios para este beneficiario:</h2>
-                        {
-                          missingRequirements.map((requitement:string,index:number)=>{
-                            return <p key={index}>{index+1}. {requitement} <WarningIcon color="warning"/></p>
-                          })
-                        }
-                      </>
-                    :""
-                  }
-                    </DialogContentText>
+                        <DialogContentText>
+                            {
+                                missingRequirements.length > 0 ?
+                                    <>
+                                        <h2>Requisitos necesarios para este beneficiario:</h2>
+                                        {
+                                            missingRequirements.map((requitement: string, index: number) => {
+                                                return <p key={index}>{index + 1}. {requitement} <WarningIcon color="warning" /></p>
+                                            })
+                                        }
+                                    </>
+                                    : ""
+                            }
+                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={()=>handOpenDialogMessage()} color="primary">
-                        Aceptar
-                    </Button>
-                    <Button onClick={()=>handOpenDialogRequirement()} color="primary">
-                        Ver requisitos
-                    </Button>
+                        <Button onClick={() => handOpenDialogMessage()} color="primary">
+                            Aceptar
+                        </Button>
+                        <Button onClick={() => handOpenDialogRequirement()} color="primary">
+                            Ver requisitos
+                        </Button>
                     </DialogActions>
                 </Dialog>
 
                 <Dialog open={openDialogRequeriment} >
                     <DialogTitle>Requisitos</DialogTitle>
                     <DialogContent>
-                    <DialogContentText>
-                        <p>1. Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1</p>
-                        <p>2. Tener sisben del Norte de Santander</p>
-                        <p>3. Tener regimen de salud Subsidiado o Cotizante beneficiario</p>
-                        <p>4. Mayor o igual a 60 años</p>
-                        <p>5. Tener soportes de EPS, SISBEN, Registraduría y Cédula</p>
-                    </DialogContentText>
+                        <DialogContentText>
+                            <p>1. Nivel de SISBEN: A1, A2, A3, A4, A5, B1, B2, B3, B4, B5, B6, B7, C1</p>
+                            <p>2. Tener sisben del Norte de Santander</p>
+                            <p>3. Tener regimen de salud Subsidiado o Cotizante beneficiario</p>
+                            <p>4. Mayor o igual a 60 años</p>
+                            <p>5. Tener soportes de EPS, SISBEN, Registraduría y Cédula</p>
+                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={()=>handOpenDialogRequirement()} color="primary">
-                        Aceptar
-                    </Button>
+                        <Button onClick={() => handOpenDialogRequirement()} color="primary">
+                            Aceptar
+                        </Button>
                     </DialogActions>
                 </Dialog>
 
                 <Dialog open={openDialogConfirm} >
                     <DialogTitle>Confirmar entrega</DialogTitle>
                     <DialogContent>
-                    <DialogContentText>
-                        { getItemsDetail().map((item, index) => {
-                            return (
-                                <p>{index + 1}. {item.item} - {formatCurrencyNummber(item.value)}</p>
-                            );
-                        })}
-                    </DialogContentText>
+                        <DialogContentText>
+                            {getItemsDetail().map((item, index) => {
+                                return (
+                                    <p>{index + 1}. {item.item} - {formatCurrencyNummber(item.value)}</p>
+                                );
+                            })}
+                        </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={() => setOpenDialogConfirm(false)} color="primary">
-                        Cancelar
-                    </Button>
-                    <Button onClick={()=>confirmSaveDelivery()} color="primary">
-                        Aceptar
-                    </Button>
+                        <Button onClick={() => setOpenDialogConfirm(false)} color="primary">
+                            Cancelar
+                        </Button>
+                        <Button onClick={() => confirmSaveDelivery()} color="primary">
+                            Aceptar
+                        </Button>
                     </DialogActions>
                 </Dialog>
             </section>
             {!deliveryId && <SaveCancelControls
                 saveText="Guardar"
-                handleSave={() => saveDelivery() }
+                handleSave={() => saveDelivery()}
             />}
         </>
     );

@@ -110,10 +110,45 @@ body {
     text-transform: uppercase !important;
     font-weight: 300 !important;
 }
-
+.content-deliveries{
+    display: flex;
+}
 .ben-foto-info {
     width: 100px;
     height: 100px;
     object-fit:cover;
     border-radius: 50%;
+}
+
+.section-table-butom{
+    z-index: 10000000;
+    background: #fff;
+    position: fixed;
+    right: 0;
+    top: 100px;
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid #ebeef0;
+    height: calc(100vh - 100px);
+    box-shadow: 0px 0px 9px 0px #d3e9f2;
+    transition: display 2s;
+}
+
+.content-scroll{
+    height: calc(100vh - 200px);
+    overflow: auto;
+    transition: display 2s;
+}
+.css-3fjzkl-MuiPaper-root-MuiCard-root{
+    box-shadow: none !important;
+}
+
+.btn-close-left{
+    background: transparent;
+    border: none;
+    font-size: larger;
+    cursor: pointer;
+    padding: 10px;
+    color: #607D8B;
+    position: relative;
 }

@@ -2,16 +2,18 @@
     margin-bottom: 80px;
     &__form-section {
         background-color: #fff;
-        height: 100vh;
         width: 100%;
         padding: 20px;
         box-sizing: border-box;
+        margin-bottom: 100px;
 
         &__table {
-            height: 400px;
-            overflow: scroll;
+            height: 50%;
             margin-top: 20px;
+            width: 100%;
         }
+
+        
     }
 
     .btn-save-workshop {

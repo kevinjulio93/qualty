@@ -36,7 +36,11 @@ import {
 } from "../../services/beneficiaries.service";
 import { useNavigate, useParams } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import cameraImg from "../../assets/camera.png";
+import frontCedula from "../../assets/front-cedula.png";
+import backCedula from "../../assets/back-cedula.png";
+import iconEps from "../../assets/icon-eps.png";
+import iconSisben from "../../assets/ico-sisben.png";
+import iconRegistra from "../../assets/icon-resgistra.png";
 import documentImg from "../../assets/document.jpeg";
 import Webcam from "react-webcam";
 import { ROUTES } from "../../constants/routes";
@@ -987,11 +991,11 @@ function Beneficiaries() {
                       </Button>
                     </div>
                   )}
-                  <Stack direction="row" spacing={2}>
+                  <Stack className="content-supports" direction="row" spacing={2}>
                     <Card sx={{ maxWidth: 200 }}>
                       <CardMedia
                         sx={{ width: 100, height: 100 }}
-                        image={cedFront || cameraImg}
+                        image={cedFront || frontCedula}
                         title="Cedula frontal"
                         onClick={() => displayImage(cedFront)}
                       />
@@ -1025,7 +1029,7 @@ function Beneficiaries() {
                     <Card sx={{ maxWidth: 200 }}>
                       <CardMedia
                         sx={{ width: 100, height: 100 }}
-                        image={cedBack || cameraImg}
+                        image={cedBack || backCedula}
                         title="Cedula lateral"
                         onClick={() => displayImage(cedBack)}
                       />
@@ -1059,8 +1063,8 @@ function Beneficiaries() {
                     <Card sx={{ maxWidth: 200 }}>
                       <CardMedia
                         sx={{ width: 100, height: 100 }}
-                        image={docEps || documentImg}
-                        title="Cedula frontal"
+                        image={docEps || iconEps}
+                        title="EPS"
                         onClick={() => displayImage(docEps)}
                       />
                       <CardContent>
@@ -1093,8 +1097,8 @@ function Beneficiaries() {
                     <Card sx={{ maxWidth: 345 }}>
                       <CardMedia
                         sx={{ width: 100, height: 100 }}
-                        image={docSis || documentImg}
-                        title="Cedula lateral"
+                        image={docSis || iconSisben}
+                        title="SISBEN"
                         onClick={() => displayImage(docSis)}
                       />
                       <CardContent>
@@ -1127,8 +1131,8 @@ function Beneficiaries() {
                     <Card sx={{ maxWidth: 200 }}>
                       <CardMedia
                         sx={{ width: 100, height: 100 }}
-                        image={docReg || documentImg}
-                        title="Cedula lateral"
+                        image={docReg || iconRegistra}
+                        title="Registraduria"
                         onClick={() => displayImage(docReg)}
                       />
                       <CardContent>
