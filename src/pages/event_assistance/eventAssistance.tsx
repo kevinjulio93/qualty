@@ -230,7 +230,8 @@ function EventAssistance() {
                   try {
                     const { result } = await getBeneficiariesList(data);
                     setDataLastSearch(data);
-                    const { data: works } = result;
+                    const { data: works, totalPages } = result;
+                    setTotalPages(totalPages);
                     setBeneficiaries(works);
                   } catch (err) {
                     console.error(err)

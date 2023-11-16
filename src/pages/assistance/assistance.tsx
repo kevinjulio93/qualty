@@ -184,7 +184,8 @@ function Assistance() {
               try {
                 const { result } = await getBeneficiaryByActivity(data);
                 setDataLastSearch(data);
-                const { data: beneficiaries } = result.data;
+                const { data: beneficiaries, totalPages } = result.data;
+                setTotalPages(totalPages);
                 setBens(beneficiaries);
               } catch (err) {
                 console.log(err);

@@ -29,13 +29,11 @@ import {
 } from "../../services/delivery.service";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
-import { getRatingsByBeneficiary } from "../../services/rating.service";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getRepresentativesList } from "../../services/representative.service";
 import { getWinerie } from "../../services/winerie.service";
-import { Inventory } from "@mui/icons-material";
 
 function RepDeliveryDetail() {
   const { deliveryId } = useParams();
@@ -49,6 +47,8 @@ function RepDeliveryDetail() {
   const [openDialogConfirm, setOpenDialogConfirm] = useState(false);
   const [updatedDelivery, setUpdatedDelivery] = useState({});
   const [currentInventory, setCurrentInventory] = useState(null);
+  const [openLeftModal, setOpenLeftModal] = useState(false);
+  const [forceRender, setForceRender] = useState(+ new Date());
   const navigate = useNavigate();
 
 
@@ -121,6 +121,7 @@ function RepDeliveryDetail() {
 
   const handleAddAction = async (item) => {
     setSelectedRepre(item);
+    setOpenLeftModal(!openLeftModal);
   };
 
 
@@ -147,7 +148,6 @@ function RepDeliveryDetail() {
           value: item.item.value,
         });
     });
-    console.log(finalList)
     return finalList;
   };
 
@@ -169,11 +169,24 @@ function RepDeliveryDetail() {
     setOpenDialogConfirm(!openDialogConfirm);
   };
 
-  const setValue = (value, i) => {
+  const closeLefModal = () =>{
+    setSelectedRepre(null);
+    setOpenLeftModal(!openLeftModal);
+  }
+
+  const removeCounter = (i) => {
     const counts = counters;
-    counts[i] = value;
+    counts[i]--;
+    setCounters(counters);
+    setForceRender(+ new Date());
+  }
+
+  const addCounter = (i) => {
+    const counts = counters;
+    counts[i]++;
     setCounters(counts);
-}
+    setForceRender(+ new Date());
+  }
 
   return isLoading ? (
     <LoadingComponent></LoadingComponent>
@@ -255,55 +268,87 @@ function RepDeliveryDetail() {
               </Table>
             </div>
           )}
-          {selectedRepre && (
-            <div className="assistance-container__form-section__table__info">
-              <div className="panel-heading">Representante seleccionado</div>
-              <Table>
-                <TableRow header>
-                  <TableCell>Nombre</TableCell>
-                  <TableCell>Cedula</TableCell>
-                  <TableCell>Teléfono</TableCell>
-                  <TableCell>Asociación</TableCell>
-                </TableRow>
-                <TableRow key={selectedRepre.id}>
-                  <TableCell> {selectedRepre?.name} </TableCell>
-                  <TableCell>{selectedRepre?.identification}</TableCell>
-                  <TableCell> {selectedRepre?.phone} </TableCell>
-                  <TableCell>{selectedRepre?.association?.name}</TableCell>
-                </TableRow>
-              </Table>
-            </div>
-          )}
-          {currentInventory?.length > 0 && selectedRepre && (
-            <div className="ratings-container__form-section__info">
-              <div className="panel-heading">
-                Articulos a entregar
-              </div>
-              <Card sx={{ width: 300, padding: 2 }}>
-                <Stack direction={"column"}>
-                  {currentInventory.map((item, i) => {
-                    return (
-                      <Grid container spacing={2} key={item?.item?.name + "_" + i}>
-                        <Grid item xs={5}>
-                          <FormLabel component="legend">{item?.item?.name || ""}</FormLabel>
-                        </Grid>
-                        <Grid item xs={2}>
-                          <TextField
-                            id="outlined-number"
-                            sx={{width: 100}}
-                            label="Cantidad"
-                            type="number"
-                            size="small"
-                            onChange={(e) => setValue(e.target.value, i)}
-                          />
-                        </Grid>
-                      </Grid>
-                    );
-                  })}
-                </Stack>
-              </Card>
-            </div>
-          )}
+
+              {selectedRepre && openLeftModal && <div className="section-table-butom">
+                            <div className="panel-heading">
+                                Representante seleccionado
+                                <button className="btn-close-left" onClick={()=>closeLefModal()}>x</button>
+                            </div>
+                            <div className="content-scroll">
+
+
+                                
+                                    <div className="assistance-container__form-section__table__info">
+
+                                        <Table>
+                                            <TableRow header>
+                                            <TableCell>Nombre</TableCell>
+                                            <TableCell>Cedula</TableCell>
+                                            <TableCell>Teléfono</TableCell>
+                                            <TableCell>Asociación</TableCell>
+                                                <TableCell>Asociación</TableCell>
+                                            </TableRow>
+                                              <TableRow key={selectedRepre.id}>
+                                              <TableCell> {selectedRepre?.name} </TableCell>
+                                              <TableCell>{selectedRepre?.identification}</TableCell>
+                                              <TableCell> {selectedRepre?.phone} </TableCell>
+                                              <TableCell>{selectedRepre?.association?.name}</TableCell>
+                                            </TableRow>
+                                        </Table>
+                                    </div>
+                               
+                                {currentInventory.length > 0 &&
+                                    <div className="ratings-container__form-section__info">
+                                        <div className="panel-heading">
+                                            Articulos seguridos en valoraciones
+                                        </div>
+                                        <Card sx={{ width: 500, padding: 2 }}>
+                                            <Stack direction={"column"}>
+                                                {currentInventory.map((item, i) => {
+                                                    return (
+                                                        <Grid container spacing={2} key={item.item.name + '_' + i}>
+                                                            <Grid item xs={5}>
+                                                                <FormLabel component="legend">{item.item.name}</FormLabel>
+                                                            </Grid>
+                                                            <Grid item xs={3}>
+                                                                <Button
+                                                                    aria-label="reduce"
+                                                                    className="btn-counter-action"
+                                                                    onClick={() => removeCounter(i)}
+                                                                    disabled={counters[i] === 0 || !isEmpty(deliveryId)}
+                                                                >
+                                                                    <RemoveIcon fontSize="small" />
+                                                                </Button>
+                                                            </Grid>
+                                                            <Grid item xs={1}>
+                                                                <Typography variant="overline" display="block" gutterBottom>
+                                                                    {counters[i]}
+                                                                </Typography>
+                                                            </Grid>
+                                                            <Grid item xs={3}>
+                                                                <Button
+                                                                    aria-label="increase"
+                                                                    className="btn-counter-action"
+                                                                    onClick={() => addCounter(i)}
+                                                                    disabled={!isEmpty(deliveryId)}
+                                                                >
+                                                                    <AddIcon fontSize="small" />
+                                                                </Button>
+                                                            </Grid>
+                                                        </Grid>
+                                                    );
+                                                })}
+                                            </Stack>
+                                        </Card>
+                                    </div>
+                                }
+                            </div>
+                            {!deliveryId && <SaveCancelControls
+                saveText="Guardar"
+                handleSave={() => saveDelivery()}
+            />}
+                        </div>
+                         }
         </Paper>
 
         <Dialog open={openDialogConfirm}>

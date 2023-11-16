@@ -146,7 +146,8 @@ function WorkshopsList() {
               try {
                 const { result } = await getAllWorkshops(data);
                 setDataLastSearch(data);
-                const { data: works } = result;
+                const { data: works, totalPages } = result;
+                setTotalPages(totalPages);
                 setWorkshops(works);
               } catch (err) {
                 console.error(err)

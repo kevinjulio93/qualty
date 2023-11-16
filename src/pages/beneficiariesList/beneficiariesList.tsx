@@ -129,8 +129,9 @@ function BeneficiariesList() {
               try {
                 const { result } = await getBeneficiariesList(data);
                 setDataLastSearch(data);
-                const { data: beneficiaries } = result;
+                const { data: beneficiaries, totalPages } = result;
                 setBenfs(beneficiaries);
+                setTotalPages(totalPages);
               } catch (err) {
                 setToastGetBeneficiariesError(true);
               }

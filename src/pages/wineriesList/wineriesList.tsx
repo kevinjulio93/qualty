@@ -136,7 +136,8 @@ function WineriesList() {
               try {
                 const { result } = await getAllWineries(data);
                 setDataLastSearch(data);
-                const { data: wineries } = result;
+                const { data: wineries, totalPages } = result;
+                setTotalPages(totalPages)
                 setWineries(wineries.data);
               } catch (err) {
                 setToastGetWineriesError(true);

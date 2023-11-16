@@ -14,6 +14,7 @@ function Stats() {
   const [eventStats, setEventStats] = useState(null);
   const [mappedITems, setMappedItems] = useState(null);
   const [pieOptions, setPieOptions] = useState(null);
+  const [forceRender, setForceRender] = useState(+new Date());
 
   /*
   const barOptions: EChartsOption = {
@@ -73,11 +74,14 @@ function Stats() {
   const getStats = async() => {
     const { result } = await getEventStats(eventId);
     setEventStats(result.data);
-    const mapped = result?.data?.deliveredItems?.map(item => {
-      return {
-        name: item?.itemDetails?.name,
-        value: item.totalAmount
-      };
+    const mapped = [];
+    result?.data?.deliveredItems?.forEach(item => {
+      if (!item?.itemDetails.isDefault) {
+        mapped.push({
+          name: item?.itemDetails?.name,
+          value: item.totalAmount
+        });
+      }
     });
     setMappedItems(mapped);
   }
@@ -109,7 +113,6 @@ function Stats() {
         }
       ]
     };
-    console.log(defaultPie);
     setPieOptions(defaultPie);
   }
 
@@ -120,8 +123,10 @@ function Stats() {
                     <div className="content-page-title">
                         <Typography variant="h5" className="page-header">{eventStats?.event.name || 'Entrega'} 
                         <SyncIcon
-                          onClick={() =>
-                            getStats()
+                          onClick={() => {
+                            getStats();
+                            setForceRender(+new Date());
+                          }
                           }
                           className="action-item-icon action-item-icon-edit"
                         ></SyncIcon>
@@ -164,7 +169,7 @@ function Stats() {
                                 <Charts options={pieOptions}></Charts>
                             </CardContent>
                         </Card>
-                    </Stack>}
+                        </Stack>}
                     </Stack>
                 </Paper>
             </section>

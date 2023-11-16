@@ -208,7 +208,7 @@ function Delivery() {
         } else {
             getAllRatingsByBen(item._id);
             setSelectedBen(item);
-            setOpenLeftModal(!openLeftModal)
+            setOpenLeftModal(!openLeftModal);
         }
         
     }
@@ -459,6 +459,10 @@ function Delivery() {
                                     </div>
                                 }
                             </div>
+                            {!deliveryId && <SaveCancelControls
+                saveText="Guardar"
+                handleSave={() => saveDelivery()}
+            />}
                         </div>
                          }
                     </div>
@@ -531,10 +535,6 @@ function Delivery() {
                     </DialogActions>
                 </Dialog>
             </section>
-            {!deliveryId && <SaveCancelControls
-                saveText="Guardar"
-                handleSave={() => saveDelivery()}
-            />}
         </>
     );
 }
