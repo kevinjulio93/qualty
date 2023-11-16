@@ -101,6 +101,12 @@ export class FecthRequestModel {
       const url = this.getCompleteURL(path);
       return this.callRequestBlob(url, 'POST',body);
     }
+
+    getBlobWithParams(path:string){
+      const url = this.getCompleteURL(path);
+      return this.callRequestBlob(url, 'GET');
+    }
+
     
   
     get(path: string) {

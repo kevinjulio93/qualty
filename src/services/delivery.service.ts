@@ -12,6 +12,29 @@ export async function updateDelivery(id) {
     return response;
 }
 
+export async function getPdfDeliveryBeneficiarie(idEvent:string,idBeneficiarie:string) {
+  const response = await delivery.getBlobWithParams(`/deliverys/pdf/${idEvent}/${idBeneficiarie}`,);
+  return response;
+  /**
+   Esta respuesta da un blob a continuacion 
+   dejo un codigo que reciebiendo el blob descarga el archivo automaticamente :
+
+    const responseRequest=await getPdfDeliveryBeneficiarie(arg1,arg2);
+    const blob = await responseRequest.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "delivery__"+Date.now()+"_.pdf";
+    a.style.display = "none";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    window.URL.revokeObjectURL(url);
+   */
+}
+
 export async function getAllDelivery(
     queryString?: string,
     page: number = 1,
