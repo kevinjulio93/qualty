@@ -253,7 +253,8 @@ function Assistance() {
               onChange={async (_, page) => {
                 try {
                   const { result } = await getBeneficiaryByActivity(
-                    dataLastSearch,null,
+                    selectedAct._id,
+                    dataLastSearch,
                     page
                   );
                   const { data: benfs, currentPage, totalPages } = result.data;
