@@ -142,7 +142,7 @@ function Delivery() {
             setListMissingRequirements("No posee el soporte de Cédula Posterior");
         }
   
-        if(aux===9){
+        if(aux === 8){
             aux=0;
             return true;
         } else {
