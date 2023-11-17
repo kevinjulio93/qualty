@@ -160,7 +160,7 @@ function Stats() {
                             </CardContent>
                         </Card>
                     </Stack>
-                    {pieOptions && <Stack direction="row" spacing={2}>
+                    {/*pieOptions && <Stack direction="row" spacing={2}>
                         <Card sx={{ width: 500 }}>
                             <CardHeader
                                 subheader="Artículos entregados"
@@ -169,7 +169,7 @@ function Stats() {
                                 <Charts options={pieOptions}></Charts>
                             </CardContent>
                         </Card>
-                        </Stack>}
+                        </Stack>*/}
                     </Stack>
                 </Paper>
             </section>
