@@ -12,6 +12,41 @@ export async function updateDelivery(id) {
     return response;
 }
 
+export async function getPdfDeliveryBeneficiarie(idEvent: string, idBeneficiarie: string) {
+  try {
+    const url = `/deliverys/pdf/${idEvent}/${idBeneficiarie}`;
+    const response = await delivery.getBlobWithParams(url);
+
+    // if (!response.ok) {
+    //   throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    // }
+    // const pdfBuffer = await response.blob();
+    // console.log(pdfBuffer);
+    // const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+    // const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    // // Abrir el PDF en una nueva ventana del navegador
+    // window.open(pdfUrl, '_blank');
+    const blob =  response.result;
+    const urlBlob = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = urlBlob;
+    a.download = "delivery__"+Date.now()+"_.pdf";
+    a.style.display = "none";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+    console.error("Error fetching PDF:", error);
+    // Handle the error as needed
+  }
+}
+
+
 export async function getAllDelivery(
     queryString?: string,
     page: number = 1,

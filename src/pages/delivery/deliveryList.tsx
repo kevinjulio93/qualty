@@ -7,7 +7,7 @@ import DoNotDisturbOffIcon from '@mui/icons-material/DoNotDisturbOff';
 import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
-import { getAllDeliveryByBen, getDeliveryPdf, updateDelivery } from '../../services/delivery.service';
+import { getAllDeliveryByBen, getPdfDeliveryBeneficiarie, updateDelivery } from '../../services/delivery.service';
 import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
 import { useSelector } from 'react-redux';
@@ -102,7 +102,7 @@ function DeliveryList() {
     }
 
     const generatePdf = async(dev) => {
-      await getDeliveryPdf(dev._id);
+      await getPdfDeliveryBeneficiarie(dev.event._id, dev.beneficiary._id);
     }
 
     return (
