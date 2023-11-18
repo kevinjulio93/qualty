@@ -21,13 +21,16 @@ import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
-import { getExcelEventAssistance } from "../../services/reports.service";
+import { getExcelActivityAssistance, getExcelEventAssistance } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
+import { getAllActivities } from "../../services/activities.service";
 
 function Reports() {
     const [selectedReport, setSelectedReport] = useState(null);
     const [eventList, setEventList] = useState(null);
+    const [activities, setActivities] = useState(null);
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedActivity, setSelectedActivity] = useState(null);
     const [beneficiaries, setBeneficiaries] = useState([]);
     const [selectedBen, setSelectedBen] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(null);
@@ -50,11 +53,18 @@ function Reports() {
                     getEvents();
                     break;
                 }
+                case REPORT_TYPE.ACTIVITY_ASSISTANCE: {
+                    setFileType(reportFileType.EXCEL);
+                    setDisableFileType(true);
+                    getActivitiesList();
+                    break;
+                }
                 default: break;
             }
         }
     }, [selectedReport]);
 
+    //Resources requests
     const getEvents = async() => {
         try {
           const responseEvents = await getAllEvents();
@@ -73,8 +83,21 @@ function Reports() {
         } catch (error) {
           console.error(error);
         }
-      };
+    };
 
+    const getActivitiesList = async () => {
+        try {
+          const response = await getAllActivities("", 1, 100);
+          if (response.status === 200) {
+            const { data: dataList } = response.result;
+            setActivities(dataList);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    //General methods
     const generateReport = () => {
         const reportMethod = REPORT_DICTIONARY[selectedReport];
         reportMethod();
@@ -94,6 +117,7 @@ function Reports() {
         setSelectedBen(null);
         setSelectedEvent(null);
         setSelectedIndex(null);
+        setSelectedActivity(null);
     }
 
     const disabledReportButton = () => {
@@ -104,6 +128,9 @@ function Reports() {
             case REPORT_TYPE.EVENT_ASSISTANCE: {
                 return isEmpty(selectedEvent);
             }
+            case REPORT_TYPE.ACTIVITY_ASSISTANCE: {
+                return isEmpty(selectedActivity);
+            }
         }
     }
 
@@ -111,16 +138,21 @@ function Reports() {
         await getPdfDeliveryBeneficiarie(selectedEvent, selectedBen);
     }
 
-    const generateEventAssistanceExcel = async() => {
+    const generateExcelEventAssistance = async() => {
         await getExcelEventAssistance(selectedEvent);
     }
 
+    const generateExcelActivityAssistance = async() => {
+        await getExcelActivityAssistance(selectedActivity);
+    }
 
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
-        [REPORT_TYPE.EVENT_ASSISTANCE]: generateEventAssistanceExcel,
+        [REPORT_TYPE.EVENT_ASSISTANCE]: generateExcelEventAssistance,
+        [REPORT_TYPE.ACTIVITY_ASSISTANCE]: generateExcelActivityAssistance,
     };
 
+    //Layouts renders
     const renderEventInput = () => {
         return (
             <form className="activities-container__form-section__assitants__form-2">
@@ -133,6 +165,24 @@ function Reports() {
                     keyValue="_id"
                     targetKey="_id"
                     handleValue={(value) => setSelectedEvent(value._id)}
+                />
+              </div>
+            </form>
+        );
+    }
+
+    const renderActivityInput = () => {
+        return (
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
+                <SelectDropdown
+                    selectValue={selectedActivity}
+                    label="Actividad"
+                    options={activities || []}
+                    keyLabel="name"
+                    keyValue="_id"
+                    targetKey="_id"
+                    handleValue={(value) => setSelectedActivity(value._id)}
                 />
               </div>
             </form>
@@ -152,6 +202,14 @@ function Reports() {
         return (
             <>
               {renderEventInput()}
+            </>
+        );
+    }
+
+    const renderActivityAssistance = () => {
+        return (
+            <>
+              {renderActivityInput()}
             </>
         );
     }
@@ -262,6 +320,7 @@ function Reports() {
           <div className="activities-container__form-section__assitants">
             {selectedReport === REPORT_TYPE.DELIVERY_ACT && renderDeliveryAct()}
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE && renderEventAssistance()}
+            {selectedReport === REPORT_TYPE.ACTIVITY_ASSISTANCE && renderActivityAssistance()}
           </div>
         </Paper>
       </section>

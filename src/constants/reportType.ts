@@ -20,5 +20,9 @@ export const reportType = [
     {
         text: 'Asistencia a evento',
         key: REPORT_TYPE.EVENT_ASSISTANCE
+    },
+    {
+        text: 'Asistencia a actividad',
+        key: REPORT_TYPE.ACTIVITY_ASSISTANCE
     }
 ];
