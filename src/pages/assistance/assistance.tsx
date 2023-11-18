@@ -182,7 +182,8 @@ function Assistance() {
             label="Buscar beneficiario"
             searchFunction={async (data: string) => {
               try {
-                const { result } = await getBeneficiaryByActivity(data);
+                console.log(data);
+                const { result } = await getBeneficiaryByActivity(selectedAct._id, data);
                 setDataLastSearch(data);
                 const { data: beneficiaries, totalPages } = result.data;
                 setTotalPages(totalPages);
