@@ -170,6 +170,7 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  /*
   {
     key: "reportes",
     name: "Reportes",
@@ -181,4 +182,5 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  */
 ];
