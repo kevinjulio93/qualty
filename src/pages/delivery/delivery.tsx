@@ -19,6 +19,7 @@ import { getRatingsByBeneficiary } from "../../services/rating.service";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
 import { isEmpty } from "../../helpers/isEmpty";
+import { regimeList } from "../../constants/regimeList";
 
 function Delivery() {
     const { deliveryId } = useParams();
@@ -32,7 +33,7 @@ function Delivery() {
     const [counters, setCounters] = useState([]);
     const [forceRender, setForceRender] = useState(+ new Date());
     const levelSisben = ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4", "B5", "B6", "B7", "C1"];
-    const regimeHealthList = ["Subsidiado"];
+    const regimeHealthList = [regimeList.SUBSIDIADO, regimeList.CONTRIBUTIVO_BENEFICIARIO, regimeList.NO_AFILIADO, regimeList.RETIRADO];
     const [missingRequirements, setMissingRequirements] = useState([]);
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const [openDialogRequeriment, setOpenDialogRequeriment] = useState(false);

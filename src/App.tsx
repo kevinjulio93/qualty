@@ -38,6 +38,7 @@ import EventAssistance from './pages/event_assistance/eventAssistance';
 import Stats from './pages/stats/stats';
 import RepDeliveryList from './pages/repDeliveryList/repDeliveryList';
 import RepDeliveryDetail from './pages/repDeliveryDetail/repDeliveryDetail';
+import Reports from './pages/reports/reports';
 
 
 function App() {
@@ -148,9 +149,11 @@ function App() {
                   <Route path={ROUTES.PHYSICAL_DELIVERY} element={<PhysicalDelivery />} />
                   <Route path={`${ROUTES.PHYSICAL_DELIVERY}/:idDelivery`} element={<PhysicalDelivery />} />
                 </Route>
-
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPRESENTATIVE, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.REPRESENTATIVES} element={<Representatives />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPORTS, action: [PERMISSIONS.CREATE] }} />}>
+                  <Route path={ROUTES.REPORTS} element={<Reports />} />
                 </Route>
               </Route>
             </Route>

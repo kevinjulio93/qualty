@@ -14,6 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
 import userImage from '../../assets/user.png'
+import { regimeList } from '../../constants/regimeList';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -41,7 +42,7 @@ function EventAssistance() {
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     const [levelSisben,setLevelSisben]=useState(["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"]);
-    const [regimeHealthList,setRegimeHealthList]=useState(["Subsidiado","Cotizante Beneficiario"]);
+    const [regimeHealthList,setRegimeHealthList]=useState([regimeList.SUBSIDIADO, regimeList.CONTRIBUTIVO_BENEFICIARIO, regimeList.NO_AFILIADO, regimeList.RETIRADO]);
 
     const checkRequirements=(ben:any)=>{
       let aux=0;
@@ -107,7 +108,7 @@ function EventAssistance() {
         setEvents(events);
         getValuesAutocomplete(events);
       } catch (error) {
-
+        console.error(error);
       }
     }
 

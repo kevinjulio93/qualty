@@ -41,7 +41,6 @@ import backCedula from "../../assets/back-cedula.png";
 import iconEps from "../../assets/icon-eps.png";
 import iconSisben from "../../assets/ico-sisben.png";
 import iconRegistra from "../../assets/icon-resgistra.png";
-import documentImg from "../../assets/document.jpeg";
 import Webcam from "react-webcam";
 import { ROUTES } from "../../constants/routes";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -59,6 +58,7 @@ import { epsList } from "../../constants/epsList";
 import { isEmpty } from "../../helpers/isEmpty";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { regimeList } from "../../constants/regimeList";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -80,10 +80,12 @@ function Beneficiaries() {
     { label: "Separado", value: "Separado" },
   ];
   const optionsRegimenHealth = [
-    { label: "Subsidiado", value: "Subsidiado" },
-    { label: "Contributivo", value: "Contributivo" },
-    { label: "Cotizante", value: "Cotizante" },
-    { label: "Cotizante Beneficiario", value: "Cotizante Beneficiario" },
+    { label: regimeList.SUBSIDIADO, value: regimeList.SUBSIDIADO },
+    { label: regimeList.CONTRIBUTIVO_COTIZANTE, value: regimeList.CONTRIBUTIVO_COTIZANTE },
+    { label: regimeList.CONTRIBUTIVO_BENEFICIARIO, value: regimeList.CONTRIBUTIVO_BENEFICIARIO },
+    { label: regimeList.REGIMEN_ESPECIAL, value: regimeList.REGIMEN_ESPECIAL },
+    { label: regimeList.RETIRADO, value: regimeList.RETIRADO },
+    { label: regimeList.NO_AFILIADO, value: regimeList.NO_AFILIADO },
   ];
 
   const optionsEthnicity = [
@@ -113,6 +115,7 @@ function Beneficiaries() {
     { label: "Multiple", value: "Multiple" },
     { label: "Mental-Cognitiva", value: "Mental-Cognitiva" },
     { label: "Mental-Psicosocial", value: "Mental-Psicosocial" },
+    { label: "Motriz", value: "Motriz" },
     { label: "Otra", value: "Otra" }
   ];
 
@@ -678,6 +681,7 @@ function Beneficiaries() {
                           "B-",
                           "AB+",
                           "AB-",
+                          "NI",
                         ]}
                         onChange={(e: any, data: any) =>
                           formHanlder("blody_type", e, data)

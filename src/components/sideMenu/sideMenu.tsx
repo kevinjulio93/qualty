@@ -32,6 +32,8 @@ import EqualizerIcon from '@mui/icons-material/Equalizer';
 import RuleIcon from '@mui/icons-material/Rule';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import CategoryIcon from '@mui/icons-material/Category';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+
 
 function SideMenu(props) {
   const abilities = useSelector((state: any) => state.auth.user.abilities);
@@ -70,7 +72,8 @@ function SideMenu(props) {
     deliver: <RepartitionIcon />,
     stats: < EqualizerIcon />,
     repres: <AssignmentIndIcon />,
-    items: <CategoryIcon />
+    items: <CategoryIcon />,
+    pdf: <PictureAsPdfRoundedIcon />
   };
 
   const getIcon = (icon: string) => {
@@ -109,6 +112,8 @@ function SideMenu(props) {
         return iconList.repres;
       case "items":
         return iconList.items;
+      case "pdf":
+        return iconList.pdf;
       default:
         return iconList.draft;
     }

@@ -135,6 +135,7 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  /*
   {
     key: "entregas fisicas",
     name: "Ordenes",
@@ -146,6 +147,7 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  */
   {
     key: "bodegas",
     name: "Bodegas",
@@ -168,4 +170,17 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  /*
+  {
+    key: "reportes",
+    name: "Reportes",
+    path: ROUTES.REPORTS,
+    icon: "pdf",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.REPRESENTATIVE,
+      action: [PERMISSIONS.READ],
+    },
+  },
+  */
 ];

@@ -172,7 +172,7 @@ function RatingList() {
             />
             </div>
 
-            <div className="panel-heading">
+            {/*<div className="panel-heading">
               Generar reporte pdf
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker 
@@ -198,7 +198,7 @@ function RatingList() {
                 onClick={() =>getFilePdf()}
                 className="action-item-icon action-item-icon-edit"
               ></PictureAsPdfRoundedIcon>
-            </div>
+          </div>*/}
 
             {isLoading ? (
               <LoadingComponent></LoadingComponent>
