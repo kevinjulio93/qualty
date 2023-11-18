@@ -71,7 +71,13 @@ function EventAssistance() {
         setListMissingRequirements("Mayor o igual a 60 años");
       }
 
-      if(aux===4){
+      if(!ben?.isAttendee){
+        aux+=1
+      }else{
+        setListMissingRequirements("El beneficiario ya asistió a un evento");
+      }
+
+      if(aux===5){
         setEnableButtonAdd(true);
       }else{
         setEnableButtonAdd(false);
@@ -460,6 +466,7 @@ function EventAssistance() {
                   <p>2. Tener sisben del Norte de Santander</p>
                   <p>3. Tener regimen de salud Subsidiado o Cotizante beneficiario</p>
                   <p>4. Mayor o igual a 60 años</p>
+                  <p>5. No haber asistido a un evento previo</p>
               </DialogContentText>
               </DialogContent>
               <DialogActions>
