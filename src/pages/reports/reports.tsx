@@ -8,6 +8,8 @@ import {
   ListItemText,
   Paper,
   Stack,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
@@ -19,6 +21,8 @@ import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
+import { getExcelEventAssistance } from "../../services/reports.service";
+import { reportFileType } from "../../constants/reportFileType";
 
 function Reports() {
     const [selectedReport, setSelectedReport] = useState(null);
@@ -27,14 +31,26 @@ function Reports() {
     const [beneficiaries, setBeneficiaries] = useState([]);
     const [selectedBen, setSelectedBen] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(null);
+    const [fileType, setFileType] = useState(reportFileType.PDF);
+    const [disableFileType, setDisableFileType] = useState(false);
 
     useEffect(() => {
         if(selectedReport) {
             switch(selectedReport) {
                 case REPORT_TYPE.DELIVERY_ACT: {
+                    setFileType(reportFileType.PDF);
+                    setDisableFileType(true);
                     getEvents();
                     getBeneficiaries();
+                    break;
                 }
+                case REPORT_TYPE.EVENT_ASSISTANCE: {
+                    setFileType(reportFileType.EXCEL);
+                    setDisableFileType(true);
+                    getEvents();
+                    break;
+                }
+                default: break;
             }
         }
     }, [selectedReport]);
@@ -85,21 +101,30 @@ function Reports() {
             case REPORT_TYPE.DELIVERY_ACT: {
                 return isEmpty(selectedEvent) || isEmpty(selectedBen);
             }
+            case REPORT_TYPE.EVENT_ASSISTANCE: {
+                return isEmpty(selectedEvent);
+            }
         }
     }
 
-    const generateEventAssistance = async() => {
+    const generateEventActPDF = async() => {
         await getPdfDeliveryBeneficiarie(selectedEvent, selectedBen);
+    }
+
+    const generateEventAssistanceExcel = async() => {
+        await getExcelEventAssistance(selectedEvent);
     }
 
 
     const REPORT_DICTIONARY = {
-        [REPORT_TYPE.DELIVERY_ACT]: generateEventAssistance,
+        [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
+        [REPORT_TYPE.EVENT_ASSISTANCE]: generateEventAssistanceExcel,
     };
 
     const renderEventInput = () => {
         return (
-            <div className="activities-container__form-section__assitants__form-2__field">
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
                 <SelectDropdown
                     selectValue={selectedEvent}
                     label="Evento"
@@ -110,19 +135,34 @@ function Reports() {
                     handleValue={(value) => setSelectedEvent(value._id)}
                 />
               </div>
+            </form>
+        );
+    }
+
+    const renderDeliveryAct = () => {
+        return (
+            <>
+                {renderEventInput()}
+                {renderBeneficiarySection()}
+            </>
         );
     }
 
     const renderEventAssistance = () => {
         return (
             <>
-            <form className="activities-container__form-section__assitants__form-2">
               {renderEventInput()}
-            </form>
-            {renderBeneficiarySearch()}
-            {beneficiaries.length > 0 && renderBenList()}
             </>
         );
+    }
+
+    const renderBeneficiarySection = () => {
+        return (
+            <>
+                {renderBeneficiarySearch()}
+                {beneficiaries.length > 0 && renderBenList()}
+            </>
+        )
     }
 
     const renderBenList = () => {
@@ -204,9 +244,24 @@ function Reports() {
                     handleValue={(value) => onSelectType(value)}
                 />
             </div>
+            <ToggleButtonGroup
+                value={fileType}
+                exclusive
+                onChange={(e, value) => setFileType(value)}
+                aria-label="text alignment"
+                disabled={disableFileType}
+                >
+                    <ToggleButton value={reportFileType.PDF} aria-label="left aligned">
+                        {reportFileType.PDF}
+                    </ToggleButton>
+                    <ToggleButton value={reportFileType.EXCEL} aria-label="centered">
+                        {reportFileType.EXCEL}
+                    </ToggleButton>
+                </ToggleButtonGroup>
           </Stack>
           <div className="activities-container__form-section__assitants">
-            {selectedReport === REPORT_TYPE.DELIVERY_ACT && renderEventAssistance()}
+            {selectedReport === REPORT_TYPE.DELIVERY_ACT && renderDeliveryAct()}
+            {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE && renderEventAssistance()}
           </div>
         </Paper>
       </section>
