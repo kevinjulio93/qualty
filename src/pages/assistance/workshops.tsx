@@ -189,11 +189,6 @@ function WorkshopsList() {
                               className="action-item-icon action-item-icon-delete"
                             ></ClearIcon>
                             }
-                            <PictureAsPdfRoundedIcon
-                              onClick={() =>getFilePdfAttendees(workshop)}
-                              className="action-item-icon action-item-icon-edit"
-                            ></PictureAsPdfRoundedIcon>
-
                           </Stack>
                         </TableCell>
                       </TableRow>

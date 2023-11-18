@@ -29,5 +29,6 @@ export const ROUTES = {
     STATS: 'stats',
     REPRESENTATIVE_DELIVERY_LIST: 'rep-delivery-list',
     REPRESENTATIVE_DELIVERY_DETAIL: 'rep-delivery-detail',
+    REPORTS: 'reports'
 
 }

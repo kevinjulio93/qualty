@@ -180,12 +180,6 @@ function DeliveryList() {
                               className="action-item-icon action-item-icon-delete"
                             ></DoNotDisturbOffIcon>
                             }
-                            <PictureAsPdfIcon
-                              onClick={() =>
-                                generatePdf(dev)
-                              }
-                              className="action-item-icon action-item-icon-edit"
-                            ></PictureAsPdfIcon>
                           </Stack>
                         </TableCell>
                       </TableRow>
