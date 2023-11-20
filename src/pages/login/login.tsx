@@ -4,7 +4,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import loginImg from "../../assets/login-img.jpg";
+import loginImg from "../../assets/login-img.png";
 import { useState } from "react";
 import { setUser } from "../../features/auth/authSlice";
 import { ROUTES } from "../../constants/routes";
