@@ -7,6 +7,7 @@ import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import "./dashboard-layout.scss";
 import avatar from "../../assets/avatar01.png";
+import logo from "../../assets/logo.png";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants/routes";
 import { setLogout } from "../../features/auth/authSlice";
@@ -68,7 +69,7 @@ const DashboardLayout = () => {
             menuOpen ? "show-menu" : ""
           }`}
         >
-          <a href="#">Qualty</a>
+          <a href="#"><img src={logo} alt="" className="main-logo"/></a>
           <div className="dashboard-layout__page-view__menu__logo">
             {" "}
             <img src={avatar} alt="" />
