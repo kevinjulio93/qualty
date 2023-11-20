@@ -21,6 +21,7 @@ import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import { useSelector } from "react-redux";
+import {DetailView} from "../../components/detailView/detailView";
 
 function BeneficiariesList() {
   const [benfs, setBenfs] = useState([]);
@@ -33,7 +34,7 @@ function BeneficiariesList() {
   const [openDialogDelete,setOpenDialogDelete]=useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
-
+  const [targetBeneficiary, setTargetBeneficiary] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,6 +81,12 @@ function BeneficiariesList() {
   const selectBenToDelete=(ben:any)=>{
     setBenSelected(ben);
     handlerOpenDialogDelete();
+  }
+
+  const showDetail = (target)=>{
+    setTargetBeneficiary(target)
+    console.log(target);
+    
   }
 
   const getPermission = (key) => {
@@ -160,8 +167,10 @@ function BeneficiariesList() {
                 <TableCell>Acciones</TableCell>
               </TableRow>
               {benfs.map((beneficiary: any, i) => {
+                
                 return (
-                  <TableRow key={beneficiary._id}>
+                  
+                  <TableRow key={beneficiary._id} >
                     <TableCell>{i+1 + ((currentPage - 1) * 20)}</TableCell>
                     <TableCell>
                       <img
@@ -192,12 +201,14 @@ function BeneficiariesList() {
                           className="action-item-icon action-item-icon-delete"
                         ></ClearIcon>
                         }
+                        <button onClick={() => showDetail(beneficiary)}>ver</button>
                       </Stack>
                     </TableCell>
                   </TableRow>
                 );
               })}
             </Table>
+           
             <Pagination
               count={totalPages}
               page={currentPage}
@@ -235,6 +246,9 @@ function BeneficiariesList() {
         </Button>
         </DialogActions>
       </Dialog>
+
+      {targetBeneficiary && <DetailView beneficiary={targetBeneficiary} visible={true} />}
+
     </div>
   );
 }

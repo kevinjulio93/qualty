@@ -9,7 +9,7 @@
     &__image-container {
         height: 100%;
         width: 50%;
-        background-color: $primary_color;
+        background-color: #098ab5 ;
         position: relative;
 
         img {
@@ -44,8 +44,8 @@
             &__form-container {
                 display: flex;
                 flex-direction: column;
-                gap: 15px;
-                width: 70%;
+                gap: 36px;
+                width: 50%;
             }
         }
     }
