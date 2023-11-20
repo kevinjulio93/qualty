@@ -1,15 +1,13 @@
-import { useState } from 'react';
 import './detailView.scss';
 
-const DetailView = ({ beneficiary, visible}) => {
-  const [isVisible, setVisible] = useState(visible);
+const DetailView = ({ beneficiary, visible, onClose}) => {
   const close = () => {
-    setVisible(false);
+    onClose();
   }
   return (
     <div>
 
-      {isVisible && <div className='detail-view-background' onClick={() => close()}>
+      {visible && <div className='detail-view-background' onClick={() => close()}>
 
         <div className="content-detail-view">
           <div className='head-detail-view'>

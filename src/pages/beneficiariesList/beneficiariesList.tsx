@@ -22,6 +22,7 @@ import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import { useSelector } from "react-redux";
 import {DetailView} from "../../components/detailView/detailView";
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function BeneficiariesList() {
   const [benfs, setBenfs] = useState([]);
@@ -35,6 +36,7 @@ function BeneficiariesList() {
   const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
   const [targetBeneficiary, setTargetBeneficiary] = useState(false);
+  const [displayDetail, setDisplayDetail] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,8 +87,12 @@ function BeneficiariesList() {
 
   const showDetail = (target)=>{
     setTargetBeneficiary(target)
-    console.log(target);
-    
+    setDisplayDetail(!displayDetail);
+  }
+
+  const closeDetail = () => {
+    setTargetBeneficiary(null)
+    setDisplayDetail(!displayDetail);
   }
 
   const getPermission = (key) => {
@@ -201,7 +207,10 @@ function BeneficiariesList() {
                           className="action-item-icon action-item-icon-delete"
                         ></ClearIcon>
                         }
-                        <button onClick={() => showDetail(beneficiary)}>ver</button>
+                        {/*<VisibilityIcon
+                          onClick={() => showDetail(beneficiary)}
+                          className="action-item-icon action-item-icon-add"
+                      ></VisibilityIcon>*/}
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -247,7 +256,7 @@ function BeneficiariesList() {
         </DialogActions>
       </Dialog>
 
-      {targetBeneficiary && <DetailView beneficiary={targetBeneficiary} visible={true} />}
+      {targetBeneficiary && <DetailView beneficiary={targetBeneficiary} visible={displayDetail} onClose={closeDetail}/>}
 
     </div>
   );
