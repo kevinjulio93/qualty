@@ -21,7 +21,7 @@ import { getBeneficiariesList } from "../../services/beneficiaries.service";
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
-import { getExcelActivityAssistance, getExcelEventAssistance } from "../../services/reports.service";
+import { getExcelActivityAssistance, getExcelBeneficiaryList, getExcelEventAssistance } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
 import { getAllActivities } from "../../services/activities.service";
 
@@ -57,6 +57,12 @@ function Reports() {
                     setFileType(reportFileType.EXCEL);
                     setDisableFileType(true);
                     getActivitiesList();
+                    break;
+                }
+                case REPORT_TYPE.BENEFICIARY_LIST:
+                case REPORT_TYPE.WITHOUT_SUPPORTS: {
+                    setFileType(reportFileType.EXCEL);
+                    setDisableFileType(true);
                     break;
                 }
                 default: break;
@@ -131,6 +137,10 @@ function Reports() {
             case REPORT_TYPE.ACTIVITY_ASSISTANCE: {
                 return isEmpty(selectedActivity);
             }
+            case REPORT_TYPE.WITHOUT_SUPPORTS:
+            case REPORT_TYPE.BENEFICIARY_LIST: {
+                return false;
+            }
         }
     }
 
@@ -146,10 +156,20 @@ function Reports() {
         await getExcelActivityAssistance(selectedActivity);
     }
 
+    const generateExcelBeneficiaryList = async() => {
+        await getExcelBeneficiaryList(REPORT_TYPE.BENEFICIARY_LIST);
+    }
+
+    const generateExcelBeneficiaryWithoutSupports = async() => {
+        await getExcelBeneficiaryList(REPORT_TYPE.WITHOUT_SUPPORTS);
+    }
+
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE]: generateExcelEventAssistance,
         [REPORT_TYPE.ACTIVITY_ASSISTANCE]: generateExcelActivityAssistance,
+        [REPORT_TYPE.BENEFICIARY_LIST]: generateExcelBeneficiaryList,
+        //[REPORT_TYPE.WITHOUT_SUPPORTS]: generateExcelBeneficiaryWithoutSupports,
     };
 
     //Layouts renders
