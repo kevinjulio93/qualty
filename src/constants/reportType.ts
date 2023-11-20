@@ -10,6 +10,8 @@ export const enum REPORT_TYPE {
     RATINGS_DETAIL = 'RATINGS_DETAIL',
     EVENT_ASSISTANCE_BY_ASSOCIATION = 'EVENT_ASSISTANCE_BY_ASSOCIATION',
     ACTIVITY_ASSISTANCE_BY_ASSOCIATION = 'ACTIVITY_ASSISTANCE_BY_ASSOCIATION',
+    BENEFICIARY_LIST = 'BENEFICIARY_LIST',
+    WITHOUT_SUPPORTS = 'WITHOUT_SUPPORTS',
 }
 
 export const reportType = [
@@ -24,5 +26,13 @@ export const reportType = [
     {
         text: 'Asistencia a actividad',
         key: REPORT_TYPE.ACTIVITY_ASSISTANCE
+    },
+    {
+        text: 'Listado de beneficiarios',
+        key: REPORT_TYPE.BENEFICIARY_LIST
+    },
+    {
+        text: 'Beneficiarios sin soportes',
+        key: REPORT_TYPE.WITHOUT_SUPPORTS
     }
 ];
