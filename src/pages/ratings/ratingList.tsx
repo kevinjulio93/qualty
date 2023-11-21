@@ -20,6 +20,7 @@ import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
 import { useSelector } from 'react-redux';
 import { checkPermissions } from '../../helpers/checkPermissions';
+import { DetailView } from '../../components/detailView/detailView';
 
 function RatingList() {
     const [ratings, setRatings] = useState([]);
@@ -33,6 +34,9 @@ function RatingList() {
     const navigate = useNavigate();
     const [filterRating,setFilterRating]=useState({startDate:"",endDate:"",valueTypeRating:""});
     const abilities = useSelector((state: any) => state.auth.user.abilities);
+    const [targetBeneficiary, setTargetBeneficiary] = useState(false);
+    const [displayDetail, setDisplayDetail] = useState(false);
+
 
     useEffect(() => {
         getRatingsList();
@@ -129,6 +133,16 @@ function RatingList() {
       }
     }
 
+    const showDetail = (target)=>{
+      setTargetBeneficiary(target)
+      setDisplayDetail(!displayDetail);
+    }
+
+    const closeDetail = () => {
+      setTargetBeneficiary(null)
+      setDisplayDetail(!displayDetail);
+    }
+
     return (
         <div className="users-container">
           <div className="users-container__actions">
@@ -214,7 +228,7 @@ function RatingList() {
                   </TableRow>
                   {ratings.map((rating: any) => {
                     return (
-                      <TableRow key={rating._id}>
+                      <TableRow key={rating._id} handlerRowClick={() => showDetail(rating?.attendee)}>
                         <TableCell>{rating?.rating_type}</TableCell>
                         <TableCell>{rating?.createdAt}</TableCell>
                         <TableCell>{rating?.attendee?.first_name} {rating?.attendee?.first_last_name}</TableCell>
@@ -290,6 +304,9 @@ function RatingList() {
         </Button>
         </DialogActions>
       </Dialog>
+
+      {targetBeneficiary && <DetailView beneficiary={targetBeneficiary} visible={displayDetail} onClose={closeDetail}/>}
+
         </div>
       );
 }

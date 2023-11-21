@@ -4,6 +4,7 @@ import './table.scss'; // Ajusta la ruta a tu archivo de estilos
 type TableRowProps = {
     children: ReactNode;
     header?: boolean;
+    handlerRowClick?: ()=>void;
 };
 
 const Table = ({ children }: TableRowProps) => {
@@ -14,7 +15,8 @@ const Table = ({ children }: TableRowProps) => {
   );
 };
 
-const TableRow = ({ children, header }: TableRowProps) => {
+
+const TableRow = ({ children, header, handlerRowClick }: TableRowProps) => {
   const rowClassName = header ? 'table-header-row' : 'table-data-row';
   return (
     header ?
@@ -25,7 +27,7 @@ const TableRow = ({ children, header }: TableRowProps) => {
     </thead>
     :
     <tbody>
-        <tr className={rowClassName}>
+        <tr className={rowClassName} onClick={handlerRowClick}>
             {children}
         </tr>
     </tbody>

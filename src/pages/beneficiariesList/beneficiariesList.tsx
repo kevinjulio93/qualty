@@ -22,7 +22,6 @@ import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import { useSelector } from "react-redux";
 import {DetailView} from "../../components/detailView/detailView";
-import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function BeneficiariesList() {
   const [benfs, setBenfs] = useState([]);
@@ -48,7 +47,13 @@ function BeneficiariesList() {
     try {
       const { result } = await getBeneficiariesList();
       const { data: benfsList, totalPages } = result;
-      setBenfs(benfsList);
+      const mappedList = benfsList.map((beneficiary) => {
+        return {
+          ...beneficiary,
+          identification: parseInt(beneficiary.identification, 10).toLocaleString("es-CO"),
+        };
+      });
+      setBenfs(mappedList);
       setTotalPages(totalPages);
       setIsLoading(false);
     } catch (err) {
@@ -175,8 +180,7 @@ function BeneficiariesList() {
               {benfs.map((beneficiary: any, i) => {
                 
                 return (
-                  
-                  <TableRow key={beneficiary._id} >
+                  <TableRow key={beneficiary._id} handlerRowClick={() => showDetail(beneficiary)}>
                     <TableCell>{i+1 + ((currentPage - 1) * 20)}</TableCell>
                     <TableCell>
                       <img
@@ -190,7 +194,7 @@ function BeneficiariesList() {
                       {beneficiary.first_last_name}{" "}
                       {beneficiary.second_last_name}
                     </TableCell>
-                    <TableCell>{beneficiary?.identification}</TableCell>
+                    <TableCell><a className="id-link">{beneficiary?.identification}</a></TableCell>
                     <TableCell>{beneficiary?.association?.name}</TableCell>
                     <TableCell>{beneficiary?.sisben_score}</TableCell>
                     <TableCell>
@@ -214,6 +218,7 @@ function BeneficiariesList() {
                       </Stack>
                     </TableCell>
                   </TableRow>
+                  
                 );
               })}
             </Table>

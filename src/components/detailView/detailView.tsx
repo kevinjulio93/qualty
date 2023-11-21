@@ -1,56 +1,89 @@
+import { calculateAge } from '../../helpers/helpers';
 import './detailView.scss';
-
-const DetailView = ({ beneficiary, visible, onClose}) => {
-  const close = () => {
+const DetailView = ({ beneficiary, visible, onClose }) => {
+  const close = (event) => {
+    event.stopPropagation();
     onClose();
   }
   return (
-    <div>
+    <div className="full-content" onClick={(e)=>e.stopPropagation()}>
 
-      {visible && <div className='detail-view-background' onClick={() => close()}>
+    {visible &&<div className='detail-view-background' onClick={close}>
 
-        <div className="content-detail-view">
+          
+
+          </div>}
+
+      {visible && 
+         <div className="content-detail-view">
           <div className='head-detail-view'>
             <div className='icon'>
               <img src={beneficiary?.photo_url} alt="" />
             </div>
-            <div className='main-content'>
-              <div className='title'>
-                <h3>
-                  {beneficiary?.first_name} {beneficiary?.first_last_name} (50 años)
-                </h3>
-                <span>Asociacion | {beneficiary?.association?.name}</span>
-              </div>
-              <div className='middle-content'>
-                <div className='content-labels'>
-                  <label >Cedula | <span>{beneficiary?.identification}</span></label>
-                  <label >Fecha nacimiento | <span>{beneficiary?.birthday.split('T')[0]}</span></label>
-                  <label >Telefono | <span>{beneficiary?.phones}</span></label>
-                  <label >Discapacidad | <span>{beneficiary?.disability}</span></label>
-                </div>
-                <div className='content-labels'>
-                  <label >Tipo de sangre | <span>{beneficiary?.blody_type}</span></label>
-                  <label >Sexo | <span>{beneficiary?.sex}</span></label>
-                  <label >Direccion | <span>{beneficiary?.disability}</span></label>
-                  <label >Comuna | <span>{beneficiary?.community?.name}</span></label>
-                </div>
+            <div className='title'>
+              <h3>
+                {beneficiary?.first_name} {beneficiary?.first_last_name}
+              </h3>
+              <span className='id-link'>CC. {beneficiary?.identification}</span>
+              <span>Edad: {calculateAge(beneficiary?.birthday)} años</span>
+              {beneficiary?.association?.name && <span>Asociacion: {beneficiary?.association?.name}</span>}
 
-              </div>
-              <div className='content-labels-foot'>
-                <label >EPS | <span>{beneficiary?.eps}</span></label>
-                <label >Actividad | <span>{beneficiary?.activity?.name}</span></label>
-              </div>
             </div>
           </div>
-          <div className='footer-detail-view'>
-            <button className='badget requi-ok'>Nivel de SISBEN</button>
-            <button className='badget requi-not'>Mayor de 60</button>
-            <button className='badget requi-ok'>Departamento de SISBEN</button>
-            <button className='badget requi-ok'>Regimen de Salud</button>
+          <div className='main-content'>
+            <div className='middle-content'>
+              <div className='content-labels'>
+                <table>
+                  <tr>
+                    <td className='label'>Fecha nacimiento</td>
+                    <td className='value'>{beneficiary?.birthday.split('T')[0]}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>Telefono</td>
+                    <td className='value'>{beneficiary?.phones}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>Discapacidad</td>
+                    <td className='value'>{beneficiary?.disability}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>Tipo de sangre</td>
+                    <td className='value'>{beneficiary?.blody_type}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>Sexo</td>
+                    <td className='value'>{beneficiary?.sex}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>Direccion</td>
+                    <td className='value'>{beneficiary?.address}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>Comuna</td>
+                    <td className='value'>{beneficiary?.community?.name}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>EPS</td>
+                    <td className='value'>{beneficiary?.eps}</td>
+                  </tr>
+                  <tr>
+                    <td className='label'>Actividad</td>
+                    <td className='value'>{beneficiary?.activity?.name}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div className='footer-detail-view'>
+              <button className='badget requi-ok'>Nivel de SISBEN</button>
+              <button className='badget requi-not'>Mayor de 60</button>
+              <button className='badget requi-ok'>Departamento de SISBEN</button>
+              <button className='badget requi-ok'>Regimen de Salud</button>
+            </div>
           </div>
         </div>
-
-      </div>}
+       }
+      
+      
     </div>
   );
 }
