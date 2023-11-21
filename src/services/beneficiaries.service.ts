@@ -2,6 +2,29 @@ import { FecthRequestModel } from "../models/request.model";
 
 const requestInstance = FecthRequestModel.getInstance();
 
+export const getPdfListBeneficiarie=async (body)=>{
+  try {
+    const url = `/beneficiaries/pdf`;
+    const response = await requestInstance.getBlob(url,body);
+
+    const blob =  response.result;
+    const urlBlob = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = urlBlob;
+    a.download = "lista_de_beneficiarios"+Date.now()+"_.pdf";
+    a.style.display = "none";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+    console.error("Error fetching PDF:", error);
+  }
+}
+
 export async function createBeneficiary(files: any, data: any) {
   // const beneficiary = JSON.stringify(data);
   // const formData = new FormData();
