@@ -8,12 +8,7 @@ const DetailView = ({ beneficiary, visible, onClose }) => {
   return (
     <div className="full-content" onClick={(e)=>e.stopPropagation()}>
 
-    {visible &&<div className='detail-view-background' onClick={close}>
-
-          
-
-          </div>}
-
+    {visible &&<div className='detail-view-background' onClick={close}></div>}
       {visible && 
          <div className="content-detail-view">
           <div className='head-detail-view'>
@@ -74,10 +69,10 @@ const DetailView = ({ beneficiary, visible, onClose }) => {
               </div>
             </div>
             <div className='footer-detail-view'>
-              <button className='badget requi-ok'>Nivel de SISBEN</button>
+              {/* <button className='badget requi-ok'>Nivel de SISBEN</button>
               <button className='badget requi-not'>Mayor de 60</button>
               <button className='badget requi-ok'>Departamento de SISBEN</button>
-              <button className='badget requi-ok'>Regimen de Salud</button>
+              <button className='badget requi-ok'>Regimen de Salud</button> */}
             </div>
           </div>
         </div>
