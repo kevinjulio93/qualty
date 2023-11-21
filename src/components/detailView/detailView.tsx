@@ -69,10 +69,10 @@ const DetailView = ({ beneficiary, visible, onClose }) => {
               </div>
             </div>
             <div className='footer-detail-view'>
-              {/* <button className='badget requi-ok'>Nivel de SISBEN</button>
-              <button className='badget requi-not'>Mayor de 60</button>
-              <button className='badget requi-ok'>Departamento de SISBEN</button>
-              <button className='badget requi-ok'>Regimen de Salud</button> */}
+              <button className={beneficiary?.id_front || beneficiary?.id_back ?'badget requi-ok':'badget requi-not'}>Cedula</button>
+              <button className={beneficiary?.sisben_url ?'badget requi-ok':'badget requi-not'}>EPS</button>
+              <button className={beneficiary?.fosiga_url ?'badget requi-ok':'badget requi-not'}>SISBEN</button>
+              <button className={beneficiary?.registry_doc_url ?'badget requi-ok':'badget requi-not'}>Registraduría</button>
             </div>
           </div>
         </div>
