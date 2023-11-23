@@ -36,24 +36,6 @@ export async function getWorkshopById(workId: any) {
   return response;
 }
 
-export const getFilePdfListWorkshops=async (body:any)=>{
-    //Esta respuesta devuelve un Blob
-    const url = '/workshops/pdf';
-    const response = await workshop.getBlob(url,body);
-    const blob =  response.result;
-    const urlBlob = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = urlBlob;
-    a.download = "lista_de_talleres_"+Date.now()+"_.pdf";
-    a.style.display = "none";
-
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    window.URL.revokeObjectURL(url);
-}
-
 export const getFilePdfAttendeesWorkshop=async (idWorkshop:string)=>{
     //Esta respuesta devuelve un Blob
     const response = await workshop.getBlob('/workshops/pdf/'+idWorkshop);
@@ -63,7 +45,7 @@ export const getFilePdfAttendeesWorkshop=async (idWorkshop:string)=>{
 export const getWorkshopListPdf=async (body:any)=>{
 
   try {
-    const url = `/workshop/pdf`;
+    const url = `/workshops/pdf`;
     const response = await workshop.getBlob(url,body);
 
     const blob =  response.result;
