@@ -29,6 +29,7 @@ function Ratings () {
     const [forceRender, setForceRender] = useState(+ new Date());
     const [updatedItems, setUpdatedItems] = useState([]);
     const [currentRating, setCurrentRating] = useState({});
+    const [disabledBtn, setDisabledBtn] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -121,6 +122,7 @@ function Ratings () {
     }
 
     const saveRatings = async () => {
+        setDisabledBtn(true);
         const rating = {
             rating_type: selectedRating,
             observations: notes,
@@ -368,6 +370,7 @@ function Ratings () {
             </section>
             <SaveCancelControls
                 saveText="Guardar"
+                disabled={disabledBtn}
                 handleSave={() => ratingId ? updateRatings() : saveRatings() }
             />
         </>

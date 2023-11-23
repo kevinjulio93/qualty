@@ -12,6 +12,9 @@ export const enum REPORT_TYPE {
     ACTIVITY_ASSISTANCE_BY_ASSOCIATION = 'ACTIVITY_ASSISTANCE_BY_ASSOCIATION',
     BENEFICIARY_LIST = 'BENEFICIARY_LIST',
     WITHOUT_SUPPORTS = 'WITHOUT_SUPPORTS',
+    BENEFICIARY_SUMMARY = 'BENEFICIARY_SUMMARY',
+    RATINGS_SUMMARY = 'RATINGS_SUMMARY',
+    WORKSHOPS_SUMMARY = 'WORKSHOPS_SUMMARY'
 }
 
 export const reportType = [
@@ -34,5 +37,36 @@ export const reportType = [
     {
         text: 'Beneficiarios sin soportes',
         key: REPORT_TYPE.WITHOUT_SUPPORTS
+    },
+
+    {
+        text: 'Consolidado de valoraciones',
+        key: REPORT_TYPE.RATINGS_SUMMARY
+    },
+    {
+        text: 'Consolidado de talleres',
+        key: REPORT_TYPE.WORKSHOPS_SUMMARY
+    },
+    {
+        text: 'Consolidado de beneficiario',
+        key: REPORT_TYPE.BENEFICIARY_SUMMARY
+    }
+];
+
+export const promotorReports = [
+    {
+        text: 'Consolidado de beneficiario',
+        key: REPORT_TYPE.BENEFICIARY_SUMMARY
+    }
+];
+
+export const profesionalReports = [
+    {
+        text: 'Consolidado de valoraciones',
+        key: REPORT_TYPE.RATINGS_SUMMARY
+    },
+    {
+        text: 'Consolidado de talleres',
+        key: REPORT_TYPE.WORKSHOPS_SUMMARY
     }
 ];

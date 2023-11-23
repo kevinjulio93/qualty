@@ -41,3 +41,27 @@ export const getFilePdfAttendeesWorkshop=async (idWorkshop:string)=>{
     const response = await workshop.getBlob('/workshops/pdf/'+idWorkshop);
     return response;
 }
+
+export const getWorkshopListPdf=async (body:any)=>{
+
+  try {
+    const url = `/workshop/pdf`;
+    const response = await workshop.getBlob(url,body);
+
+    const blob =  response.result;
+    const urlBlob = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = urlBlob;
+    a.download = "lista_de_talleres"+Date.now()+"_.pdf";
+    a.style.display = "none";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    window.URL.revokeObjectURL(url);
+
+  } catch (error) {
+    console.error("Error fetching PDF:", error);
+  }
+}
