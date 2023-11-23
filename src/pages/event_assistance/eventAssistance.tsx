@@ -77,7 +77,19 @@ function EventAssistance() {
         setListMissingRequirements("El beneficiario ya asistió a un evento");
       }
 
-      if(aux===5){
+      if (ben?.id_front) {
+        aux += 1
+      } else {
+          setListMissingRequirements("No posee el soporte de Cédula Frontal");
+      }
+
+      if (ben?.id_back) {
+          aux += 1
+      } else {
+          setListMissingRequirements("No posee el soporte de Cédula Posterior");
+      }
+
+      if(aux===7){
         setEnableButtonAdd(true);
       }else{
         setEnableButtonAdd(false);
