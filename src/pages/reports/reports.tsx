@@ -232,7 +232,7 @@ function Reports() {
     }
 
     const generateWorkshopsSummaryPDF = async() => {
-        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), valueTypeWorkshop: selectedWork };
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), query: selectedWork };
         await getWorkshopListPdf(config);
     }
 

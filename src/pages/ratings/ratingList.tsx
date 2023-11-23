@@ -9,12 +9,7 @@ import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
 import { deleteRatings, getAllRatings, getFilePdfRatings } from '../../services/rating.service';
 import { SimpleDialog } from '../../components/dialog/dialog';
-import { typesRating } from '../../constants/ratings';
-import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { Dayjs } from "dayjs";
 import { SECTIONS } from '../../constants/sections';
 import { PERMISSIONS } from '../../constants/permissions';
@@ -32,7 +27,6 @@ function RatingList() {
     const [openDialogMessage, setOpenDialogMessage] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
-    const [filterRating,setFilterRating]=useState({startDate:"",endDate:"",valueTypeRating:""});
     const abilities = useSelector((state: any) => state.auth.user.abilities);
     const [targetBeneficiary, setTargetBeneficiary] = useState(false);
     const [displayDetail, setDisplayDetail] = useState(false);
@@ -84,30 +78,6 @@ function RatingList() {
       setOpenDialog(false);
     };
 
-    const handlerFilterRating=(target:string,value)=>{
-      setFilterRating({...filterRating,[target]:value});
-    }
-
-    const getFilePdf=async ()=>{
-      try {
-        const responseFile=await getFilePdfRatings(filterRating);
-        const blobPdf=responseFile.result;
-        blobPdf.name="Valoraciones-"+filterRating.valueTypeRating+"_"+Date.now()+".pdf";
-        const url = window.URL.createObjectURL(blobPdf);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = blobPdf.name;
-        a.style.display = "none";
-
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        window.URL.revokeObjectURL(url);
-      } catch (error) {
-        handlerOpenDialogMessage();
-      }
-    }
 
     const handlerOpenDialogMessage=()=>{
       setOpenDialogMessage(!openDialogMessage);
@@ -185,34 +155,6 @@ function RatingList() {
             voidInputFunction={getRatingsList}
             />
             </div>
-
-            {/*<div className="panel-heading">
-              Generar reporte pdf
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker 
-                    onChange={(newDate: Dayjs) => handlerFilterRating('startDate', newDate.format())}
-                    label="Fecha inicial"
-                />
-              </LocalizationProvider>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker 
-                    onChange={(newDate: Dayjs) => handlerFilterRating('endDate', newDate.format())}
-                    label="Fecha final"
-                />
-              </LocalizationProvider>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={typesRating}
-                sx={{ width: 200 }}
-                onChange={(e,data)=>handlerFilterRating("valueTypeRating",data)}
-                renderInput={(params) => <TextField {...params} label="Tipo de valoracion" />}
-              />
-              <PictureAsPdfRoundedIcon
-                onClick={() =>getFilePdf()}
-                className="action-item-icon action-item-icon-edit"
-              ></PictureAsPdfRoundedIcon>
-          </div>*/}
 
             {isLoading ? (
               <LoadingComponent></LoadingComponent>

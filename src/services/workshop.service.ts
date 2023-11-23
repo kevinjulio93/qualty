@@ -45,7 +45,7 @@ export const getFilePdfAttendeesWorkshop=async (idWorkshop:string)=>{
 export const getWorkshopListPdf=async (body:any)=>{
 
   try {
-    const url = `/workshop/pdf`;
+    const url = `/workshops/pdf`;
     const response = await workshop.getBlob(url,body);
 
     const blob =  response.result;
