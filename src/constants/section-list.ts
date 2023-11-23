@@ -177,7 +177,7 @@ export const sectionList = [
     icon: "pdf",
     hasChilds: false,
     permission: {
-      subject: SECTIONS.REPRESENTATIVE,
+      subject: SECTIONS.REPORTS,
       action: [PERMISSIONS.READ],
     },
   },
