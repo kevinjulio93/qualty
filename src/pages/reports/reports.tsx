@@ -1,29 +1,42 @@
 import { useEffect, useState } from "react";
 import {
     Avatar,
+    FormControl,
+    InputLabel,
     List,
   ListItem,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
-import { REPORT_TYPE, reportType } from "../../constants/reportType";
+import { REPORT_TYPE, profesionalReports, promotorReports, reportType } from "../../constants/reportType";
 import SelectDropdown from "../../components/select";
 import { getAllEvents } from "../../services/events.service";
 import Search from "../../components/search/search";
-import { getBeneficiariesList } from "../../services/beneficiaries.service";
+import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/beneficiaries.service";
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
 import { getExcelActivityAssistance, getExcelBeneficiaryList, getExcelEventAssistance } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
 import { getAllActivities } from "../../services/activities.service";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import { getFilePdfRatings } from "../../services/rating.service";
+import { workshops } from "../../constants/workshops";
+import { getWorkshopListPdf } from "../../services/workshop.service";
 
 function Reports() {
     const [selectedReport, setSelectedReport] = useState(null);
@@ -36,6 +49,16 @@ function Reports() {
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [fileType, setFileType] = useState(reportFileType.PDF);
     const [disableFileType, setDisableFileType] = useState(false);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [selectedRating, setSelectedRating] = useState(null);
+    const [selectedWork, setSelectedWork] = useState(null);
+    const loggedUser = useSelector((state: RootState) => state.auth.user);
+    const userRol = loggedUser.role.role;
+
+    useEffect(() => {
+        
+    }, []);
 
     useEffect(() => {
         if(selectedReport) {
@@ -62,6 +85,13 @@ function Reports() {
                 case REPORT_TYPE.BENEFICIARY_LIST:
                 case REPORT_TYPE.WITHOUT_SUPPORTS: {
                     setFileType(reportFileType.EXCEL);
+                    setDisableFileType(true);
+                    break;
+                }
+                case REPORT_TYPE.RATINGS_SUMMARY:
+                case REPORT_TYPE.WORKSHOPS_SUMMARY:
+                case REPORT_TYPE.BENEFICIARY_SUMMARY: {
+                    setFileType(reportFileType.PDF);
                     setDisableFileType(true);
                     break;
                 }
@@ -104,6 +134,20 @@ function Reports() {
     }
 
     //General methods
+    const getReportsByRole = () => {
+        switch(userRol) {
+            case 'Promotor': {
+                return promotorReports;
+            }
+            case 'Profesionales': {
+                return profesionalReports;
+            }
+            case 'Super Admin': {
+                return reportType;
+            }
+            default: return promotorReports;
+        }
+    }
     const generateReport = () => {
         const reportMethod = REPORT_DICTIONARY[selectedReport];
         reportMethod();
@@ -123,6 +167,10 @@ function Reports() {
         setSelectedBen(null);
         setSelectedEvent(null);
         setSelectedIndex(null);
+        setStartDate(null);
+        setEndDate(null);
+        setSelectedRating(null);
+        setSelectedWork(null);
         setSelectedActivity(null);
     }
 
@@ -140,6 +188,15 @@ function Reports() {
             case REPORT_TYPE.WITHOUT_SUPPORTS:
             case REPORT_TYPE.BENEFICIARY_LIST: {
                 return false;
+            }
+            case REPORT_TYPE.RATINGS_SUMMARY: {
+                return isEmpty(startDate) || isEmpty(endDate) || isEmpty(selectedRating);
+            }
+            case REPORT_TYPE.BENEFICIARY_SUMMARY: {
+                return isEmpty(startDate) || isEmpty(endDate);
+            }
+            case REPORT_TYPE.WORKSHOPS_SUMMARY: {
+                return isEmpty(startDate) || isEmpty(endDate) || isEmpty(selectedWork);
             }
         }
     }
@@ -164,50 +221,33 @@ function Reports() {
         await getExcelBeneficiaryList(REPORT_TYPE.WITHOUT_SUPPORTS);
     }
 
+    const generateBeneficiarySummaryPDF = async() => {
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate) };
+        await getPdfListBeneficiarie(config);
+    }
+
+    const generateRatingsSummaryPDF = async() => {
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), valueTypeRating: selectedRating };
+        await getFilePdfRatings(config);
+    }
+
+    const generateWorkshopsSummaryPDF = async() => {
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), valueTypeWorkshop: selectedWork };
+        await getWorkshopListPdf(config);
+    }
+
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE]: generateExcelEventAssistance,
         [REPORT_TYPE.ACTIVITY_ASSISTANCE]: generateExcelActivityAssistance,
         [REPORT_TYPE.BENEFICIARY_LIST]: generateExcelBeneficiaryList,
-        //[REPORT_TYPE.WITHOUT_SUPPORTS]: generateExcelBeneficiaryWithoutSupports,
+        [REPORT_TYPE.WITHOUT_SUPPORTS]: generateExcelBeneficiaryWithoutSupports,
+        [REPORT_TYPE.BENEFICIARY_SUMMARY]: generateBeneficiarySummaryPDF,
+        [REPORT_TYPE.RATINGS_SUMMARY]: generateRatingsSummaryPDF,
+        [REPORT_TYPE.WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
     };
 
-    //Layouts renders
-    const renderEventInput = () => {
-        return (
-            <form className="activities-container__form-section__assitants__form-2">
-                <div className="activities-container__form-section__assitants__form-2__field">
-                <SelectDropdown
-                    selectValue={selectedEvent}
-                    label="Evento"
-                    options={eventList || []}
-                    keyLabel="name"
-                    keyValue="_id"
-                    targetKey="_id"
-                    handleValue={(value) => setSelectedEvent(value._id)}
-                />
-              </div>
-            </form>
-        );
-    }
-
-    const renderActivityInput = () => {
-        return (
-            <form className="activities-container__form-section__assitants__form-2">
-                <div className="activities-container__form-section__assitants__form-2__field">
-                <SelectDropdown
-                    selectValue={selectedActivity}
-                    label="Actividad"
-                    options={activities || []}
-                    keyLabel="name"
-                    keyValue="_id"
-                    targetKey="_id"
-                    handleValue={(value) => setSelectedActivity(value._id)}
-                />
-              </div>
-            </form>
-        );
-    }
+    //Reports layout renders
 
     const renderDeliveryAct = () => {
         return (
@@ -234,6 +274,130 @@ function Reports() {
         );
     }
 
+    const renderBeneficiarySummary = () => {
+        return (
+            <>
+              {renderDateRange()}
+            </>
+        );
+    }
+
+    const renderRatingsSummary = () => {
+        return (
+            <>
+              {renderRatingInput()}
+              {renderDateRange()}
+            </>
+        );
+    }
+
+    const renderWorkshopsSummary = () => {
+        return (
+            <>
+              {renderWorkshopInput()}
+              {renderDateRange()}
+            </>
+        );
+    }
+
+    //Generic input renders
+    const renderEventInput = () => {
+        return (
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
+                <SelectDropdown
+                    selectValue={selectedEvent}
+                    label="Evento"
+                    options={eventList || []}
+                    keyLabel="name"
+                    keyValue="_id"
+                    targetKey="_id"
+                    handleValue={(value) => setSelectedEvent(value._id)}
+                />
+              </div>
+            </form>
+        );
+    }
+
+    const renderWorkshopInput = () => {
+        return (
+            <FormControl sx={{width: '100%', marginTop: '20px'}}>
+              <InputLabel id="demo-simple-select-label">Taller</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label="Taller a realizar"
+                value={selectedWork}
+                onChange={(e) => setSelectedWork(e.target?.value)}
+              >
+                {workshops.map((item, index) => {
+                  return (
+                    <MenuItem
+                  key={"taller_no_" + index}
+                  value={item}
+                >
+                  {item}
+                </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+        );
+    }
+
+    const renderRatingInput = () => {
+        return (
+            <FormControl sx={{width: '100%', marginTop: '20px'}}>
+                <InputLabel id="demo-simple-select-label">Valoración</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Valoración a realizar"
+                    onChange={(e) => setSelectedRating(e?.target?.value)}
+                    value={selectedRating}
+                >
+                    {}
+                    <MenuItem key={"fisio"} value="Fisioterapia">
+                        Fisioterapia
+                    </MenuItem>
+                    <MenuItem key={"psico"} value="Psicología">
+                        Psicología
+                    </MenuItem>
+                    <MenuItem key={"opto"} value="Optometría">
+                        Optometría
+                    </MenuItem>
+                    <MenuItem key={"odonto"} value="Odontología">
+                        Odontología
+                    </MenuItem>
+                    <MenuItem key={"fono"} value="Fonoaudiología">
+                        Fonoaudiología
+                    </MenuItem>
+                    <MenuItem key={"anam"} value="Anamnesis">
+                        Anamnesis
+                    </MenuItem>
+                </Select>
+            </FormControl>
+        );
+    }
+
+    const renderActivityInput = () => {
+        return (
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
+                <SelectDropdown
+                    selectValue={selectedActivity}
+                    label="Actividad"
+                    options={activities || []}
+                    keyLabel="name"
+                    keyValue="_id"
+                    targetKey="_id"
+                    handleValue={(value) => setSelectedActivity(value._id)}
+                />
+              </div>
+            </form>
+        );
+    }
+
     const renderBeneficiarySection = () => {
         return (
             <>
@@ -241,6 +405,29 @@ function Reports() {
                 {beneficiaries.length > 0 && renderBenList()}
             </>
         )
+    }
+
+    const renderDateRange = () => {
+        return (
+            <>
+                <Stack direction={"row"} spacing={4} className="date-range-section">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        onChange={(newDate: Dayjs) => setStartDate(newDate.format())}
+                        value={ startDate ? dayjs(startDate) : null}
+                        label="Fecha inicial"
+                    />
+                    </LocalizationProvider>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        onChange={(newDate: Dayjs) => setEndDate(newDate.format())}
+                        value={ endDate ? dayjs(endDate) : null}
+                        label="Fecha final"
+                    />
+                    </LocalizationProvider>
+                </Stack>
+            </>
+        );
     }
 
     const renderBenList = () => {
@@ -315,7 +502,7 @@ function Reports() {
                 <SelectDropdown
                     selectValue={selectedReport}
                     label="Tipo de reporte"
-                    options={reportType || []}
+                    options={getReportsByRole() || []}
                     keyLabel="text"
                     keyValue="key"
                     targetKey="key"
@@ -341,6 +528,9 @@ function Reports() {
             {selectedReport === REPORT_TYPE.DELIVERY_ACT && renderDeliveryAct()}
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE && renderEventAssistance()}
             {selectedReport === REPORT_TYPE.ACTIVITY_ASSISTANCE && renderActivityAssistance()}
+            {selectedReport === REPORT_TYPE.BENEFICIARY_SUMMARY && renderBeneficiarySummary()}
+            {selectedReport === REPORT_TYPE.RATINGS_SUMMARY && renderRatingsSummary()}
+            {selectedReport === REPORT_TYPE.WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
           </div>
         </Paper>
       </section>

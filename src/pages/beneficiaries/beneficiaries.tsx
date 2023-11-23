@@ -215,8 +215,9 @@ function Beneficiaries() {
 
   const getAsos = async () => {
     const benCommunity = (beneficiarie as any).community;
+    console.log(benCommunity);
     if (isEmpty(benCommunity)) return;
-    const responseAso = await getAssociationsByCommunity(benCommunity);
+    const responseAso = await getAssociationsByCommunity(benCommunity._id);
     setAssociations(responseAso.result.data);
     setForceRender(+new Date());
   };
@@ -454,6 +455,7 @@ function Beneficiaries() {
 
   const getAssociations = async (target, community: any) => {
     try {
+      console.log(community);
       formHanlder(target, community);
       const response = await getAssociationsByCommunity(community?._id);
       if (response.status === 200) {
