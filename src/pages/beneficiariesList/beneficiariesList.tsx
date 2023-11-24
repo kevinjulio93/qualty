@@ -175,6 +175,7 @@ function BeneficiariesList() {
                 <TableCell>Cedula</TableCell>
                 <TableCell>Asociación</TableCell>
                 <TableCell>SISBEN</TableCell>
+                <TableCell>Autor</TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
               {benfs.map((beneficiary: any, i) => {
@@ -197,6 +198,7 @@ function BeneficiariesList() {
                     <TableCell><a className="id-link">{beneficiary?.identification}</a></TableCell>
                     <TableCell>{beneficiary?.association?.name}</TableCell>
                     <TableCell>{beneficiary?.sisben_score}</TableCell>
+                    <TableCell>{beneficiary?.author?.name}</TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={2}>
                         { checkPermissions(getPermission('edit'), abilities) && <EditIcon
