@@ -280,7 +280,7 @@ function Winerie() {
   const setListItemsSelected = (inventoryWinerieFound: any[]) => {
     const listItems = [];
     inventoryWinerieFound.map((data) => {
-      listItems.push({ ...data.item, amount: data.amount });
+      listItems.push({ ...data.item, amount: data.amount, total: data.total });
     });
     setListItemSelected([...listItems]);
   };
@@ -548,6 +548,7 @@ function Winerie() {
                         <TableCell>Código</TableCell>
                         <TableCell>value</TableCell>
                         <TableCell>Cantidad</TableCell>
+                        <TableCell>Restantes</TableCell>
                         <TableCell>Acciones</TableCell>
                       </TableRow>
                       {itemsWinerieMain.length > 0 ? (
@@ -557,6 +558,7 @@ function Winerie() {
                               <TableCell>{data.item?.name}</TableCell>
                               <TableCell>{data.item?.code}</TableCell>
                               <TableCell>{formatCurrencyNummber(data.item?.value)}</TableCell>
+                              <TableCell>{data?.total}</TableCell>
                               <TableCell>{data?.amount}</TableCell>
                               <TableCell>
                                 <Stack
@@ -594,6 +596,7 @@ function Winerie() {
                         <TableCell>Código</TableCell>
                         <TableCell>Valor</TableCell>
                         <TableCell>Cantidad</TableCell>
+                        <TableCell>Restantes</TableCell>
                         <TableCell>Acciones</TableCell>
                       </TableRow>
                       {listItemSelected.map((item: any, index) => {
@@ -602,6 +605,7 @@ function Winerie() {
                             <TableCell>{item?.name}</TableCell>
                             <TableCell>{item?.code}</TableCell>
                             <TableCell>{formatCurrencyNummber(item.value)}</TableCell>
+                            <TableCell>{item?.total}</TableCell>
                             <TableCell>{item?.amount}</TableCell>
 
                             <TableCell>
