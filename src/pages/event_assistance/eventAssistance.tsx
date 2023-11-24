@@ -146,7 +146,7 @@ function EventAssistance() {
     const checkAttendeceBen=(beneficiarie:any)=>{
       const eventFound=events.find((event)=>event._id===eventSelected);
       const listAttendees=eventFound?.attendees;
-      const benFound=listAttendees.find((ben)=>beneficiarie?._id===ben?._id);
+      const benFound=listAttendees.find((ben)=>beneficiarie?._id===ben);
       if(!benFound){
         return <VisibilityIcon
         onClick={() => handleClickOpen(beneficiarie)}
