@@ -19,7 +19,7 @@ import {
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import { REPORT_TYPE, profesionalReports, promotorReports, reportType } from "../../constants/reportType";
 import SelectDropdown from "../../components/select";
-import { getAllEvents } from "../../services/events.service";
+import { getAllEvents, getPdfEventSummary } from "../../services/events.service";
 import Search from "../../components/search/search";
 import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/beneficiaries.service";
 import "./reports.scss";
@@ -240,8 +240,7 @@ function Reports() {
     }
 
     const generateEventSummaryPDF = async() => {
-        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), query: selectedWork };
-        await getWorkshopListPdf(config);
+        await getPdfEventSummary(selectedEvent);
     }
 
     const REPORT_DICTIONARY = {

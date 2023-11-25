@@ -2,16 +2,16 @@ import { FecthRequestModel } from "../models/request.model";
 
 const events = FecthRequestModel.getInstance();
 
-export const getPdfListBeneficiarie=async (event:any)=>{
+export const getPdfEventSummary=async (id:string)=>{
   try {
-    const url = `/events/pdf-items-delivered/`+event._id;
+    const url = `/events/pdf-items-delivered/`+ id;
     const response = await events.getBlobWithParams(url);
 
     const blob =  response.result;
     const urlBlob = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = urlBlob;
-    a.download = "Artículos_entregados_en_el_evento_"+event.name+"_"+Date.now()+"_.pdf";
+    a.download = "Artículos_entregados_en_el_evento__"+Date.now()+"_.pdf";
     a.style.display = "none";
 
     document.body.appendChild(a);
