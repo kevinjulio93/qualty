@@ -19,7 +19,7 @@ import {
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import { REPORT_TYPE, profesionalReports, promotorReports, reportType } from "../../constants/reportType";
 import SelectDropdown from "../../components/select";
-import { getAllEvents } from "../../services/events.service";
+import { getAllEvents, getPdfEventSummary } from "../../services/events.service";
 import Search from "../../components/search/search";
 import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/beneficiaries.service";
 import "./reports.scss";
@@ -57,10 +57,6 @@ function Reports() {
     const userRol = loggedUser.role.role;
 
     useEffect(() => {
-        
-    }, []);
-
-    useEffect(() => {
         if(selectedReport) {
             switch(selectedReport) {
                 case REPORT_TYPE.DELIVERY_ACT: {
@@ -93,6 +89,12 @@ function Reports() {
                 case REPORT_TYPE.BENEFICIARY_SUMMARY: {
                     setFileType(reportFileType.PDF);
                     setDisableFileType(true);
+                    break;
+                }
+                case REPORT_TYPE.EVENT_SUMMARY: {
+                    setFileType(reportFileType.PDF);
+                    setDisableFileType(true);
+                    getEvents();
                     break;
                 }
                 default: break;
@@ -179,6 +181,7 @@ function Reports() {
             case REPORT_TYPE.DELIVERY_ACT: {
                 return isEmpty(selectedEvent) || isEmpty(selectedBen);
             }
+            case REPORT_TYPE.EVENT_SUMMARY:
             case REPORT_TYPE.EVENT_ASSISTANCE: {
                 return isEmpty(selectedEvent);
             }
@@ -236,6 +239,10 @@ function Reports() {
         await getWorkshopListPdf(config);
     }
 
+    const generateEventSummaryPDF = async() => {
+        await getPdfEventSummary(selectedEvent);
+    }
+
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE]: generateExcelEventAssistance,
@@ -245,6 +252,7 @@ function Reports() {
         [REPORT_TYPE.BENEFICIARY_SUMMARY]: generateBeneficiarySummaryPDF,
         [REPORT_TYPE.RATINGS_SUMMARY]: generateRatingsSummaryPDF,
         [REPORT_TYPE.WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
+        [REPORT_TYPE.EVENT_SUMMARY]: generateEventSummaryPDF,
     };
 
     //Reports layout renders
@@ -531,6 +539,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.BENEFICIARY_SUMMARY && renderBeneficiarySummary()}
             {selectedReport === REPORT_TYPE.RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
+            {selectedReport === REPORT_TYPE.EVENT_SUMMARY && renderEventAssistance()}
           </div>
         </Paper>
       </section>

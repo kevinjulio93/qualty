@@ -164,6 +164,7 @@ function RatingList() {
                   <TableRow header>
                     <TableCell>Valoración</TableCell>
                     <TableCell>Fecha</TableCell>
+                    <TableCell>Cédula</TableCell>
                     <TableCell>Beneficiario</TableCell>
                     <TableCell>Autor</TableCell>
                     <TableCell>Acciones</TableCell>
@@ -173,6 +174,7 @@ function RatingList() {
                       <TableRow key={rating._id} handlerRowClick={() => showDetail(rating?.attendee)}>
                         <TableCell>{rating?.rating_type}</TableCell>
                         <TableCell>{rating?.createdAt}</TableCell>
+                        <TableCell>{rating?.attendee?.identification}</TableCell>
                         <TableCell>{rating?.attendee?.first_name} {rating?.attendee?.first_last_name}</TableCell>
                         <TableCell>{rating?.author?.name}</TableCell>
                         <TableCell>

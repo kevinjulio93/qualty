@@ -14,7 +14,8 @@ export const enum REPORT_TYPE {
     WITHOUT_SUPPORTS = 'WITHOUT_SUPPORTS',
     BENEFICIARY_SUMMARY = 'BENEFICIARY_SUMMARY',
     RATINGS_SUMMARY = 'RATINGS_SUMMARY',
-    WORKSHOPS_SUMMARY = 'WORKSHOPS_SUMMARY'
+    WORKSHOPS_SUMMARY = 'WORKSHOPS_SUMMARY',
+    EVENT_SUMMARY = 'EVENT_SUMMARY'
 }
 
 export const reportType = [
@@ -50,6 +51,10 @@ export const reportType = [
     {
         text: 'Consolidado de beneficiario',
         key: REPORT_TYPE.BENEFICIARY_SUMMARY
+    },
+    {
+        text: 'Consolidado de evento',
+        key: REPORT_TYPE.EVENT_SUMMARY
     }
 ];
 
