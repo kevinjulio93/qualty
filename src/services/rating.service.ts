@@ -1,4 +1,5 @@
 import { typeBodyRequestPdf } from "../constants/ratings";
+import { REPORT_TYPE } from "../constants/reportType";
 import { FecthRequestModel } from "../models/request.model";
 
 const ratings = FecthRequestModel.getInstance();
@@ -37,10 +38,10 @@ export async function getRatingsById(ratingId: any) {
   return response;
 }
 
-export const getFilePdfRatings=async (body:any)=>{
+export const getFilePdfRatings=async (body:any, selectedReport: string)=>{
 
     try {
-      const url = `/ratings/pdf`;
+      const url = selectedReport === REPORT_TYPE.GENERAL_RATINGS_SUMMARY ? `/ratings/general/pdf` : `/ratings/pdf`;
       const response = await ratings.getBlob(url,body);
   
       const blob =  response.result;

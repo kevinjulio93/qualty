@@ -128,3 +128,8 @@ export async function getBeneficiaryByActivity(
   const response = await requestInstance.get(`/beneficiaries/activity/${actId}/?` + params);
   return response;
 }
+
+export async function getUserResume() {
+  const response = await requestInstance.get(`/beneficiaries/resume/user`);
+  return response;
+}

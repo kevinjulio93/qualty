@@ -14,7 +14,9 @@ export const enum REPORT_TYPE {
     WITHOUT_SUPPORTS = 'WITHOUT_SUPPORTS',
     BENEFICIARY_SUMMARY = 'BENEFICIARY_SUMMARY',
     RATINGS_SUMMARY = 'RATINGS_SUMMARY',
+    GENERAL_RATINGS_SUMMARY = 'GENERAL_RATINGS_SUMMARY',
     WORKSHOPS_SUMMARY = 'WORKSHOPS_SUMMARY',
+    GENERAL_WORKSHOPS_SUMMARY = 'GENERAL_WORKSHOPS_SUMMARY',
     EVENT_SUMMARY = 'EVENT_SUMMARY'
 }
 
@@ -42,11 +44,11 @@ export const reportType = [
 
     {
         text: 'Consolidado de valoraciones',
-        key: REPORT_TYPE.RATINGS_SUMMARY
+        key: REPORT_TYPE.GENERAL_RATINGS_SUMMARY
     },
     {
         text: 'Consolidado de talleres',
-        key: REPORT_TYPE.WORKSHOPS_SUMMARY
+        key: REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY
     },
     {
         text: 'Consolidado de beneficiario',

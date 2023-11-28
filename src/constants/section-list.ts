@@ -181,4 +181,15 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  {
+    key: "historial",
+    name: "Mi historial",
+    path: ROUTES.RESUMEN,
+    icon: "history",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.RESUMEN,
+      action: [PERMISSIONS.READ],
+    },
+  },
 ];
