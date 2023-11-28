@@ -67,7 +67,7 @@ function Assistance() {
 
   const getActivities = async () => {
     try {
-      const response = await getAllActivities();
+      const response = await getAllActivities(null, 1, 200);
       if (response.status === 200) {
         const dataList = response.result.data.map((item) => item.name);
         setActivities(dataList);
