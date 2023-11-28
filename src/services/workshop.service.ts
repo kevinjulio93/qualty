@@ -1,3 +1,4 @@
+import { REPORT_TYPE } from "../constants/reportType";
 import { FecthRequestModel } from "../models/request.model";
 
 const workshop = FecthRequestModel.getInstance();
@@ -42,10 +43,10 @@ export const getFilePdfAttendeesWorkshop=async (idWorkshop:string)=>{
     return response;
 }
 
-export const getWorkshopListPdf=async (body:any)=>{
+export const getWorkshopListPdf=async (body:any, selectedReport: string)=>{
 
   try {
-    const url = `/workshops/pdf`;
+    const url = selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY ? `/workshops/general/pdf` : `/workshops/pdf`;
     const response = await workshop.getBlob(url,body);
 
     const blob =  response.result;

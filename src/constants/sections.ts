@@ -14,5 +14,6 @@ export const enum SECTIONS {
   REPRESENTATIVE = "representant",
   STATS = "stats",
   REPRESENTATIVE_DELIVERY = 'representantDelivery',
-  REPORTS = 'reports'
+  REPORTS = 'reports',
+  RESUMEN = 'resumen'
 }

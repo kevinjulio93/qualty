@@ -17,6 +17,7 @@ export const arraySections = [
   {key: SECTIONS.PHYSICAL_DELIVERY, value: "Entregas físicas"},
   {key: SECTIONS.REPRESENTATIVE_DELIVERY, value: "Entregas a representantes"},
   {key: SECTIONS.REPORTS, value: "Reportes"},
+  {key: SECTIONS.RESUMEN, value: "Mi historial"},
 ];
 
 export const arrayPermissions = [
