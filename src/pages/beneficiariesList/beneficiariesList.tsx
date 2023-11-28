@@ -1,11 +1,21 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Pagination,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import "./beneficiariesList.scss";
 import { ROUTES } from "../../constants/routes";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
-import userImage from '../../assets/user.png'
+import userImage from "../../assets/user.png";
 
 import { useEffect, useState } from "react";
 import {
@@ -21,7 +31,8 @@ import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import { useSelector } from "react-redux";
-import {DetailView} from "../../components/detailView/detailView";
+import { DetailView } from "../../components/detailView/detailView";
+import SyncIcon from "@mui/icons-material/Sync";
 
 function BeneficiariesList() {
   const [benfs, setBenfs] = useState([]);
@@ -30,8 +41,8 @@ function BeneficiariesList() {
     useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
-  const [benSelected,setBenSelected]=useState(null);
-  const [openDialogDelete,setOpenDialogDelete]=useState(false);
+  const [benSelected, setBenSelected] = useState(null);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
   const [targetBeneficiary, setTargetBeneficiary] = useState(false);
@@ -50,7 +61,10 @@ function BeneficiariesList() {
       const mappedList = benfsList.map((beneficiary) => {
         return {
           ...beneficiary,
-          identification: parseInt(beneficiary.identification, 10).toLocaleString("es-CO"),
+          identification: parseInt(
+            beneficiary.identification,
+            10
+          ).toLocaleString("es-CO"),
         };
       });
       setBenfs(mappedList);
@@ -81,44 +95,45 @@ function BeneficiariesList() {
     }
   };
 
-  const handlerOpenDialogDelete=()=>{
+  const handlerOpenDialogDelete = () => {
     setOpenDialogDelete(!openDialogDelete);
-  }
+  };
 
-  const selectBenToDelete=(ben:any)=>{
+  const selectBenToDelete = (e, ben: any) => {
+    e.stopPropagation();
     setBenSelected(ben);
     handlerOpenDialogDelete();
-  }
+  };
 
-  const showDetail = (target)=>{
-    setTargetBeneficiary(target)
+  const showDetail = (target) => {
+    setTargetBeneficiary(target);
     setDisplayDetail(!displayDetail);
-  }
+  };
 
   const closeDetail = () => {
-    setTargetBeneficiary(null)
+    setTargetBeneficiary(null);
     setDisplayDetail(!displayDetail);
-  }
+  };
 
   const getPermission = (key) => {
-    switch(key) {
-      case 'edit':
+    switch (key) {
+      case "edit":
         return {
           subject: SECTIONS.BENEFICIARY,
           action: [PERMISSIONS.UPDATE],
         };
-      case 'delete':
+      case "delete":
         return {
           subject: SECTIONS.BENEFICIARY,
           action: [PERMISSIONS.DELETE],
         };
-        case 'create':
-          return {
-            subject: SECTIONS.BENEFICIARY,
-            action: [PERMISSIONS.CREATE],
-          };
+      case "create":
+        return {
+          subject: SECTIONS.BENEFICIARY,
+          action: [PERMISSIONS.CREATE],
+        };
     }
-  }
+  };
 
   return (
     <div className="users-container">
@@ -131,11 +146,19 @@ function BeneficiariesList() {
             Aquí podras gestionar los beneficiarios del sistema.
           </span>
         </div>
-        { checkPermissions(getPermission('create'), abilities) &&
-        <Button className="btn-create" onClick={() => handleClickOpen()}>
-          Crear Beneficiario
-        </Button>
-        }
+        {checkPermissions(getPermission("create"), abilities) && (
+          <div className="create-button-section">
+            <Button className="btn-create" onClick={() => handleClickOpen()}>
+              Crear Beneficiario
+            </Button>
+            <SyncIcon
+              onClick={() => {
+                getBenfs()
+              }}
+              className="action-item-icon action-item-icon-edit"
+            ></SyncIcon>
+          </div>
+        )}
       </div>
 
       <div className="main-center-container">
@@ -179,14 +202,20 @@ function BeneficiariesList() {
                 <TableCell>Acciones</TableCell>
               </TableRow>
               {benfs.map((beneficiary: any, i) => {
-                
                 return (
-                  <TableRow key={beneficiary._id} handlerRowClick={() => showDetail(beneficiary)}>
-                    <TableCell>{i+1 + ((currentPage - 1) * 20)}</TableCell>
+                  <TableRow
+                    key={beneficiary._id}
+                    handlerRowClick={() => showDetail(beneficiary)}
+                  >
+                    <TableCell>{i + 1 + (currentPage - 1) * 20}</TableCell>
                     <TableCell>
                       <img
                         className="ben-foto"
-                        src={beneficiary.photo_url?beneficiary.photo_url:userImage}
+                        src={
+                          beneficiary.photo_url
+                            ? beneficiary.photo_url
+                            : userImage
+                        }
                         alt="foto"
                       />
                     </TableCell>
@@ -195,24 +224,29 @@ function BeneficiariesList() {
                       {beneficiary.first_last_name}{" "}
                       {beneficiary.second_last_name}
                     </TableCell>
-                    <TableCell><a className="id-link">{beneficiary?.identification}</a></TableCell>
+                    <TableCell>
+                      <a className="id-link">{beneficiary?.identification}</a>
+                    </TableCell>
                     <TableCell>{beneficiary?.association?.name}</TableCell>
                     <TableCell>{beneficiary?.sisben_score}</TableCell>
                     <TableCell>{beneficiary?.author?.name}</TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={2}>
-                        { checkPermissions(getPermission('edit'), abilities) && <EditIcon
-                          onClick={() => handleClickOpen(beneficiary?._id)}
-                          className="action-item-icon action-item-icon-edit"
-                        ></EditIcon>
-                        }
-                        { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
-                          onClick={() =>
-                            selectBenToDelete(beneficiary)
-                          }
-                          className="action-item-icon action-item-icon-delete"
-                        ></ClearIcon>
-                        }
+                        {checkPermissions(getPermission("edit"), abilities) && (
+                          <EditIcon
+                            onClick={() => handleClickOpen(beneficiary?._id)}
+                            className="action-item-icon action-item-icon-edit"
+                          ></EditIcon>
+                        )}
+                        {checkPermissions(
+                          getPermission("delete"),
+                          abilities
+                        ) && (
+                          <ClearIcon
+                            onClick={(e) => selectBenToDelete(e, beneficiary)}
+                            className="action-item-icon action-item-icon-delete"
+                          ></ClearIcon>
+                        )}
                         {/*<VisibilityIcon
                           onClick={() => showDetail(beneficiary)}
                           className="action-item-icon action-item-icon-add"
@@ -220,11 +254,10 @@ function BeneficiariesList() {
                       </Stack>
                     </TableCell>
                   </TableRow>
-                  
                 );
               })}
             </Table>
-           
+
             <Pagination
               count={totalPages}
               page={currentPage}
@@ -246,25 +279,33 @@ function BeneficiariesList() {
           </>
         )}
       </div>
-      <Dialog open={openDialogDelete} >
+      <Dialog open={openDialogDelete}>
         <DialogTitle>Mensaje</DialogTitle>
         <DialogContent>
-        <DialogContentText>
+          <DialogContentText>
             ¿ Desea eliminar a este beneficiario ?
-        </DialogContentText>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-        <Button onClick={()=>handlerOpenDialogDelete()} color="primary">
+          <Button onClick={() => handlerOpenDialogDelete()} color="primary">
             Cancelar
-        </Button>
-        <Button onClick={()=>deleteBeneficiaryFromList(benSelected._id)} color="primary">
+          </Button>
+          <Button
+            onClick={() => deleteBeneficiaryFromList(benSelected._id)}
+            color="primary"
+          >
             Eliminar
-        </Button>
+          </Button>
         </DialogActions>
       </Dialog>
 
-      {targetBeneficiary && <DetailView beneficiary={targetBeneficiary} visible={displayDetail} onClose={closeDetail}/>}
-
+      {targetBeneficiary && (
+        <DetailView
+          beneficiary={targetBeneficiary}
+          visible={displayDetail}
+          onClose={closeDetail}
+        />
+      )}
     </div>
   );
 }

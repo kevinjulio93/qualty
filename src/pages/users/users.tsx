@@ -24,6 +24,7 @@ import { SEVERITY_TOAST } from "../../constants/severityToast";
 import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
+import SyncIcon from "@mui/icons-material/Sync";
 
 function Users() {
   const userRef = useRef(null);
@@ -80,12 +81,12 @@ function Users() {
     setCurrentUser(null);
   };
 
-  const handleEditAction = (user:any) => {
+  const handleEditAction = (user: any) => {
     setCurrentUser(user);
     (modalRef as any).current.handleClickOpen();
   };
 
-  const handleDeleteAction = (user:any) => {
+  const handleDeleteAction = (user: any) => {
     setCurrentUser(user);
     setOpenDialog(true);
   };
@@ -104,24 +105,24 @@ function Users() {
   };
 
   const getPermission = (key) => {
-    switch(key) {
-      case 'edit':
+    switch (key) {
+      case "edit":
         return {
           subject: SECTIONS.USER,
           action: [PERMISSIONS.UPDATE],
         };
-      case 'delete':
+      case "delete":
         return {
           subject: SECTIONS.USER,
           action: [PERMISSIONS.DELETE],
         };
-        case 'create':
-          return {
-            subject: SECTIONS.USER,
-            action: [PERMISSIONS.CREATE],
-          };
+      case "create":
+        return {
+          subject: SECTIONS.USER,
+          action: [PERMISSIONS.CREATE],
+        };
     }
-  }
+  };
 
   return (
     <div className="users-container">
@@ -134,17 +135,24 @@ function Users() {
             Aquí podras gestionar los usuarios del sistema.
           </span>
         </div>
-        { checkPermissions(getPermission('create'), abilities) && <Modal
-          className="btn-create"
-          buttonText="Crear Usuarios"
-          title="Crear usuario"
-          ref={modalRef}
-          modalClose={onCloseModal}
-          saveMethod={currentUser ? updateData : saveData}
-        >
-          <UserForm currentUser={currentUser} ref={userRef}></UserForm>
-        </Modal>
-        }
+        {checkPermissions(getPermission("create"), abilities) && (
+          <div className="create-button-section">
+            <Modal
+              className="btn-create"
+              buttonText="Crear Usuarios"
+              title="Crear usuario"
+              ref={modalRef}
+              modalClose={onCloseModal}
+              saveMethod={currentUser ? updateData : saveData}
+            >
+              <UserForm currentUser={currentUser} ref={userRef}></UserForm>
+            </Modal>
+            <SyncIcon
+              className="action-item-icon action-item-icon-edit"
+              onClick={() => getUsers()}
+            />
+          </div>
+        )}
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
@@ -195,16 +203,24 @@ function Users() {
                           direction="row"
                           spacing={2}
                         >
-                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
-                            className="action-item-icon action-item-icon-edit"
-                            onClick={() => handleEditAction(user)}
-                          ></EditIcon>
-                          }
-                          { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
-                            className="action-item-icon action-item-icon-delete"
-                            onClick={() => handleDeleteAction(user)}
-                          ></ClearIcon>
-                          }
+                          {checkPermissions(
+                            getPermission("edit"),
+                            abilities
+                          ) && (
+                            <EditIcon
+                              className="action-item-icon action-item-icon-edit"
+                              onClick={() => handleEditAction(user)}
+                            ></EditIcon>
+                          )}
+                          {checkPermissions(
+                            getPermission("delete"),
+                            abilities
+                          ) && (
+                            <ClearIcon
+                              className="action-item-icon action-item-icon-delete"
+                              onClick={() => handleDeleteAction(user)}
+                            ></ClearIcon>
+                          )}
                         </Stack>
                       </TableCell>
                     </TableRow>

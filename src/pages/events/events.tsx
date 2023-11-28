@@ -152,6 +152,7 @@ function EventList() {
         hasDelete={checkPermissions(getPermission('delete'), abilities)}
         hasStats={checkPermissions(getPermission('stats'), abilities)}
         hasCreate={checkPermissions(getPermission('create'), abilities)}
+        refreshFn={()=> getEvents()}
       />
 
       {openDialog && (

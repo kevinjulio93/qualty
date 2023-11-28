@@ -1015,6 +1015,7 @@ function Beneficiaries() {
                           id="cedula__frontal"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "front")}
                         />
@@ -1049,6 +1050,7 @@ function Beneficiaries() {
                           id="cedula__lateral"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "back")}
                         />
@@ -1083,6 +1085,7 @@ function Beneficiaries() {
                           id="soporte__eps"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "eps")}
                         />
@@ -1117,6 +1120,7 @@ function Beneficiaries() {
                           id="soporte__sisben"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "sisben")}
                         />
@@ -1151,6 +1155,7 @@ function Beneficiaries() {
                           id="registraduria"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "reg")}
                         />
