@@ -224,7 +224,7 @@ function Beneficiaries() {
 
   const getActivitiesList = async () => {
     try {
-      const response = await getAllActivities();
+      const response = await getAllActivities(null, 1, 200);
       if (response.status === 200) {
       const { data: dataList } = response.result;
         setActivities(dataList);
@@ -512,7 +512,7 @@ function Beneficiaries() {
   }
 
   const getCurrentActivity = (act) => {
-    const index = activities.findIndex((item) => item._id === act);
+    const index = activities.findIndex((item) => item._id === act?._id);
     return activities[index]?.name || "";
   }
 
