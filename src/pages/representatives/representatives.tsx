@@ -21,6 +21,7 @@ import {
 import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
+import SyncIcon from "@mui/icons-material/Sync";
 
 function Representatives() {
   const representativeRef = useRef(null);
@@ -111,24 +112,24 @@ function Representatives() {
   };
 
   const getPermission = (key) => {
-    switch(key) {
-      case 'edit':
+    switch (key) {
+      case "edit":
         return {
           subject: SECTIONS.REPRESENTATIVE,
           action: [PERMISSIONS.UPDATE],
         };
-      case 'delete':
+      case "delete":
         return {
           subject: SECTIONS.REPRESENTATIVE,
           action: [PERMISSIONS.DELETE],
         };
-        case 'create':
-          return {
-            subject: SECTIONS.REPRESENTATIVE,
-            action: [PERMISSIONS.CREATE],
-          };
+      case "create":
+        return {
+          subject: SECTIONS.REPRESENTATIVE,
+          action: [PERMISSIONS.CREATE],
+        };
     }
-  }
+  };
 
   return (
     <div className="users-container">
@@ -141,20 +142,27 @@ function Representatives() {
             Aquí podras gestionar los representantes del sistema.
           </span>
         </div>
-        { checkPermissions(getPermission('create'), abilities) && <Modal
-          className="btn-create"
-          buttonText="Crear Representante"
-          title="Crear representante"
-          ref={modalRef}
-          modalClose={onCloseModal}
-          saveMethod={currentRepresentative ? updateData : saveData}
-        >
-          <RepresentativeForm
-            currentRepresentative={currentRepresentative}
-            ref={representativeRef}
-          ></RepresentativeForm>
-        </Modal>
-        }
+        {checkPermissions(getPermission("create"), abilities) && (
+          <div className="create-button-section">
+            <Modal
+              className="btn-create"
+              buttonText="Crear Representante"
+              title="Crear representante"
+              ref={modalRef}
+              modalClose={onCloseModal}
+              saveMethod={currentRepresentative ? updateData : saveData}
+            >
+              <RepresentativeForm
+                currentRepresentative={currentRepresentative}
+                ref={representativeRef}
+              ></RepresentativeForm>
+            </Modal>
+            <SyncIcon
+              className="action-item-icon action-item-icon-edit"
+              onClick={() => getRepresentatives()}
+            />
+          </div>
+        )}
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
@@ -207,16 +215,24 @@ function Representatives() {
                           direction="row"
                           spacing={2}
                         >
-                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
-                            className="action-item-icon action-item-icon-edit"
-                            onClick={() => handleEditAction(representative)}
-                          ></EditIcon>
-                          }
-                          { checkPermissions(getPermission('delete'), abilities) &&<ClearIcon
-                            className="action-item-icon action-item-icon-delete"
-                            onClick={() => handleDeleteAction(representative)}
-                          ></ClearIcon>
-                          }
+                          {checkPermissions(
+                            getPermission("edit"),
+                            abilities
+                          ) && (
+                            <EditIcon
+                              className="action-item-icon action-item-icon-edit"
+                              onClick={() => handleEditAction(representative)}
+                            ></EditIcon>
+                          )}
+                          {checkPermissions(
+                            getPermission("delete"),
+                            abilities
+                          ) && (
+                            <ClearIcon
+                              className="action-item-icon action-item-icon-delete"
+                              onClick={() => handleDeleteAction(representative)}
+                            ></ClearIcon>
+                          )}
                         </Stack>
                       </TableCell>
                     </TableRow>
@@ -227,7 +243,10 @@ function Representatives() {
               count={totalPages}
               onChange={async (_, page) => {
                 try {
-                  const { result } = await getRepresentativesList(dataLastSearch, page);
+                  const { result } = await getRepresentativesList(
+                    dataLastSearch,
+                    page
+                  );
                   const { data: representatives, totalPages } = result;
                   setRepresentatives(representatives);
                   setTotalPages(totalPages);

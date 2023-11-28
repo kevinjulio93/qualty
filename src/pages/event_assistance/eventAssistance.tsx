@@ -121,7 +121,7 @@ function EventAssistance() {
        
     const getEvents=async()=>{
       try {
-        const responseEvents=await getAllEvents();
+        const responseEvents=await getAllEvents(null, 1, 200);
         const events=responseEvents.result.data.data;
         setEvents(events);
         getValuesAutocomplete(events);

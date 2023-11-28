@@ -39,6 +39,7 @@ import Stats from './pages/stats/stats';
 import RepDeliveryList from './pages/repDeliveryList/repDeliveryList';
 import RepDeliveryDetail from './pages/repDeliveryDetail/repDeliveryDetail';
 import Reports from './pages/reports/reports';
+import Resume from './pages/resume/resume';
 
 
 function App() {
@@ -154,6 +155,9 @@ function App() {
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.REPORTS, action: [PERMISSIONS.CREATE] }} />}>
                   <Route path={ROUTES.REPORTS} element={<Reports />} />
+                </Route>
+                <Route element={<PermissionGuard permissions={{ subject: SECTIONS.RESUMEN, action: [PERMISSIONS.READ] }} />}>
+                  <Route path={ROUTES.RESUMEN} element={<Resume />} />
                 </Route>
               </Route>
             </Route>

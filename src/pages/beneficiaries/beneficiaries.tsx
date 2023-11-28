@@ -224,7 +224,7 @@ function Beneficiaries() {
 
   const getActivitiesList = async () => {
     try {
-      const response = await getAllActivities();
+      const response = await getAllActivities(null, 1, 200);
       if (response.status === 200) {
       const { data: dataList } = response.result;
         setActivities(dataList);
@@ -512,7 +512,7 @@ function Beneficiaries() {
   }
 
   const getCurrentActivity = (act) => {
-    const index = activities.findIndex((item) => item._id === act);
+    const index = activities.findIndex((item) => item._id === act?._id);
     return activities[index]?.name || "";
   }
 
@@ -1015,6 +1015,7 @@ function Beneficiaries() {
                           id="cedula__frontal"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "front")}
                         />
@@ -1049,6 +1050,7 @@ function Beneficiaries() {
                           id="cedula__lateral"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "back")}
                         />
@@ -1083,6 +1085,7 @@ function Beneficiaries() {
                           id="soporte__eps"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "eps")}
                         />
@@ -1117,6 +1120,7 @@ function Beneficiaries() {
                           id="soporte__sisben"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "sisben")}
                         />
@@ -1151,6 +1155,7 @@ function Beneficiaries() {
                           id="registraduria"
                           hidden
                           type="file"
+                          accept="image/*"
                           name="myImage"
                           onChange={(event) => handleImage(event, "reg")}
                         />

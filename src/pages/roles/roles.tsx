@@ -22,6 +22,7 @@ import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { useSelector } from "react-redux";
 import { checkPermissions } from "../../helpers/checkPermissions";
+import SyncIcon from "@mui/icons-material/Sync";
 
 function Roles() {
   const roleRef = useRef(null);
@@ -99,24 +100,24 @@ function Roles() {
   };
 
   const getPermission = (key) => {
-    switch(key) {
-      case 'edit':
+    switch (key) {
+      case "edit":
         return {
           subject: SECTIONS.ROLE,
           action: [PERMISSIONS.UPDATE],
         };
-      case 'delete':
+      case "delete":
         return {
           subject: SECTIONS.ROLE,
           action: [PERMISSIONS.DELETE],
         };
-        case 'create':
-          return {
-            subject: SECTIONS.ROLE,
-            action: [PERMISSIONS.CREATE],
-          };
+      case "create":
+        return {
+          subject: SECTIONS.ROLE,
+          action: [PERMISSIONS.CREATE],
+        };
     }
-  }
+  };
 
   return (
     <div className="roles-container">
@@ -129,17 +130,24 @@ function Roles() {
             Aquí podras gestionar los roles de usuarios del sistema.
           </span>
         </div>
-        { checkPermissions(getPermission('create'), abilities) && <Modal
-          className="btn-create"
-          buttonText="Crear Roles"
-          title="Crear role"
-          ref={modalRef}
-          modalClose={onCloseModal}
-          saveMethod={currentRole ? updateData : saveData}
-        >
-          <RoleForm currentRole={currentRole} ref={roleRef}></RoleForm>
-        </Modal>
-        }
+        {checkPermissions(getPermission("create"), abilities) && (
+          <div className="create-button-section">
+            <Modal
+              className="btn-create"
+              buttonText="Crear Roles"
+              title="Crear role"
+              ref={modalRef}
+              modalClose={onCloseModal}
+              saveMethod={currentRole ? updateData : saveData}
+            >
+              <RoleForm currentRole={currentRole} ref={roleRef}></RoleForm>
+            </Modal>
+            <SyncIcon
+              className="action-item-icon action-item-icon-edit"
+              onClick={() => getRoles()}
+            />
+          </div>
+        )}
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
@@ -190,16 +198,24 @@ function Roles() {
                           direction="row"
                           spacing={2}
                         >
-                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
-                            className="action-item-icon action-item-icon-edit"
-                            onClick={() => handleEditAction(role)}
-                          ></EditIcon>
-                          }
-                          { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
-                            className="action-item-icon action-item-icon-delete"
-                            onClick={() => handleDeleteAction(role)}
-                          ></ClearIcon>
-                        }
+                          {checkPermissions(
+                            getPermission("edit"),
+                            abilities
+                          ) && (
+                            <EditIcon
+                              className="action-item-icon action-item-icon-edit"
+                              onClick={() => handleEditAction(role)}
+                            ></EditIcon>
+                          )}
+                          {checkPermissions(
+                            getPermission("delete"),
+                            abilities
+                          ) && (
+                            <ClearIcon
+                              className="action-item-icon action-item-icon-delete"
+                              onClick={() => handleDeleteAction(role)}
+                            ></ClearIcon>
+                          )}
                         </Stack>
                       </TableCell>
                     </TableRow>

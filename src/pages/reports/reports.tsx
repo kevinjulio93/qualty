@@ -85,7 +85,9 @@ function Reports() {
                     break;
                 }
                 case REPORT_TYPE.RATINGS_SUMMARY:
+                case REPORT_TYPE.GENERAL_RATINGS_SUMMARY:
                 case REPORT_TYPE.WORKSHOPS_SUMMARY:
+                case REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY:
                 case REPORT_TYPE.BENEFICIARY_SUMMARY: {
                     setFileType(reportFileType.PDF);
                     setDisableFileType(true);
@@ -192,14 +194,16 @@ function Reports() {
             case REPORT_TYPE.BENEFICIARY_LIST: {
                 return false;
             }
+            case REPORT_TYPE.GENERAL_RATINGS_SUMMARY:
             case REPORT_TYPE.RATINGS_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate) || isEmpty(selectedRating);
             }
             case REPORT_TYPE.BENEFICIARY_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate);
             }
+            case REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY:
             case REPORT_TYPE.WORKSHOPS_SUMMARY: {
-                return isEmpty(startDate) || isEmpty(endDate) || isEmpty(selectedWork);
+                return isEmpty(startDate) || isEmpty(endDate);
             }
         }
     }
@@ -231,12 +235,12 @@ function Reports() {
 
     const generateRatingsSummaryPDF = async() => {
         const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), valueTypeRating: selectedRating };
-        await getFilePdfRatings(config);
+        await getFilePdfRatings(config, selectedReport);
     }
 
     const generateWorkshopsSummaryPDF = async() => {
         const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), query: selectedWork };
-        await getWorkshopListPdf(config);
+        await getWorkshopListPdf(config, selectedReport);
     }
 
     const generateEventSummaryPDF = async() => {
@@ -251,7 +255,9 @@ function Reports() {
         [REPORT_TYPE.WITHOUT_SUPPORTS]: generateExcelBeneficiaryWithoutSupports,
         [REPORT_TYPE.BENEFICIARY_SUMMARY]: generateBeneficiarySummaryPDF,
         [REPORT_TYPE.RATINGS_SUMMARY]: generateRatingsSummaryPDF,
+        [REPORT_TYPE.GENERAL_RATINGS_SUMMARY]: generateRatingsSummaryPDF,
         [REPORT_TYPE.WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
+        [REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
         [REPORT_TYPE.EVENT_SUMMARY]: generateEventSummaryPDF,
     };
 
@@ -302,7 +308,6 @@ function Reports() {
     const renderWorkshopsSummary = () => {
         return (
             <>
-              {renderWorkshopInput()}
               {renderDateRange()}
             </>
         );
@@ -538,7 +543,9 @@ function Reports() {
             {selectedReport === REPORT_TYPE.ACTIVITY_ASSISTANCE && renderActivityAssistance()}
             {selectedReport === REPORT_TYPE.BENEFICIARY_SUMMARY && renderBeneficiarySummary()}
             {selectedReport === REPORT_TYPE.RATINGS_SUMMARY && renderRatingsSummary()}
+            {selectedReport === REPORT_TYPE.GENERAL_RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
+            {selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
             {selectedReport === REPORT_TYPE.EVENT_SUMMARY && renderEventAssistance()}
           </div>
         </Paper>
