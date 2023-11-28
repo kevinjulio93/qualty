@@ -1,9 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import "./inventory.scss";
 import {
-  getAllItems,updateItem,createItem,deleteItem
+  getAllItems,
+  updateItem,
+  createItem,
+  deleteItem,
 } from "../../services/inventory.service";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Pagination, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Pagination,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Modal from "../../components/modal/modal";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,6 +33,7 @@ import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
+import SyncIcon from "@mui/icons-material/Sync";
 
 function Inventory() {
   const itemRef = useRef(null);
@@ -30,10 +44,11 @@ function Inventory() {
   const [toastGetItemsError, setToastGetItemsError] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
-  const [openDialogMessage,setOpenDialogMessage]=useState(false);
-  const [messageDialog,setMessageDialog]=useState("");
+  const [openDialogMessage, setOpenDialogMessage] = useState(false);
+  const [messageDialog, setMessageDialog] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
+  const [forceRender, setForceRender] = useState(+new Date());
 
   const modalRef = useRef(null);
 
@@ -58,24 +73,30 @@ function Inventory() {
     setCurrentItem(null);
   };
 
-  const isValidUpdate=(dataNewItem)=>{
-    const filterItems=items.filter((item)=>currentItem.name!==item.name && currentItem.code!==item.code);
-    const itemFound=filterItems.find((item)=>dataNewItem.name.trim().toLowerCase()=== item.name || dataNewItem.code.trim().toLowerCase()=== item.code);
-    if(!itemFound){
+  const isValidUpdate = (dataNewItem) => {
+    const filterItems = items.filter(
+      (item) => currentItem.name !== item.name && currentItem.code !== item.code
+    );
+    const itemFound = filterItems.find(
+      (item) =>
+        dataNewItem.name.trim().toLowerCase() === item.name ||
+        dataNewItem.code.trim().toLowerCase() === item.code
+    );
+    if (!itemFound) {
       return true;
     }
     return false;
-  }
+  };
 
   const updateData = async () => {
     if (itemRef.current !== null) {
       const item = (itemRef.current as any).getItem();
-      if(isValidUpdate(item)){
+      if (isValidUpdate(item)) {
         await updateItem(item);
         setIsLoading(true);
         getItems();
-      }else{
-        setMessageDialog("Ya existe un artículo con los datos ingresados")
+      } else {
+        setMessageDialog("Ya existe un artículo con los datos ingresados");
         handOpenDialogMessage();
       }
     }
@@ -85,11 +106,15 @@ function Inventory() {
   const saveData = async () => {
     if (itemRef.current !== null) {
       const item = (itemRef.current as any).getItem();
-      const itemFound=items.find((it)=>it.name.trim().toLowerCase()===item.name.trim().toLowerCase() || it.code.trim().toLowerCase()===item.code.trim().toLowerCase());
-      if(itemFound){
-        setMessageDialog("Artículo ya existente en el sistema")
+      const itemFound = items.find(
+        (it) =>
+          it.name.trim().toLowerCase() === item.name.trim().toLowerCase() ||
+          it.code.trim().toLowerCase() === item.code.trim().toLowerCase()
+      );
+      if (itemFound) {
+        setMessageDialog("Artículo ya existente en el sistema");
         handOpenDialogMessage();
-      }else{
+      } else {
         await createItem(item);
         setIsLoading(true);
         getItems();
@@ -121,29 +146,29 @@ function Inventory() {
     setOpenDialog(false);
   };
 
-  const handOpenDialogMessage=()=>{
+  const handOpenDialogMessage = () => {
     setOpenDialogMessage(!openDialogMessage);
-  }
+  };
 
   const getPermission = (key) => {
-    switch(key) {
-      case 'edit':
+    switch (key) {
+      case "edit":
         return {
           subject: SECTIONS.INVENTORY,
           action: [PERMISSIONS.UPDATE],
         };
-      case 'delete':
+      case "delete":
         return {
           subject: SECTIONS.INVENTORY,
           action: [PERMISSIONS.DELETE],
         };
-        case 'create':
-          return {
-            subject: SECTIONS.INVENTORY,
-            action: [PERMISSIONS.CREATE],
-          };
+      case "create":
+        return {
+          subject: SECTIONS.INVENTORY,
+          action: [PERMISSIONS.CREATE],
+        };
     }
-  }
+  };
 
   return (
     <div className="inventary-container">
@@ -156,17 +181,26 @@ function Inventory() {
             Aqui podrás gestionar los artículos de las bodegas del sistema.
           </span>
         </div>
-        { checkPermissions(getPermission('create'), abilities) && <Modal
-          className="btn-create"
-          buttonText="Crear artículo"
-          title="Crear artículo"
-          ref={modalRef}
-          modalClose={onCloseModal}
-          saveMethod={currentItem ? updateData : saveData}
-          >
-          <ItemForm currentItem={currentItem} ref={itemRef}></ItemForm>
-        </Modal>
-        }
+        {checkPermissions(getPermission("create"), abilities) && (
+          <div className="create-button-section">
+            <Modal
+              className="btn-create"
+              buttonText="Crear artículo"
+              title="Crear artículo"
+              ref={modalRef}
+              modalClose={onCloseModal}
+              saveMethod={currentItem ? updateData : saveData}
+            >
+              <ItemForm currentItem={currentItem} ref={itemRef}></ItemForm>
+            </Modal>
+            <SyncIcon
+              onClick={() => {
+                getItems()
+              }}
+              className="action-item-icon action-item-icon-edit"
+            ></SyncIcon>
+          </div>
+        )}
       </div>
       <div className="main-center-container">
         <div className="panel-heading">
@@ -177,7 +211,7 @@ function Inventory() {
               try {
                 const { result } = await getAllItems(value);
                 setDataLastSearch(value);
-                const {data}=result.data;
+                const { data } = result.data;
                 setItems(data);
               } catch (err) {
                 setToastGetItemsError(true);
@@ -209,29 +243,39 @@ function Inventory() {
                   return (
                     <TableRow key={index}>
                       <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.code}</TableCell>
+                      <TableCell>{formatCurrencyNummber(item.value)}</TableCell>
                       <TableCell>
-                        {item.code}
+                        {item.isDefault
+                          ? "Predeterminado"
+                          : item.associationItem
+                          ? "De asociación"
+                          : "De Valoración"}
                       </TableCell>
-                      <TableCell>
-                        {formatCurrencyNummber(item.value)}
-                      </TableCell>
-                      <TableCell>{item.isDefault ? 'Predeterminado' : item.associationItem ? 'De asociación'  : 'De Valoración'}</TableCell>
                       <TableCell>
                         <Stack
                           className="actions-cell"
                           direction="row"
                           spacing={3}
                         >
-                          { checkPermissions(getPermission('edit'), abilities) && <EditIcon
-                            className="action-item-icon action-item-icon-edit"
-                            onClick={() => handleEditAction(item)}
-                          ></EditIcon>
-                          }
-                          { checkPermissions(getPermission('delete'), abilities) && <ClearIcon
-                            className="action-item-icon action-item-icon-delete"
-                            onClick={() => handleDeleteAction(item)}
-                          ></ClearIcon>
-                          }
+                          {checkPermissions(
+                            getPermission("edit"),
+                            abilities
+                          ) && (
+                            <EditIcon
+                              className="action-item-icon action-item-icon-edit"
+                              onClick={() => handleEditAction(item)}
+                            ></EditIcon>
+                          )}
+                          {checkPermissions(
+                            getPermission("delete"),
+                            abilities
+                          ) && (
+                            <ClearIcon
+                              className="action-item-icon action-item-icon-delete"
+                              onClick={() => handleDeleteAction(item)}
+                            ></ClearIcon>
+                          )}
                         </Stack>
                       </TableCell>
                     </TableRow>
@@ -245,7 +289,7 @@ function Inventory() {
                 try {
                   const { result } = await getAllItems(dataLastSearch, page);
                   const { data: items, totalPages } = result;
-                  const {currentPage:currentPageAfterSearch} = items;
+                  const { currentPage: currentPageAfterSearch } = items;
                   if (currentPage !== currentPageAfterSearch) {
                     setCurrentPage(currentPageAfterSearch);
                   }
@@ -271,17 +315,15 @@ function Inventory() {
           open={openDialog}
         ></SimpleDialog>
       )}
-      <Dialog open={openDialogMessage} >
+      <Dialog open={openDialogMessage}>
         <DialogTitle>Advertencia</DialogTitle>
         <DialogContent>
-        <DialogContentText>
-            {messageDialog}
-        </DialogContentText>
+          <DialogContentText>{messageDialog}</DialogContentText>
         </DialogContent>
         <DialogActions>
-        <Button onClick={()=>handOpenDialogMessage()} color="primary">
+          <Button onClick={() => handOpenDialogMessage()} color="primary">
             Aceptar
-        </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

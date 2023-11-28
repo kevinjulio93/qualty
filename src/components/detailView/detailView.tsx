@@ -30,6 +30,10 @@ const DetailView = ({ beneficiary, visible, onClose }) => {
               <div className='content-labels'>
                 <table>
                   <tr>
+                    <td className='label'>Autor</td>
+                    <td className='value'>{beneficiary?.author?.name}</td>
+                  </tr>
+                  <tr>
                     <td className='label'>Fecha nacimiento</td>
                     <td className='value'>{beneficiary?.birthday.split('T')[0]}</td>
                   </tr>

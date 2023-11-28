@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux';
 import { checkPermissions } from '../../helpers/checkPermissions';
 import dayjs from "dayjs";
 import { SimpleDialog } from '../../components/dialog/dialog';
+import SyncIcon from "@mui/icons-material/Sync";
 
 
 
@@ -111,9 +112,16 @@ function RepDeliveryList() {
                 Aquí podras gestionar las entregas realizadas.
               </span>
             </div>
-            { checkPermissions(getPermission('create'), abilities) && <Button className="btn-create" onClick={() => handleClickOpen()}>
+            { checkPermissions(getPermission('create'), abilities) && 
+            <div className="create-button-section">
+            <Button className="btn-create" onClick={() => handleClickOpen()}>
               Generar entrega
             </Button>
+            <SyncIcon
+              className="action-item-icon action-item-icon-edit"
+              onClick={() => getDeliveryList()}
+            />
+          </div>
             }
           </div>
     

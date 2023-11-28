@@ -15,12 +15,13 @@ import { useSelector } from "react-redux";
 import { SECTIONS } from "../../constants/sections";
 import { PERMISSIONS } from "../../constants/permissions";
 import { checkPermissions } from "../../helpers/checkPermissions";
+import SyncIcon from "@mui/icons-material/Sync";
 
 function Associations() {
   const columnAndRowkeys = [
-    { label: 'Nombre', rowKey: 'name' }, 
-    { label: 'Coordinador', rowKey: 'coordinator_name' }, 
-    { label: 'Miembros', rowKey: 'membersCount' }
+    { label: "Nombre", rowKey: "name" },
+    { label: "Coordinador", rowKey: "coordinator_name" },
+    { label: "Miembros", rowKey: "membersCount" },
   ];
   const associationRef = useRef(null);
   const modalRef = useRef(null);
@@ -30,7 +31,8 @@ function Associations() {
   const [openDialog, setOpenDialog] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [dataLastSearch, setDataLastSearch] = useState("");
-  const [toastGetAssociationsError, setToastGetAssociationsError] = useState(false);
+  const [toastGetAssociationsError, setToastGetAssociationsError] =
+    useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const abilities = useSelector((state: any) => state.auth.user.abilities);
 
@@ -46,7 +48,7 @@ function Associations() {
       } = await getAssociationsList(search, page);
       setDataLastSearch(search);
       const { data: associationList, currentPage, totalPages } = data;
-      setCurrentPage(currentPage)
+      setCurrentPage(currentPage);
       setAssociations(associationList);
       setTotalPages(totalPages);
       setIsLoading(false);
@@ -75,7 +77,10 @@ function Associations() {
     if (associationRef.current !== null) {
       let association = (associationRef.current as any).getAssociation();
       const { community } = association;
-      association = { ...association, community: community._id ?? community.id };
+      association = {
+        ...association,
+        community: community._id ?? community.id,
+      };
       await updateAssociation(association);
       setIsLoading(true);
       getAssociations();
@@ -111,28 +116,29 @@ function Associations() {
   };
 
   const getPermission = (key) => {
-    switch(key) {
-      case 'edit':
+    switch (key) {
+      case "edit":
         return {
           subject: SECTIONS.ASSOCIATIONS,
           action: [PERMISSIONS.UPDATE],
         };
-      case 'delete':
+      case "delete":
         return {
           subject: SECTIONS.ASSOCIATIONS,
           action: [PERMISSIONS.DELETE],
         };
-      case 'create':
-      return {
-        subject: SECTIONS.ASSOCIATIONS,
-        action: [PERMISSIONS.CREATE],
-      };
+      case "create":
+        return {
+          subject: SECTIONS.ASSOCIATIONS,
+          action: [PERMISSIONS.CREATE],
+        };
     }
-  }
+  };
 
   const getCreateButton = () => {
     return (
-      <Modal
+      <div className="create-button-section">
+        <Modal
           className="btn-create"
           buttonText="Crear Asociacion"
           title="Crear asociacion"
@@ -145,37 +151,44 @@ function Associations() {
             ref={associationRef}
           ></AssociationForm>
         </Modal>
+        <SyncIcon
+          onClick={() => {
+            getAssociations();
+          }}
+          className="action-item-icon action-item-icon-edit"
+        ></SyncIcon>
+      </div>
     );
-  }
+  };
 
   return (
     <>
-    <ListView
-      sectionTitle="Administrar Asociaciones"
-      sectionDescription="Aquí podras gestionar las asociaciones del sistema."
-      createButtonText="Crear asociaciones"
-      listTitle="Listado de Asociaciones"
-      openToast={false}
-      toastMessage={ERROR_MESSAGES.GET_ACTIVITIES_ERROR}
-      toastSeverity={SEVERITY_TOAST.ERROR}
-      isLoading={isLoading}
-      columnHeaders={columnAndRowkeys}
-      listContent={associations}
-      totalPages={totalPages}
-      hanldeSearchFunction={(data) => getAssociations(data)}
-      hanldeVoidInputFunction={() => getAssociations()}
-      handleCloseToast={() => setToastGetAssociationsError(false)}
-      handleEdit={(event) => handleEditAction(event)}
-      handleDelete={(param) => handleDeleteAction(param)}
-      handlePaginationChange={(data) => getAssociations('', data)}
-      createButton={getCreateButton()}
-      currentPage={currentPage}
-      hasEdit={checkPermissions(getPermission('edit'), abilities)}
-      hasDelete={checkPermissions(getPermission('delete'), abilities)}
-      hasCreate={checkPermissions(getPermission('create'), abilities)}
-      hasStats={false}
-    />
-    {openDialog && (
+      <ListView
+        sectionTitle="Administrar Asociaciones"
+        sectionDescription="Aquí podras gestionar las asociaciones del sistema."
+        createButtonText="Crear asociaciones"
+        listTitle="Listado de Asociaciones"
+        openToast={false}
+        toastMessage={ERROR_MESSAGES.GET_ACTIVITIES_ERROR}
+        toastSeverity={SEVERITY_TOAST.ERROR}
+        isLoading={isLoading}
+        columnHeaders={columnAndRowkeys}
+        listContent={associations}
+        totalPages={totalPages}
+        hanldeSearchFunction={(data) => getAssociations(data)}
+        hanldeVoidInputFunction={() => getAssociations()}
+        handleCloseToast={() => setToastGetAssociationsError(false)}
+        handleEdit={(event) => handleEditAction(event)}
+        handleDelete={(param) => handleDeleteAction(param)}
+        handlePaginationChange={(data) => getAssociations("", data)}
+        createButton={getCreateButton()}
+        currentPage={currentPage}
+        hasEdit={checkPermissions(getPermission("edit"), abilities)}
+        hasDelete={checkPermissions(getPermission("delete"), abilities)}
+        hasCreate={checkPermissions(getPermission("create"), abilities)}
+        hasStats={false}
+      />
+      {openDialog && (
         <SimpleDialog
           title="Eliminar asociacion"
           bodyContent="¿Está seguro que desea eliminar esta asociacion?"

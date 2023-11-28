@@ -130,6 +130,7 @@ function ActivityList() {
       hasDelete={checkPermissions(getPermission('delete'), abilities)}
       hasStats={false}
       hasCreate={checkPermissions(getPermission('create'), abilities)}
+      refreshFn= {()=> getActivitiesList()} 
     />
     {openDialog && (
         <SimpleDialog
