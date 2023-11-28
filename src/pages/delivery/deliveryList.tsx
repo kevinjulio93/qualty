@@ -132,7 +132,8 @@ function DeliveryList() {
                 const { result } = await getAllDeliveryByBen(data);
                 setDataLastSearch(data);
                 const { data: list, totalPages } = result;
-                const mappedList = list.map((event) => {
+                
+                const mappedList = list.data.map((event) => {
                   return {
                     ...event,
                     createdAt: dayjs(event.createdAt).format("L"),
