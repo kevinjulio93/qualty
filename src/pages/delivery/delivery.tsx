@@ -142,8 +142,20 @@ function Delivery() {
         } else {
             setListMissingRequirements("No posee el soporte de Cédula Posterior");
         }
+
+        if (ben?.photo_url) {
+            aux += 1
+        } else {
+            setListMissingRequirements("No posee foto de beneficiario");
+        }
+
+        if (ben?.footprint_url) {
+            aux += 1
+        } else {
+            setListMissingRequirements("No posee huella de beneficiario");
+        }
   
-        if(aux === 8){
+        if(aux === 10){
             aux=0;
             return true;
         } else {

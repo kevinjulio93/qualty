@@ -89,7 +89,31 @@ function EventAssistance() {
           setListMissingRequirements("No posee el soporte de Cédula Posterior");
       }
 
-      if(aux===7){
+      if (ben?.photo_url) {
+        aux += 1
+      } else {
+          setListMissingRequirements("No posee foto de beneficiario");
+      }
+
+      if (ben?.footprint_url) {
+          aux += 1
+      } else {
+          setListMissingRequirements("No posee huella de beneficiario");
+      }
+
+      if (ben?.fosiga_url) {
+        aux += 1
+      } else {
+          setListMissingRequirements("No posee el soporte de EPS");
+      }
+      
+      if(ben?.sisben_url){
+          aux+=1
+        }else{
+          setListMissingRequirements("No posee el soporte de SISBEN");
+      }
+
+      if(aux===11){
         setEnableButtonAdd(true);
       }else{
         setEnableButtonAdd(false);
