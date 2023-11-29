@@ -23,5 +23,6 @@ export const epsList = [
     "COMFANORTE",
     "ECOOPSOS EPS SAS",
     "COMPARTA EPS",
-    "CAFESALUD EPS"
+    "CAFESALUD EPS",
+    "SOL DALUD EPS"
 ];

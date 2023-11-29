@@ -168,6 +168,7 @@ function DeliveryList() {
               <TableRow header>
                 <TableCell>Evento</TableCell>
                 <TableCell>Fecha</TableCell>
+                <TableCell>Cédula</TableCell>
                 <TableCell>Beneficiario</TableCell>
                 <TableCell>Autor</TableCell>
                 <TableCell>Acciones</TableCell>
@@ -177,11 +178,12 @@ function DeliveryList() {
                   <TableRow key={dev._id}>
                     <TableCell>{dev?.event?.name}</TableCell>
                     <TableCell>{dev?.createdAt}</TableCell>
+                    <TableCell>{dev?.beneficiary?.identification}</TableCell>
                     <TableCell>
                       {dev?.beneficiary?.first_name}{" "}
                       {dev?.beneficiary?.first_last_name}
                     </TableCell>
-                    <TableCell>{dev?.author?.user_name}</TableCell>
+                    <TableCell>{dev?.author?.name}</TableCell>
                     <TableCell>
                       <Stack direction="row" spacing={2}>
                         {checkPermissions(getPermission("edit"), abilities) && (
