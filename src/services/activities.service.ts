@@ -54,6 +54,29 @@ export async function getMunicipies(departmentId:string) {
     return putElementAtFirst(municipies, "id", 870);
 }
 
+export async function getPdfAssistanceActivity(act_id: any) {
+    try {
+      const url = `/activities/pdf-assistance/${act_id}`;
+      const response = await activity.getBlobWithParams(url);
+  
+      const blob =  response.result;
+      const urlBlob = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = urlBlob;
+      a.download = "Asistentes_actividad__"+Date.now()+"_.pdf";
+      a.style.display = "none";
+  
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+  
+      window.URL.revokeObjectURL(url);
+  
+    } catch (error) {
+      console.error("Error fetching PDF:", error);
+    }
+  }
+
 export async function getComunaByMunicipie(municipalityId:string) {
     const response = await activity.get(`/references/communities?municipality_id=${municipalityId}`);
     return response;
