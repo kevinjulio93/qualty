@@ -25,7 +25,7 @@ import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/ben
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
-import { getExcelActivityAssistance, getExcelBeneficiaryList, getExcelEventAssistance } from "../../services/reports.service";
+import { getExcelActivityAssistance, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
 import { getAllActivities } from "../../services/activities.service";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -97,6 +97,13 @@ function Reports() {
                     setFileType(reportFileType.PDF);
                     setDisableFileType(true);
                     getEvents();
+                    break;
+                }
+                case REPORT_TYPE.EVENT_ASSISTANCE_DIFF: {
+                    setFileType(reportFileType.EXCEL);
+                    setDisableFileType(true);
+                    getEvents();
+                    getActivitiesList();
                     break;
                 }
                 default: break;
@@ -205,6 +212,9 @@ function Reports() {
             case REPORT_TYPE.WORKSHOPS_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate);
             }
+            case REPORT_TYPE.EVENT_ASSISTANCE_DIFF: {
+                return isEmpty(selectedActivity) || isEmpty(selectedEvent);
+            }
         }
     }
 
@@ -247,6 +257,10 @@ function Reports() {
         await getPdfEventSummary(selectedEvent);
     }
 
+    const generateExcelEventActivityDiff = async() => {
+        await getExcelEventActivityDiff(selectedActivity, selectedEvent);
+    }
+
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE]: generateExcelEventAssistance,
@@ -259,9 +273,19 @@ function Reports() {
         [REPORT_TYPE.WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
         [REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
         [REPORT_TYPE.EVENT_SUMMARY]: generateEventSummaryPDF,
+        [REPORT_TYPE.EVENT_ASSISTANCE_DIFF]: generateExcelEventActivityDiff,
     };
 
     //Reports layout renders
+
+    const renderEventActivityDiff = () => {
+        return (
+            <>
+                {renderEventInput()}
+                {renderActivityInput()}
+            </>
+        );
+    }
 
     const renderDeliveryAct = () => {
         return (
@@ -547,6 +571,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
             {selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
             {selectedReport === REPORT_TYPE.EVENT_SUMMARY && renderEventAssistance()}
+            {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE_DIFF && renderEventActivityDiff()}
           </div>
         </Paper>
       </section>
