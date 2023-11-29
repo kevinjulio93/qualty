@@ -153,6 +153,7 @@ function Reports() {
             case 'Profesionales': {
                 return profesionalReports;
             }
+            case 'Auditor':
             case 'Super Admin': {
                 return reportType;
             }
