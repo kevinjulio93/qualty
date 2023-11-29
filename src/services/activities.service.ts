@@ -54,16 +54,16 @@ export async function getMunicipies(departmentId:string) {
     return putElementAtFirst(municipies, "id", 870);
 }
 
-export async function getPdfAssistanceActivity(activity: any) {
+export async function getPdfAssistanceActivity(act_id: any) {
     try {
-      const url = `/activities/pdf-assistance/${activity._id}`;
+      const url = `/activities/pdf-assistance/${act_id}`;
       const response = await activity.getBlobWithParams(url);
   
       const blob =  response.result;
       const urlBlob = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = urlBlob;
-      a.download = "Asistentes_actividad_"+activity.name+"_"+Date.now()+"_.pdf";
+      a.download = "Asistentes_actividad__"+Date.now()+"_.pdf";
       a.style.display = "none";
   
       document.body.appendChild(a);

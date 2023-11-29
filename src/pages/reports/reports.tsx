@@ -19,7 +19,7 @@ import {
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import { REPORT_TYPE, profesionalReports, promotorReports, reportType } from "../../constants/reportType";
 import SelectDropdown from "../../components/select";
-import { getAllEvents, getPdfEventSummary } from "../../services/events.service";
+import { getAllEvents, getPdfEventAssistance, getPdfEventSummary } from "../../services/events.service";
 import Search from "../../components/search/search";
 import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/beneficiaries.service";
 import "./reports.scss";
@@ -27,7 +27,7 @@ import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
 import { getExcelActivityAssistance, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
-import { getAllActivities } from "../../services/activities.service";
+import { getAllActivities, getPdfAssistanceActivity } from "../../services/activities.service";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -68,13 +68,11 @@ function Reports() {
                 }
                 case REPORT_TYPE.EVENT_ASSISTANCE: {
                     setFileType(reportFileType.EXCEL);
-                    setDisableFileType(true);
                     getEvents();
                     break;
                 }
                 case REPORT_TYPE.ACTIVITY_ASSISTANCE: {
                     setFileType(reportFileType.EXCEL);
-                    setDisableFileType(true);
                     getActivitiesList();
                     break;
                 }
@@ -227,8 +225,16 @@ function Reports() {
         await getExcelEventAssistance(selectedEvent);
     }
 
+    const generatePDFEventAssistance = async() => {
+        await getPdfEventAssistance(selectedEvent);
+    }
+
     const generateExcelActivityAssistance = async() => {
         await getExcelActivityAssistance(selectedActivity);
+    }
+
+    const generatePDFActivityAssistance = async() => {
+        await getPdfAssistanceActivity(selectedActivity);
     }
 
     const generateExcelBeneficiaryList = async() => {
@@ -264,8 +270,8 @@ function Reports() {
 
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
-        [REPORT_TYPE.EVENT_ASSISTANCE]: generateExcelEventAssistance,
-        [REPORT_TYPE.ACTIVITY_ASSISTANCE]: generateExcelActivityAssistance,
+        [REPORT_TYPE.EVENT_ASSISTANCE]: fileType === reportFileType.EXCEL ? generateExcelEventAssistance : generatePDFEventAssistance,
+        [REPORT_TYPE.ACTIVITY_ASSISTANCE]: fileType === reportFileType.EXCEL ? generateExcelActivityAssistance : generatePDFActivityAssistance,
         [REPORT_TYPE.BENEFICIARY_LIST]: generateExcelBeneficiaryList,
         [REPORT_TYPE.WITHOUT_SUPPORTS]: generateExcelBeneficiaryWithoutSupports,
         [REPORT_TYPE.BENEFICIARY_SUMMARY]: generateBeneficiarySummaryPDF,
