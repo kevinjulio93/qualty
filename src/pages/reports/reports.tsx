@@ -67,12 +67,12 @@ function Reports() {
                     break;
                 }
                 case REPORT_TYPE.EVENT_ASSISTANCE: {
-                    setFileType(reportFileType.EXCEL);
+                    setFileType(reportFileType.PDF);
                     getEvents();
                     break;
                 }
                 case REPORT_TYPE.ACTIVITY_ASSISTANCE: {
-                    setFileType(reportFileType.EXCEL);
+                    setFileType(reportFileType.PDF);
                     getActivitiesList();
                     break;
                 }
