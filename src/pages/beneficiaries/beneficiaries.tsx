@@ -512,8 +512,14 @@ function Beneficiaries() {
   }
 
   const getCurrentActivity = (act) => {
-    const index = activities.findIndex((item) => item._id === act?._id);
+    const index = activities.findIndex((item) => item._id === act);
     return activities[index]?.name || "";
+  }
+
+  const getAssociationsList = () => {
+    const index = activities.findIndex((item) => item._id === (beneficiarie as any).activity);
+    const currentAct =  activities[index];
+    return !currentAct || currentAct === "" ? associationsList : associationsList.filter(act => currentAct.participatingAssociations.some(element => element._id === act._id));
   }
 
   return (
@@ -880,7 +886,7 @@ function Beneficiaries() {
                           (beneficiarie as any)?.association
                         }
                         label="Asociacion"
-                        options={associationsList}
+                        options={getAssociationsList()}
                         keyLabel="name"
                         keyValue="_id"
                         targetKey="association"
