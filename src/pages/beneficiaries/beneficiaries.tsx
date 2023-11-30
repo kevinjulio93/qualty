@@ -81,8 +81,14 @@ function Beneficiaries() {
   ];
   const optionsRegimenHealth = [
     { label: regimeList.SUBSIDIADO, value: regimeList.SUBSIDIADO },
-    { label: regimeList.CONTRIBUTIVO_COTIZANTE, value: regimeList.CONTRIBUTIVO_COTIZANTE },
-    { label: regimeList.CONTRIBUTIVO_BENEFICIARIO, value: regimeList.CONTRIBUTIVO_BENEFICIARIO },
+    {
+      label: regimeList.CONTRIBUTIVO_COTIZANTE,
+      value: regimeList.CONTRIBUTIVO_COTIZANTE,
+    },
+    {
+      label: regimeList.CONTRIBUTIVO_BENEFICIARIO,
+      value: regimeList.CONTRIBUTIVO_BENEFICIARIO,
+    },
     { label: regimeList.REGIMEN_ESPECIAL, value: regimeList.REGIMEN_ESPECIAL },
     { label: regimeList.RETIRADO, value: regimeList.RETIRADO },
     { label: regimeList.NO_AFILIADO, value: regimeList.NO_AFILIADO },
@@ -116,7 +122,7 @@ function Beneficiaries() {
     { label: "Mental-Cognitiva", value: "Mental-Cognitiva" },
     { label: "Mental-Psicosocial", value: "Mental-Psicosocial" },
     { label: "Motriz", value: "Motriz" },
-    { label: "Otra", value: "Otra" }
+    { label: "Otra", value: "Otra" },
   ];
 
   const optionsOcupation = [
@@ -135,13 +141,68 @@ function Beneficiaries() {
   ];
 
   const sisbenList = [
-    "A1", "A2", "A3", "A4", "A5",
-    "B1", "B2", "B3", "B4", "B5", "B6", "B7",
-    "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18",
-    "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21"
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "A5",
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C8",
+    "C9",
+    "C10",
+    "C11",
+    "C12",
+    "C13",
+    "C14",
+    "C15",
+    "C16",
+    "C17",
+    "C18",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "D8",
+    "D9",
+    "D10",
+    "D11",
+    "D12",
+    "D13",
+    "D14",
+    "D15",
+    "D16",
+    "D17",
+    "D18",
+    "D19",
+    "D20",
+    "D21",
   ];
 
-  const mandatoryFields = ["identification_type", "identification", "first_last_name", "first_name", "sex", "birthday", "blody_type"]
+  const mandatoryFields = [
+    "identification_type",
+    "identification",
+    "first_last_name",
+    "first_name",
+    "sex",
+    "birthday",
+    "blody_type",
+  ];
 
   const [beneficiarie, setBeneficiarie] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
@@ -177,25 +238,25 @@ function Beneficiaries() {
         await getBeneficiary();
       })();
     }
-    
+
     //setValuesDefaultBeneficiarie();
   }, []);
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
-      (async ()=> await getMuns())();
+      (async () => await getMuns())();
     }
   }, [beneficiarie, departmentsList]);
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
-      (async ()=> await getComs())();
+      (async () => await getComs())();
     }
   }, [beneficiarie, municipiesList]);
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
-      (async ()=> await getAsos())();
+      (async () => await getAsos())();
     }
   }, [beneficiarie, communityList]);
 
@@ -226,13 +287,13 @@ function Beneficiaries() {
     try {
       const response = await getAllActivities(null, 1, 200);
       if (response.status === 200) {
-      const { data: dataList } = response.result;
+        const { data: dataList } = response.result;
         setActivities(dataList);
       }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const getBeneficiary = async () => {
     try {
@@ -269,6 +330,26 @@ function Beneficiaries() {
     }
   };
 
+
+  const associationHandler = (value) => {
+    debugger
+    if (!(beneficiarie as any).activity){
+      setBeneficiarie({...beneficiarie, association: value});
+    } else if ((beneficiarie as any).activity) {
+      setBeneficiarie({
+       ...beneficiarie,
+       residence_department: value.department,
+       community: value.community,
+       municipality: value.municipality,
+       association: value,
+     })
+      setTimeout(async () => {
+        await getMunicipiesList('residence_department', getSelectedValueDep("residence_department"))
+        getCommunities('municipality', getSelectedValueMun("municipality"))
+      }, 5000);
+    }
+  }
+
   const handleWebcamCapture = (imageBlob: any) => {
     // Include the imageBlob in your FormData
     const file = imageBlob;
@@ -286,8 +367,6 @@ function Beneficiaries() {
     setFileBen("footprint_url", fileFootprint);
     setSelectedFile(file);
   };
-
-
 
   const saveBeneficiary = async (beneficiary: any) => {
     const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
@@ -419,17 +498,20 @@ function Beneficiaries() {
   };
 
   const getMunicipiesList = async (target: string, department: any) => {
+    debugger
     try {
       const response = await getMunicipies(department?.id);
       if (response && response.length > 0) {
         setMunicipiesList(response);
-        setBeneficiarie({
-          ...beneficiarie,
-          community: null,
-          association: null,
-          municipality: null,
-          [target]: department.name,
-        });
+        if ((!beneficiarie as any).activity) {
+          setBeneficiarie({
+            ...beneficiarie,
+            community: null,
+            association: null,
+            municipality: null,
+            [target]: department.name,
+          });
+        }
       }
     } catch (error) {
       console.error(error);
@@ -441,12 +523,14 @@ function Beneficiaries() {
       const response = await getComunaByMunicipie(municipality?.id);
       if (response.status === 200) {
         setCommunityList(response.result.data);
-        setBeneficiarie({
-          ...beneficiarie,
-          community: null,
-          association: null,
-          [target]: municipality.name,
-        });
+        if (!(beneficiarie as any).activity) {
+          setBeneficiarie({
+            ...beneficiarie,
+            community: null,
+            association: null,
+            [target]: municipality.name,
+          });
+        }
       }
     } catch (error) {
       console.error(error);
@@ -454,6 +538,7 @@ function Beneficiaries() {
   };
 
   const getAssociations = async (target, community: any) => {
+    if ((beneficiarie as any).activity) return;
     try {
       console.log(community);
       formHanlder(target, community);
@@ -485,17 +570,18 @@ function Beneficiaries() {
 
   const getFormattedDate = (newDate) => {
     if (newDate.length === 8) {
-      const dateTemp = dayjs(newDate, 'YYYYMMDD');
+      const dateTemp = dayjs(newDate, "YYYYMMDD");
       return dateTemp;
     } else {
       return newDate.format();
     }
-  }
+  };
 
   const getSelectedActivity = (data) => {
-    const currentAct = activities.find(item => item.name === data);
+    const currentAct = activities.find((item) => item.name === data);
+    setAssociations(currentAct.participatingAssociations);
     return currentAct._id;
-  }
+  };
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -505,16 +591,16 @@ function Beneficiaries() {
   const displayImage = (image) => {
     setDisplayedImage(image);
     setOpenModal(true);
-  }
+  };
 
   const validateFields = () => {
-    return mandatoryFields.some(item => isEmpty(beneficiarie[item]));
-  }
+    return mandatoryFields.some((item) => isEmpty(beneficiarie[item]));
+  };
 
   const getCurrentActivity = (act) => {
-    const index = activities.findIndex((item) => item._id === act?._id);
-    return activities[index]?.name || "";
-  }
+    const activity = activities.find((item) => item._id === act);
+    return activity?.name || "";
+  };
 
   return (
     <>
@@ -542,7 +628,10 @@ function Beneficiaries() {
               />
             </div>
             <div>
-              <DPersonaReader handleCaptureFootprint={handleCaptureFootprint} existingImage={(beneficiarie as any)?.footprint_url || null}/>
+              <DPersonaReader
+                handleCaptureFootprint={handleCaptureFootprint}
+                existingImage={(beneficiarie as any)?.footprint_url || null}
+              />
             </div>
           </div>
           <div className="beneficiaries-container__form-section__beneficiarie">
@@ -563,7 +652,9 @@ function Beneficiaries() {
                   <form className="beneficiaries-container__form-section__beneficiarie__form">
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
-                        selectValue={(beneficiarie as any)?.identification_type || ""}
+                        selectValue={
+                          (beneficiarie as any)?.identification_type || ""
+                        }
                         id="tipo_de_documento"
                         label="Tipo de documento"
                         options={documentTypes}
@@ -695,8 +786,8 @@ function Beneficiaries() {
                       />
                     </div>
 
-                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                      <FormControl sx={{width: "100%"}}>
+                    <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                      <FormControl sx={{ width: "100%" }}>
                         <InputLabel id="demo-simple-select-label">
                           ¿Registrado en Actividad?
                         </InputLabel>
@@ -704,7 +795,13 @@ function Beneficiaries() {
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
                           label="Tipo de asociacion"
-                          onChange={(e) => setInAct(e.target.value)}
+                          onChange={(e) => {
+                            setInAct(e.target.value);
+                            if(e.target.value === 'NO') {
+                              setBeneficiarie({...beneficiarie, activity: null})
+                              setAssociations([]);
+                            }
+                           }}
                           value={inAct || ""}
                         >
                           <MenuItem key={"inActYes"} value={"SI"}>
@@ -716,23 +813,25 @@ function Beneficiaries() {
                         </Select>
                       </FormControl>
                     </div>
-                     { inAct === "SI" && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                      <Autocomplete
-                        style={{ width: "100%" }}
-                        disablePortal
-                        id="activity"
-                        options={activities.map(item => item.name)}
-                        onChange={(e: any, data: any) => {
-                          formHanlder("activity", getSelectedActivity(data))
-                        }
-                        }
-                        value={getCurrentActivity((beneficiarie as any)?.activity)}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Actividad" />
-                        )}
-                      />
-                    </div> 
-                    }
+                    {inAct === "SI" && (
+                      <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                        <Autocomplete
+                          style={{ width: "100%" }}
+                          disablePortal
+                          id="activity"
+                          options={activities.map((item) => item.name)}
+                          onChange={(e: any, data: any) => {
+                            formHanlder("activity", getSelectedActivity(data));
+                          }}
+                          value={getCurrentActivity(
+                            (beneficiarie as any)?.activity
+                          )}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Actividad" />
+                          )}
+                        />
+                      </div>
+                    )}
                   </form>
                 </TabPanel>
                 <TabPanel value="2">
@@ -822,7 +921,11 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                    <div
+                      className={`beneficiaries-container__form-section__beneficiarie__form__field ${
+                        (beneficiarie as any)?.activity ? "disabled" : ""
+                      }`}
+                    >
                       <SelectDropdown
                         id="departamento"
                         selectValue={
@@ -839,7 +942,11 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    <div className="activities-container__form-section__assitants__form-2__field">
+                    <div
+                      className={`activities-container__form-section__assitants__form-2__field ${
+                        (beneficiarie as any)?.activity ? "disabled" : ""
+                      }`}
+                    >
                       <SelectDropdown
                         id="municipio"
                         selectValue={getSelectedValueMun("municipality")?.id}
@@ -854,7 +961,11 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    <div className="activities-container__form-section__assitants__form-2__field">
+                    <div
+                      className={`activities-container__form-section__assitants__form-2__field ${
+                        (beneficiarie as any)?.activity ? "disabled" : ""
+                      }`}
+                    >
                       <SelectDropdown
                         id="comuna"
                         selectValue={
@@ -885,7 +996,7 @@ function Beneficiaries() {
                         keyValue="_id"
                         targetKey="association"
                         handleValue={(value) =>
-                          formHanlder("association", value)
+                          associationHandler(value)
                         }
                       />
                     </div>
@@ -997,7 +1108,11 @@ function Beneficiaries() {
                       </Button>
                     </div>
                   )}
-                  <Stack className="content-supports" direction="row" spacing={2}>
+                  <Stack
+                    className="content-supports"
+                    direction="row"
+                    spacing={2}
+                  >
                     <Card sx={{ maxWidth: 200 }}>
                       <CardMedia
                         sx={{ width: 100, height: 100 }}
@@ -1188,7 +1303,7 @@ function Beneficiaries() {
       </section>
       <SaveCancelControls
         saveText="Guardar"
-        handleSave={(e) => createBeneficiarie() }
+        handleSave={(e) => createBeneficiarie()}
         disabled={validateFields()}
       />
       <Dialog
