@@ -513,9 +513,7 @@ function Beneficiaries() {
   };
 
   const getAssociations = async (target, community: any) => {
-    if ((beneficiarie as any).activity) return;
     try {
-      console.log(community);
       formHanlder(target, community);
       const response = await getAssociationsByCommunity(community?._id);
       if (response.status === 200) {
