@@ -37,6 +37,7 @@ import { RootState } from "../../app/store";
 import { getFilePdfRatings } from "../../services/rating.service";
 import { workshops } from "../../constants/workshops";
 import { getWorkshopListPdf } from "../../services/workshop.service";
+import { getUserList } from "../../services/user.service";
 
 function Reports() {
     const [selectedReport, setSelectedReport] = useState(null);
@@ -45,6 +46,7 @@ function Reports() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [beneficiaries, setBeneficiaries] = useState([]);
+    const [usersList, setUsersList] = useState([]);
     const [selectedBen, setSelectedBen] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [fileType, setFileType] = useState(reportFileType.PDF);
@@ -53,6 +55,7 @@ function Reports() {
     const [endDate, setEndDate] = useState(null);
     const [selectedRating, setSelectedRating] = useState(null);
     const [selectedWork, setSelectedWork] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
     const loggedUser = useSelector((state: RootState) => state.auth.user);
     const userRol = loggedUser.role.role;
 
@@ -104,6 +107,12 @@ function Reports() {
                     getActivitiesList();
                     break;
                 }
+                case REPORT_TYPE.BENEFICIARIES_BY_USER: {
+                    setFileType(reportFileType.PDF);
+                    setDisableFileType(true);
+                    getUsersList();
+                    break;
+                }
                 default: break;
             }
         }
@@ -136,6 +145,18 @@ function Reports() {
           if (response.status === 200) {
             const { data: dataList } = response.result;
             setActivities(dataList);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const getUsersList = async () => {
+        try {
+          const response = await getUserList("", 1, 100);
+          if (response.status === 200) {
+            const { data: dataList } = response.result;
+            setUsersList(dataList);
           }
         } catch (error) {
           console.error(error);
@@ -182,6 +203,7 @@ function Reports() {
         setSelectedRating(null);
         setSelectedWork(null);
         setSelectedActivity(null);
+        setSelectedUser(null);
     }
 
     const disabledReportButton = () => {
@@ -246,7 +268,7 @@ function Reports() {
     }
 
     const generateBeneficiarySummaryPDF = async() => {
-        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate) };
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), userId: selectedUser };
         await getPdfListBeneficiarie(config);
     }
 
@@ -281,6 +303,7 @@ function Reports() {
         [REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
         [REPORT_TYPE.EVENT_SUMMARY]: generateEventSummaryPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE_DIFF]: generateExcelEventActivityDiff,
+        [REPORT_TYPE.BENEFICIARIES_BY_USER]: generateBeneficiarySummaryPDF,
     };
 
     //Reports layout renders
@@ -353,6 +376,15 @@ function Reports() {
         );
     }
 
+    const renderBeneficiariesByUser = () => {
+        return (
+            <>
+              {renderDateRange()}
+              {renderUserInput()}
+            </>
+        );
+    }
+
     //Generic input renders
     const renderEventInput = () => {
         return (
@@ -366,6 +398,24 @@ function Reports() {
                     keyValue="_id"
                     targetKey="_id"
                     handleValue={(value) => setSelectedEvent(value._id)}
+                />
+              </div>
+            </form>
+        );
+    }
+
+    const renderUserInput = () => {
+        return (
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
+                <SelectDropdown
+                    selectValue={selectedUser}
+                    label="Usuario"
+                    options={usersList || []}
+                    keyLabel="name"
+                    keyValue="_id"
+                    targetKey="_id"
+                    handleValue={(value) => setSelectedUser(value._id)}
                 />
               </div>
             </form>
@@ -588,6 +638,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY && renderGeneralWorkshopsSummary()}
             {selectedReport === REPORT_TYPE.EVENT_SUMMARY && renderEventAssistance()}
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE_DIFF && renderEventActivityDiff()}
+            {selectedReport === REPORT_TYPE.BENEFICIARIES_BY_USER && renderBeneficiariesByUser()}
           </div>
         </Paper>
       </section>
