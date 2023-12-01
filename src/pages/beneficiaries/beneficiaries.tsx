@@ -598,7 +598,8 @@ function Beneficiaries() {
   };
 
   const getCurrentActivity = (act) => {
-    const index = activities.findIndex((item) => item._id === act);
+    const actId = typeof act === "object" ? act._id : act
+    const index = activities.findIndex((item) => item._id === actId);
     return activities[index]?.name || "";
   };
 
