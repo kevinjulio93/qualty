@@ -330,26 +330,6 @@ function Beneficiaries() {
     }
   };
 
-
-  const associationHandler = (value) => {
-    debugger
-    if (!(beneficiarie as any).activity){
-      setBeneficiarie({...beneficiarie, association: value});
-    } else if ((beneficiarie as any).activity) {
-      setBeneficiarie({
-       ...beneficiarie,
-       residence_department: value.department,
-       community: value.community,
-       municipality: value.municipality,
-       association: value,
-     })
-      setTimeout(async () => {
-        await getMunicipiesList('residence_department', getSelectedValueDep("residence_department"))
-        getCommunities('municipality', getSelectedValueMun("municipality"))
-      }, 5000);
-    }
-  }
-
   const handleWebcamCapture = (imageBlob: any) => {
     // Include the imageBlob in your FormData
     const file = imageBlob;
@@ -498,20 +478,17 @@ function Beneficiaries() {
   };
 
   const getMunicipiesList = async (target: string, department: any) => {
-    debugger
     try {
       const response = await getMunicipies(department?.id);
       if (response && response.length > 0) {
         setMunicipiesList(response);
-        if ((!beneficiarie as any).activity) {
-          setBeneficiarie({
-            ...beneficiarie,
-            community: null,
-            association: null,
-            municipality: null,
-            [target]: department.name,
-          });
-        }
+        setBeneficiarie({
+          ...beneficiarie,
+          community: null,
+          association: null,
+          municipality: null,
+          [target]: department.name,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -523,14 +500,12 @@ function Beneficiaries() {
       const response = await getComunaByMunicipie(municipality?.id);
       if (response.status === 200) {
         setCommunityList(response.result.data);
-        if (!(beneficiarie as any).activity) {
-          setBeneficiarie({
-            ...beneficiarie,
-            community: null,
-            association: null,
-            [target]: municipality.name,
-          });
-        }
+        setBeneficiarie({
+          ...beneficiarie,
+          community: null,
+          association: null,
+          [target]: municipality.name,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -538,9 +513,7 @@ function Beneficiaries() {
   };
 
   const getAssociations = async (target, community: any) => {
-    if ((beneficiarie as any).activity) return;
     try {
-      console.log(community);
       formHanlder(target, community);
       const response = await getAssociationsByCommunity(community?._id);
       if (response.status === 200) {
@@ -579,7 +552,6 @@ function Beneficiaries() {
 
   const getSelectedActivity = (data) => {
     const currentAct = activities.find((item) => item.name === data);
-    setAssociations(currentAct.participatingAssociations);
     return currentAct._id;
   };
 
@@ -804,10 +776,6 @@ function Beneficiaries() {
                           label="Tipo de asociacion"
                           onChange={(e) => {
                             setInAct(e.target.value);
-                            if(e.target.value === 'NO') {
-                              setBeneficiarie({...beneficiarie, activity: null})
-                              setAssociations([]);
-                            }
                            }}
                           value={inAct || ""}
                         >
@@ -929,9 +897,7 @@ function Beneficiaries() {
                     </div>
 
                     <div
-                      className={`beneficiaries-container__form-section__beneficiarie__form__field ${
-                        (beneficiarie as any)?.activity ? "disabled" : ""
-                      }`}
+                      className={`beneficiaries-container__form-section__beneficiarie__form__field }`}
                     >
                       <SelectDropdown
                         id="departamento"
@@ -950,9 +916,7 @@ function Beneficiaries() {
                     </div>
 
                     <div
-                      className={`activities-container__form-section__assitants__form-2__field ${
-                        (beneficiarie as any)?.activity ? "disabled" : ""
-                      }`}
+                      className={`activities-container__form-section__assitants__form-2__field}`}
                     >
                       <SelectDropdown
                         id="municipio"
@@ -969,9 +933,7 @@ function Beneficiaries() {
                     </div>
 
                     <div
-                      className={`activities-container__form-section__assitants__form-2__field ${
-                        (beneficiarie as any)?.activity ? "disabled" : ""
-                      }`}
+                      className={`activities-container__form-section__assitants__form-2__field}`}
                     >
                       <SelectDropdown
                         id="comuna"
@@ -1003,7 +965,7 @@ function Beneficiaries() {
                         keyValue="_id"
                         targetKey="association"
                         handleValue={(value) =>
-                          associationHandler(value)
+                          formHanlder("association", value)
                         }
                       />
                     </div>
