@@ -256,7 +256,7 @@ function Reports() {
     }
 
     const generateWorkshopsSummaryPDF = async() => {
-        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), query: selectedWork };
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), typeWorkShop: selectedWork };
         await getWorkshopListPdf(config, selectedReport);
     }
 
@@ -340,6 +340,15 @@ function Reports() {
         return (
             <>
               {renderDateRange()}
+            </>
+        );
+    }
+
+    const renderGeneralWorkshopsSummary = () => {
+        return (
+            <>
+              {renderDateRange()}
+              {renderWorkshopInput()}
             </>
         );
     }
@@ -576,7 +585,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.GENERAL_RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
-            {selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
+            {selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY && renderGeneralWorkshopsSummary()}
             {selectedReport === REPORT_TYPE.EVENT_SUMMARY && renderEventAssistance()}
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE_DIFF && renderEventActivityDiff()}
           </div>
