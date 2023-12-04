@@ -25,7 +25,7 @@ import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/ben
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
-import { getExcelActivityAssistance, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance } from "../../services/reports.service";
+import { getExcelActivityAssistance, getExcelActivityList, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
 import { getAllActivities, getPdfAssistanceActivity } from "../../services/activities.service";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -79,6 +79,7 @@ function Reports() {
                     getActivitiesList();
                     break;
                 }
+                case REPORT_TYPE.ACTIVITIES_LIST:
                 case REPORT_TYPE.BENEFICIARY_LIST:
                 case REPORT_TYPE.WITHOUT_SUPPORTS: {
                     setFileType(reportFileType.EXCEL);
@@ -226,6 +227,7 @@ function Reports() {
             case REPORT_TYPE.RATINGS_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate) || isEmpty(selectedRating);
             }
+            case REPORT_TYPE.ACTIVITIES_LIST:
             case REPORT_TYPE.BENEFICIARY_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate);
             }
@@ -290,6 +292,10 @@ function Reports() {
         await getExcelEventActivityDiff(selectedActivity, selectedEvent);
     }
 
+    const generateExcelActivityList = async() => {
+        await getExcelActivityList(dayjs(startDate), dayjs(endDate));
+    }
+
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE]: fileType === reportFileType.EXCEL ? generateExcelEventAssistance : generatePDFEventAssistance,
@@ -304,6 +310,7 @@ function Reports() {
         [REPORT_TYPE.EVENT_SUMMARY]: generateEventSummaryPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE_DIFF]: generateExcelEventActivityDiff,
         [REPORT_TYPE.BENEFICIARIES_BY_USER]: generateBeneficiarySummaryPDF,
+        [REPORT_TYPE.ACTIVITIES_LIST]: generateExcelActivityList,
     };
 
     //Reports layout renders
@@ -381,6 +388,14 @@ function Reports() {
             <>
               {renderDateRange()}
               {renderUserInput()}
+            </>
+        );
+    }
+
+    const renderActivityList = () => {
+        return (
+            <>
+              {renderDateRange()}
             </>
         );
     }
@@ -639,6 +654,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.EVENT_SUMMARY && renderEventAssistance()}
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE_DIFF && renderEventActivityDiff()}
             {selectedReport === REPORT_TYPE.BENEFICIARIES_BY_USER && renderBeneficiariesByUser()}
+            {selectedReport === REPORT_TYPE.ACTIVITIES_LIST && renderActivityList()}
           </div>
         </Paper>
       </section>

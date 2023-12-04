@@ -20,6 +20,7 @@ export const enum REPORT_TYPE {
     EVENT_SUMMARY = 'EVENT_SUMMARY',
     EVENT_ASSISTANCE_DIFF = 'EVENT_ASSISTANCE_DIFF',
     BENEFICIARIES_BY_USER = "BENEFICIARIES_BY_USER",
+    ACTIVITIES_LIST = "ACTIVITIES_LIST",
 }
 
 export const reportType = [
@@ -67,6 +68,10 @@ export const reportType = [
     {
         text: 'Registros por usuario',
         key: REPORT_TYPE.BENEFICIARIES_BY_USER
+    },
+    {
+        text: 'Listado de actividades',
+        key: REPORT_TYPE.ACTIVITIES_LIST
     }
 ];
 
