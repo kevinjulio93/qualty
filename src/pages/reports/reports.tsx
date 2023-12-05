@@ -56,6 +56,7 @@ function Reports() {
     const [selectedRating, setSelectedRating] = useState(null);
     const [selectedWork, setSelectedWork] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [benInfo, setBenInfo] = useState(null);
     const loggedUser = useSelector((state: RootState) => state.auth.user);
     const userRol = loggedUser.role.role;
 
@@ -192,6 +193,7 @@ function Reports() {
 
     const handleSelectedBend = (ben, index) => {
         setSelectedIndex(index);
+        setBenInfo(ben);
         setSelectedBen(ben._id);
     }
 
@@ -242,7 +244,7 @@ function Reports() {
     }
 
     const generateEventActPDF = async() => {
-        await getPdfDeliveryBeneficiarie(selectedEvent, selectedBen);
+        await getPdfDeliveryBeneficiarie(selectedEvent, benInfo);
     }
 
     const generateExcelEventAssistance = async() => {

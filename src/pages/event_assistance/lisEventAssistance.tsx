@@ -54,7 +54,7 @@ function ListEventAssistance() {
     }
 
     const generateEventActPDF = async(beneficiarie) => {
-      await getPdfDeliveryBeneficiarie(eventSelected, beneficiarie._id);
+      await getPdfDeliveryBeneficiarie(eventSelected, beneficiarie);
     }
 
     const handlerAutocomplete = (data) => {
