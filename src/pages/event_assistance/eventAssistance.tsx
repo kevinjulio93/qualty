@@ -13,8 +13,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import userImage from '../../assets/user.png'
 import { regimeList } from '../../constants/regimeList';
+import { getPdfDeliveryBeneficiarie } from '../../services/delivery.service';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -167,6 +169,10 @@ function EventAssistance() {
       }
     }
 
+    const generateEventActPDF = async(beneficiarie) => {
+      await getPdfDeliveryBeneficiarie(eventSelected, beneficiarie._id);
+  }
+
     const checkAttendeceBen=(beneficiarie:any)=>{
       const eventFound=events.find((event)=>event._id===eventSelected);
       const listAttendees=eventFound?.attendees;
@@ -178,7 +184,13 @@ function EventAssistance() {
         >
         </VisibilityIcon>
       }else{
-        return <DoneIcon color='success'/>
+        return [
+          <DoneIcon color='success'/>,
+          <PictureAsPdfIcon 
+            className="action-item-icon action-item-icon-delete"
+            onClick={() => generateEventActPDF(beneficiarie)}
+          />
+        ];
       }
     }
 

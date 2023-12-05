@@ -40,6 +40,7 @@ import RepDeliveryList from './pages/repDeliveryList/repDeliveryList';
 import RepDeliveryDetail from './pages/repDeliveryDetail/repDeliveryDetail';
 import Reports from './pages/reports/reports';
 import Resume from './pages/resume/resume';
+import ListEventAssistance from './pages/event_assistance/lisEventAssistance';
 
 
 function App() {
@@ -126,6 +127,7 @@ function App() {
                   <Route path={ROUTES.EVENTS} element={<EventDetail/>} />
                   <Route path={ROUTES.EVENTS+'/:eventId'} element={<EventDetail />} />
                   <Route path={ROUTES.STATS+'/:eventId'} element={<Stats />} />
+                  <Route path={ROUTES.ACTS} element={<ListEventAssistance />} />
                 </Route>
                 <Route element={<PermissionGuard permissions={{ subject: SECTIONS.DELIVERY, action: [PERMISSIONS.READ] }} />}>
                   <Route path={ROUTES.DELIVERY_LIST} element={<DeliveryList />} />

@@ -34,6 +34,7 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import CategoryIcon from '@mui/icons-material/Category';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import HistoryIcon from '@mui/icons-material/History';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 
 
 function SideMenu(props) {
@@ -75,7 +76,8 @@ function SideMenu(props) {
     repres: <AssignmentIndIcon />,
     items: <CategoryIcon />,
     pdf: <PictureAsPdfRoundedIcon />,
-    history: <HistoryIcon></HistoryIcon>
+    history: <HistoryIcon></HistoryIcon>,
+    opened: <FileOpenIcon />,
   };
 
   const getIcon = (icon: string) => {
@@ -117,7 +119,9 @@ function SideMenu(props) {
       case "pdf":
         return iconList.pdf;
       case "history":
-        return iconList.history
+        return iconList.history;
+      case "opened":
+        return iconList.opened;
       default:
         return iconList.draft;
     }
