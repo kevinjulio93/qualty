@@ -192,4 +192,15 @@ export const sectionList = [
       action: [PERMISSIONS.READ],
     },
   },
+  {
+    key: "actas",
+    name: "Actas",
+    path: ROUTES.ACTS,
+    icon: "opened",
+    hasChilds: false,
+    permission: {
+      subject: SECTIONS.EVENTS,
+      action: [PERMISSIONS.READ]
+    }
+  },
 ];

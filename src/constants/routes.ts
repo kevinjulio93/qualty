@@ -30,6 +30,7 @@ export const ROUTES = {
     REPRESENTATIVE_DELIVERY_LIST: 'rep-delivery-list',
     REPRESENTATIVE_DELIVERY_DETAIL: 'rep-delivery-detail',
     REPORTS: 'reports',
-    RESUMEN: 'resumen'
+    RESUMEN: 'resumen',
+    ACTS: 'acts'
 
 }
