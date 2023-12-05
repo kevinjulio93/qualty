@@ -127,7 +127,7 @@ function Winerie() {
 
   const getWineries = async () => {
     setIsLoading(true);
-    const response = await getAllWineries();
+    const response = await getAllWineries(null, 1, 100);
     setWineries(response.result.data.data);
     getNamesWineries(response.result.data.data);
   };
