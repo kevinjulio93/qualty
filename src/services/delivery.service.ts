@@ -12,16 +12,16 @@ export async function updateDelivery(id) {
     return response;
 }
 
-export async function getPdfDeliveryBeneficiarie(idEvent: string, idBeneficiarie: string) {
+export async function getPdfDeliveryBeneficiarie(idEvent: string, beneficiary: any) {
   try {
-    const url = `/deliverys/pdf/${idEvent}/${idBeneficiarie}`;
+    const url = `/deliverys/pdf/${idEvent}/${beneficiary._id}`;
     const response = await delivery.getBlobWithParams(url);
 
     const blob =  response.result;
     const urlBlob = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = urlBlob;
-    a.download = "delivery__"+Date.now()+"_.pdf";
+    a.download = beneficiary.identification + ".pdf";
     a.style.display = "none";
 
     document.body.appendChild(a);
