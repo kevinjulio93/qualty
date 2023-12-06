@@ -123,7 +123,7 @@ function Reports() {
     //Resources requests
     const getEvents = async() => {
         try {
-          const responseEvents = await getAllEvents();
+          const responseEvents = await getAllEvents(null, 1, 1000);
           const events = responseEvents.result.data.data;
           setEventList(events);
         } catch (error) {
@@ -143,7 +143,7 @@ function Reports() {
 
     const getActivitiesList = async () => {
         try {
-          const response = await getAllActivities("", 1, 100);
+          const response = await getAllActivities("", 1, 1000);
           if (response.status === 200) {
             const { data: dataList } = response.result;
             setActivities(dataList);
@@ -155,7 +155,7 @@ function Reports() {
 
     const getUsersList = async () => {
         try {
-          const response = await getUserList("", 1, 100);
+          const response = await getUserList("", 1, 1000);
           if (response.status === 200) {
             const { data: dataList } = response.result;
             setUsersList(dataList);

@@ -1,7 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import "./activityDetail.scss";
 import { useEffect, useState } from "react";
-import { Autocomplete, Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Table, TableCell, TableRow } from "../../components/table/table";
 import SelectDropdown from "../../components/select";
 import {
@@ -20,6 +27,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
+import Toast from "../../components/toast/toast";
+import { SEVERITY_TOAST } from "../../constants/severityToast";
 
 function ActivityDetail() {
   const { activityId } = useParams();
@@ -37,6 +46,8 @@ function ActivityDetail() {
   const [selectedMun, setSelectedMun] = useState(null);
   const [selectedCom, setSelectedCom] = useState(null);
   const [selectedAso, setSelectedAso] = useState(null);
+  const [openToast, setOpenToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -166,7 +177,8 @@ function ActivityDetail() {
       await saveActivity(payload);
       navigate(`${ROUTES.DASHBOARD}/${ROUTES.ACTIVITIES_LIST}`);
     } catch (error) {
-      console.error("no se creó la asociacion");
+      setToastMsg("Ocurrio un problema al crear la actividd");
+      setOpenToast(true)
     }
   };
 
@@ -350,7 +362,13 @@ function ActivityDetail() {
       </section>
       <SaveCancelControls
         saveText="Guardar"
-        handleSave={(e) => createActivity() }
+        handleSave={(e) => createActivity()}
+      />
+      <Toast
+        open={openToast}
+        message={toastMsg}
+        severity={SEVERITY_TOAST.ERROR}
+        handleClose={() => setOpenToast(false)}
       />
     </>
   );

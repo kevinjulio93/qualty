@@ -59,6 +59,8 @@ import { isEmpty } from "../../helpers/isEmpty";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { regimeList } from "../../constants/regimeList";
+import { SEVERITY_TOAST } from "../../constants/severityToast";
+import Toast from "../../components/toast/toast";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -225,6 +227,7 @@ function Beneficiaries() {
   const [forceRender, setForceRender] = useState(+new Date());
   const [activities, setActivities] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
   const [inAct, setInAct] = useState("");
   const [displayedImage, setDisplayedImage] = useState(null);
   const navigate = useNavigate();
@@ -352,10 +355,10 @@ function Beneficiaries() {
     const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
     if (files || (beneficiarie as any)?.photo_url) {
       try {
-        await saveData(files, beneficiary); // Replace with your actual access token
+        await saveData(files, {}); // Replace with your actual access token
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
       } catch (error) {
-        console.error("Upload failed:", error);
+        setOpenToast(true);
       }
     }
   };
@@ -570,16 +573,24 @@ function Beneficiaries() {
   };
 
   const getCurrentActivity = (act) => {
-    const actId = typeof act === "object" ? act._id : act
+    const actId = typeof act === "object" ? act._id : act;
     const index = activities.findIndex((item) => item._id === actId);
     return activities[index]?.name || "";
   };
 
   const getAssociationsList = () => {
-    const index = activities.findIndex((item) => item._id === (beneficiarie as any).activity);
-    const currentAct =  activities[index];
-    return !currentAct || currentAct === "" ? associationsList : associationsList.filter(act => currentAct.participatingAssociations.some(element => element._id === act._id));
-  }
+    const index = activities.findIndex(
+      (item) => item._id === (beneficiarie as any).activity
+    );
+    const currentAct = activities[index];
+    return !currentAct || currentAct === ""
+      ? associationsList
+      : associationsList.filter((act) =>
+          currentAct.participatingAssociations.some(
+            (element) => element._id === act._id
+          )
+        );
+  };
 
   return (
     <>
@@ -776,7 +787,7 @@ function Beneficiaries() {
                           label="Tipo de asociacion"
                           onChange={(e) => {
                             setInAct(e.target.value);
-                           }}
+                          }}
                           value={inAct || ""}
                         >
                           <MenuItem key={"inActYes"} value={"SI"}>
@@ -1291,6 +1302,12 @@ function Beneficiaries() {
           />
         </DialogContent>
       </Dialog>
+      <Toast
+          open={openToast}
+          message={`Ocurrio un error al guardar el beneficiario`}
+          severity={SEVERITY_TOAST.ERROR}
+          handleClose={() => setOpenToast(false)}
+        />;
     </>
   );
 }
