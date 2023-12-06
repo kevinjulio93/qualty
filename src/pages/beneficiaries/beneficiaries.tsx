@@ -355,7 +355,7 @@ function Beneficiaries() {
     const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
     if (files || (beneficiarie as any)?.photo_url) {
       try {
-        await saveData(files, {}); // Replace with your actual access token
+        await saveData(files, beneficiary); // Replace with your actual access token
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
       } catch (error) {
         setOpenToast(true);
