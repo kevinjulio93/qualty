@@ -222,7 +222,7 @@ function Delivery() {
   const getEvents = async () => {
     setIsLoading(true);
     try {
-      const response = await getAllEvents(null, 1, 200);
+      const response = await getAllEvents(null, 1, 1000);
       if (response.status === 200) {
         const dataList = response.result.data.data.map((item) => item.name);
         setEvents(dataList);
