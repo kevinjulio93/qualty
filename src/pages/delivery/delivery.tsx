@@ -21,8 +21,6 @@ import "./delivery.scss";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Search from "../../components/search/search";
 import { getBeneficiariesList } from "../../services/beneficiaries.service";
-//import { useNavigate } from "react-router-dom";
-//import { ROUTES } from "../../constants/routes";
 import { getAllEvents } from "../../services/events.service";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
@@ -31,8 +29,7 @@ import {
   getDeliveryById,
 } from "../../services/delivery.service";
 import WarningIcon from "@mui/icons-material/Warning";
-import { useNavigate, useParams } from "react-router-dom";
-import { ROUTES } from "../../constants/routes";
+import { useParams } from "react-router-dom";
 import { getRatingsByBeneficiary } from "../../services/rating.service";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import { formatCurrencyNummber } from "../../helpers/formatCurrencyNumber";
@@ -81,9 +78,7 @@ function Delivery() {
   const [openLeftModal, setOpenLeftModal] = useState(false);
   const [openToast, setOpenToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
-  const navigate = useNavigate();
 
-  //const navigate = useNavigate();
 
   useEffect(() => {
     getEvents();
@@ -102,6 +97,7 @@ function Delivery() {
   useEffect(() => {
     if (deliveryId && !isEmpty(itemList)) {
       setCurrentCounter();
+      setOpenLeftModal(true);
     }
   }, [itemList]);
 
@@ -330,7 +326,8 @@ function Delivery() {
     };
     try {
       await createDelivery(currentDevlivery);
-      navigate(`${ROUTES.DASHBOARD}/${ROUTES.DELIVERY_LIST}`);
+      setOpenLeftModal(!openLeftModal);
+      setSelectedBen(null);
     } catch (error) {
         setOpenToast(true);
         setToastMsg('Ocurrio un error realizando la entrega');
@@ -470,12 +467,12 @@ function Delivery() {
               <div className="section-table-butom">
                 <div className="panel-heading">
                   Beneficiario seleccionado
-                  <button
+                  {!deliveryId && <button
                     className="btn-close-left"
                     onClick={() => closeLefModal()}
                   >
                     x
-                  </button>
+                  </button>}
                 </div>
                 <div className="content-scroll">
                   <div className="assistance-container__form-section__table__info">
