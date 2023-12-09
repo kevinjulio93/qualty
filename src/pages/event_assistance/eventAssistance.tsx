@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import LoadingComponent from '../../components/loading/loading';
 import Search from '../../components/search/search';
 import { getBeneficiariesList } from '../../services/beneficiaries.service';
-import { getAllEvents ,updateEvent} from '../../services/events.service';
+import { getAllEvents ,removeAssitance,updateEvent} from '../../services/events.service';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -15,6 +15,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import WarningIcon from '@mui/icons-material/Warning';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import userImage from '../../assets/user.png'
+import ClearIcon from "@mui/icons-material/Clear";
 import { regimeList } from '../../constants/regimeList';
 import { getPdfDeliveryBeneficiarie } from '../../services/delivery.service';
 
@@ -41,6 +42,7 @@ function EventAssistance() {
     const [missingRequirements,setMissingRequirements]=useState([]);
     const [openDialogMessage,setOpenDialogMessage]=useState(false);
     const [openDialogMessageAction,setOpenDialogMessageAction]=useState(false);
+    const [openDialogRemoved, setOpenDialogRemoved] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
 
     const [levelSisben,setLevelSisben]=useState(["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"]);
@@ -185,11 +187,15 @@ function EventAssistance() {
         </VisibilityIcon>
       }else{
         return [
-          <DoneIcon color='success'/>,
+          <DoneIcon className="action-item-icon action-item-icon-add"/>,
           <PictureAsPdfIcon 
-            className="action-item-icon action-item-icon-delete"
+            className="action-item-icon action-item-icon-edit"
             onClick={() => generateEventActPDF(beneficiarie)}
-          />
+          />,
+          <ClearIcon
+            onClick={() => openRemoveConfirmDialog(beneficiarie)}
+            className="action-item-icon action-item-icon-delete"
+          ></ClearIcon>
         ];
       }
     }
@@ -220,6 +226,23 @@ function EventAssistance() {
 
     const handOpenDialogMessageAction=()=>{
       setOpenDialogMessageAction(!openDialogMessageAction);
+    }
+
+    const openRemoveConfirmDialog = (ben: any) => {
+      setBenSelected(ben);
+      setOpenDialogRemoved(true);
+    }
+
+    const handleOpenDialogRemoved = () => {
+      setOpenDialogRemoved(false);
+    }
+
+    const confirmRemoveAssistance = async() => {
+      const eventFound = events.find((event) => event._id === eventSelected);
+      eventFound.attendees = [benSelected?._id];
+      await removeAssitance(eventFound?._id, eventFound);
+      refressInfo();
+      handleOpenDialogRemoved();
     }
 
     const confirmAssistance=async ()=>{
@@ -533,6 +556,23 @@ function EventAssistance() {
               </DialogContent>
               <DialogActions>
               <Button onClick={()=>handOpenDialogMessageAction()} color="primary">
+                  Aceptar
+              </Button>
+              </DialogActions>
+            </Dialog>
+
+            <Dialog open={openDialogRemoved} >
+              <DialogTitle>Advertencia</DialogTitle>
+              <DialogContent>
+              <DialogContentText>
+                  ¿Está seguro que desea remover la asistencia al evento?
+              </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+              <Button onClick={()=>handleOpenDialogRemoved()} color="primary">
+                  Cancelar
+              </Button>
+              <Button onClick={()=>confirmRemoveAssistance()} color="primary">
                   Aceptar
               </Button>
               </DialogActions>
