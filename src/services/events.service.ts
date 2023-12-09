@@ -96,3 +96,8 @@ export async function getEventStats(id: string) {
   const response = await events.get(`/events/stats/${id}`);
   return response;
 }
+
+export async function removeAssitance(id:string,data: any) {
+  const response = await events.put("/events/remove/" + id, data);
+  return response;
+}
