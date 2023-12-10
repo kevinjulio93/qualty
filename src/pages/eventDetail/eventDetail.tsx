@@ -57,9 +57,15 @@ function EventDetail() {
   const getCurrentEvent = async () => {
     const currentEvent = await getEventById(eventId);
     setEvent(currentEvent.result.data);
-    setselectedBog(currentEvent.result.data.associated_winery);
+    const currentWinerie = getCurrentWinerie(currentEvent.result.data.associated_winery);
+    setselectedBog(currentWinerie);
     seteventsAssociations(currentEvent.result.data.participatingAssociations);
   };
+
+  const getCurrentWinerie = (id) => {
+    const index = storages.findIndex(store => store._id === id);
+    return index !== -1 ? storages[index] : {};
+  }
 
   const formHanlder = (target: string, e: any) => {
     const value = e.target ? e.target.value : e;
