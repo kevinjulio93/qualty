@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 
 import Webcam from 'react-webcam';
 
-function WebcamCapture({ onCapture, isEditing, existingImage }) {
+function WebcamCapture({ onCapture, isEditing, existingImage, onImageExplored }) {
     const webcamRef = useRef(null);
     const [capturedImage, setCapturedImage] = useState(null);
     const [cameraOpen, setCameraOpen] = useState(false); // Track whether the camera is open
@@ -57,6 +57,20 @@ function WebcamCapture({ onCapture, isEditing, existingImage }) {
                     </div>
                     <div className='content-image__buttons'>
                         <Button onClick={startCamera} className='btn-image--capture'>Abrir camara</Button>
+                        <input
+                          id="photo_url"
+                          hidden
+                          type="file"
+                          accept="image/*"
+                          name="myImage"
+                          onChange={(event) => onImageExplored(event)}
+                        />
+                        <label
+                          className='btn-image--upload'
+                          htmlFor="photo_url"
+                        >
+                          Explorar
+                        </label>
                         <Button className='btn-image--delete' onClick={clearCapturedImage}>Borrar imagen</Button>
                     </div>
                 </div>

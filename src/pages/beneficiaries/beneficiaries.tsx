@@ -215,6 +215,7 @@ function Beneficiaries() {
   const [docEps, setDocEps] = useState(null);
   const [docSis, setDocSis] = useState(null);
   const [docReg, setDocReg] = useState(null);
+  const [uploadedPhoto, setUploadedPhoto] = useState(null);
   const { beneficiarieId } = useParams();
   const [openCamaraSupports, setOpenCamaraSupports] = useState(false);
   const webcamRef = useRef(null);
@@ -338,9 +339,22 @@ function Beneficiaries() {
     const file = imageBlob;
     const ext = file.type.split("/")[1];
     const filePhoto = new File([file], "foto." + ext);
+    console.log(filePhoto);
     setFileBen("photo_url", filePhoto);
     setSelectedFile(file);
   };
+
+  const handleImageExplored = (e) => {
+    const imageDoc = e.target.files[0];
+    const file = imageDoc;
+    const ext = file.type.split("/")[1];
+    const filePhoto = new File([file], "foto." + ext);
+    console.log(filePhoto);
+    setBeneficiarie({...beneficiarie, photo_url: null});
+    setFileBen("photo_url", imageDoc);
+    setUploadedPhoto(URL.createObjectURL(imageDoc));
+    setSelectedFile(file);
+  }
 
   const handleCaptureFootprint = (imageBlob: any) => {
     // Include the imageBlob in your FormData
@@ -368,6 +382,7 @@ function Beneficiaries() {
   };
 
   const setFileBen = (key, file, name?: string | null) => {
+    console.log(files);
     const listFiles = files;
     let fileParse = null;
     if (name) {
@@ -612,9 +627,10 @@ function Beneficiaries() {
               <WebcamCapture
                 onCapture={handleWebcamCapture}
                 isEditing={
-                  (beneficiarie as any)?.photo_url !== undefined ? true : false
+                  (beneficiarie as any)?.photo_url !== undefined || uploadedPhoto ? true : false
                 }
-                existingImage={(beneficiarie as any)?.photo_url || null}
+                existingImage={(beneficiarie as any)?.photo_url || uploadedPhoto || null}
+                onImageExplored={handleImageExplored}
               />
             </div>
             <div>
