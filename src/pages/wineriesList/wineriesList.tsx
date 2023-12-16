@@ -16,7 +16,7 @@ import { Table, TableCell, TableRow } from "../../components/table/table";
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useEffect, useState } from "react";
-import { getAllWineries, deleteWinerie } from "../../services/winerie.service";
+import { getAllWineries, deleteWinerie, closeWinerie } from "../../services/winerie.service";
 import LoadingComponent from "../../components/loading/loading";
 import Search from "../../components/search/search";
 import Toast from "../../components/toast/toast";
@@ -27,6 +27,8 @@ import { PERMISSIONS } from "../../constants/permissions";
 import { useSelector } from "react-redux";
 import { checkPermissions } from "../../helpers/checkPermissions";
 import SyncIcon from "@mui/icons-material/Sync";
+import DoNotDisturbOffIcon from "@mui/icons-material/DoNotDisturbOff";
+
 
 function WineriesList() {
   const [wineries, setWineries] = useState([]);
@@ -71,7 +73,7 @@ function WineriesList() {
     navigate(redirectTo);
   };
 
-  const selectWinerieDelete = (winerie: any) => {
+  const closeCurrentWinerie = (winerie: any) => {
     setWinerieSelectedDelete(winerie);
     setOpenDialog(true);
     if (winerie.type === "Secundaria") {
@@ -86,11 +88,9 @@ function WineriesList() {
     try {
       setOpenDialog(false);
       setIsLoading(true);
-      const response = await deleteWinerie(id);
+      await closeWinerie(id);
       setIsLoading(false);
-      if (response.status === 200) {
-        getWineries();
-      }
+      getWineries();
     } catch (error) {
       throw new Error("the winerie doesn't exist");
     }
@@ -202,10 +202,10 @@ function WineriesList() {
                           getPermission("delete"),
                           abilities
                         ) && (
-                          <ClearIcon
-                            onClick={() => selectWinerieDelete(winerie)}
+                          <DoNotDisturbOffIcon
+                            onClick={() => closeCurrentWinerie(winerie)}
                             className="action-item-icon action-item-icon-delete"
-                          ></ClearIcon>
+                          ></DoNotDisturbOffIcon>
                         )}
                       </Stack>
                     </TableCell>

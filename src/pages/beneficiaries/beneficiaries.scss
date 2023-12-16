@@ -51,6 +51,21 @@
                         }
                     }
 
+                    &--upload {
+                        border-radius: 5px;
+                        text-align: center;
+                        padding: 8px;
+                        font-family: "Roboto","Helvetica","Arial",sans-serif;
+                        font-weight: 500;
+                        font-size: 0.875rem;
+                        line-height: 1.75;
+                        letter-spacing: 0.02857em;
+                        text-transform: uppercase;
+                        background: #449d44;
+                        color: #fff;
+                        cursor: pointer;
+                    }
+
                     &--delete {
                         background-color: #f1f1f2;
                         color: #a8aaae;
@@ -242,6 +257,7 @@
 
     &__buttons {
         display: flex;
+        flex-direction: column;
         gap: 10px;
     }
 }
