@@ -117,3 +117,26 @@ export async function getExcelActivityList(startDate, endDate) {
     console.error("Error fetching PDF:", error);
   }
 }
+
+export async function getExcelEventDeliveries(event_id: string) {
+  try {
+    const url = `/reports`;
+    const requestBody = {
+      configObject: { event_id },
+      type: REPORT_TYPE.EVENT_DELIVERIES,
+    };
+    const response = await requestInstance.getBlob(url, requestBody);
+
+    const blob =  response.result;
+    const urlBlob = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = urlBlob;
+    a.download = "event_deliveries__"+Date.now()+".xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error fetching PDF:", error);
+  }
+}

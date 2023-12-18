@@ -25,7 +25,7 @@ import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/ben
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
-import { getExcelActivityAssistance, getExcelActivityList, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance } from "../../services/reports.service";
+import { getExcelActivityAssistance, getExcelActivityList, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance, getExcelEventDeliveries } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
 import { getAllActivities, getPdfAssistanceActivity } from "../../services/activities.service";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -113,6 +113,11 @@ function Reports() {
                     setFileType(reportFileType.PDF);
                     setDisableFileType(true);
                     getUsersList();
+                    break;
+                }
+                case REPORT_TYPE.EVENT_DELIVERIES: {
+                    setFileType(reportFileType.EXCEL);
+                    getEvents();
                     break;
                 }
                 default: break;
@@ -214,6 +219,7 @@ function Reports() {
             case REPORT_TYPE.DELIVERY_ACT: {
                 return isEmpty(selectedEvent) || isEmpty(selectedBen);
             }
+            case REPORT_TYPE.EVENT_DELIVERIES:
             case REPORT_TYPE.EVENT_SUMMARY:
             case REPORT_TYPE.EVENT_ASSISTANCE: {
                 return isEmpty(selectedEvent);
@@ -298,6 +304,10 @@ function Reports() {
         await getExcelActivityList(dayjs(startDate), dayjs(endDate));
     }
 
+    const generateExcelEventDeliveries = async() => {
+        await getExcelEventDeliveries(selectedEvent);
+    }
+
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE]: fileType === reportFileType.EXCEL ? generateExcelEventAssistance : generatePDFEventAssistance,
@@ -313,6 +323,7 @@ function Reports() {
         [REPORT_TYPE.EVENT_ASSISTANCE_DIFF]: generateExcelEventActivityDiff,
         [REPORT_TYPE.BENEFICIARIES_BY_USER]: generateBeneficiarySummaryPDF,
         [REPORT_TYPE.ACTIVITIES_LIST]: generateExcelActivityList,
+        [REPORT_TYPE.EVENT_DELIVERIES]: generateExcelEventDeliveries,
     };
 
     //Reports layout renders
@@ -657,6 +668,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE_DIFF && renderEventActivityDiff()}
             {selectedReport === REPORT_TYPE.BENEFICIARIES_BY_USER && renderBeneficiariesByUser()}
             {selectedReport === REPORT_TYPE.ACTIVITIES_LIST && renderActivityList()}
+            {selectedReport === REPORT_TYPE.EVENT_DELIVERIES && renderEventAssistance()}
           </div>
         </Paper>
       </section>
