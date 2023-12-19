@@ -18,6 +18,10 @@ import userImage from '../../assets/user.png'
 import ClearIcon from "@mui/icons-material/Clear";
 import { regimeList } from '../../constants/regimeList';
 import { getPdfDeliveryBeneficiarie } from '../../services/delivery.service';
+import { useSelector } from 'react-redux';
+import { checkPermissions } from '../../helpers/checkPermissions';
+import { SECTIONS } from '../../constants/sections';
+import { PERMISSIONS } from '../../constants/permissions';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -44,6 +48,7 @@ function EventAssistance() {
     const [openDialogMessageAction,setOpenDialogMessageAction]=useState(false);
     const [openDialogRemoved, setOpenDialogRemoved] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
+    const abilities = useSelector((state: any) => state.auth.user.abilities);
 
     const [levelSisben,setLevelSisben]=useState(["A1", "A2", "A3", "A4", "A5","B1", "B2", "B3", "B4", "B5", "B6", "B7","C1"]);
     const [regimeHealthList,setRegimeHealthList]=useState([regimeList.SUBSIDIADO, regimeList.CONTRIBUTIVO_BENEFICIARIO, regimeList.NO_AFILIADO, regimeList.RETIRADO]);
@@ -192,10 +197,16 @@ function EventAssistance() {
             className="action-item-icon action-item-icon-edit"
             onClick={() => generateEventActPDF(beneficiarie)}
           />,
-          <ClearIcon
+          (checkPermissions(
+            {
+              subject: SECTIONS.EVENTS,
+              action: [PERMISSIONS.DELETE],
+            },
+            abilities
+          ) &&  <ClearIcon
             onClick={() => openRemoveConfirmDialog(beneficiarie)}
             className="action-item-icon action-item-icon-delete"
-          ></ClearIcon>
+          ></ClearIcon>)
         ];
       }
     }
