@@ -227,15 +227,15 @@ function Reports() {
             case REPORT_TYPE.ACTIVITY_ASSISTANCE: {
                 return isEmpty(selectedActivity);
             }
-            case REPORT_TYPE.WITHOUT_SUPPORTS:
-            case REPORT_TYPE.BENEFICIARY_LIST: {
-                return false;
+            case REPORT_TYPE.WITHOUT_SUPPORTS: {
+                    return false;
             }
             case REPORT_TYPE.GENERAL_RATINGS_SUMMARY:
             case REPORT_TYPE.RATINGS_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate) || isEmpty(selectedRating);
             }
             case REPORT_TYPE.ACTIVITIES_LIST:
+            case REPORT_TYPE.BENEFICIARY_LIST:
             case REPORT_TYPE.BENEFICIARY_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate);
             }
@@ -270,11 +270,13 @@ function Reports() {
     }
 
     const generateExcelBeneficiaryList = async() => {
-        await getExcelBeneficiaryList(REPORT_TYPE.BENEFICIARY_LIST);
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate)};
+        await getExcelBeneficiaryList(REPORT_TYPE.BENEFICIARY_LIST, config);
     }
 
     const generateExcelBeneficiaryWithoutSupports = async() => {
-        await getExcelBeneficiaryList(REPORT_TYPE.WITHOUT_SUPPORTS);
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate)};
+        await getExcelBeneficiaryList(REPORT_TYPE.WITHOUT_SUPPORTS, config);
     }
 
     const generateBeneficiarySummaryPDF = async() => {
@@ -660,6 +662,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE && renderEventAssistance()}
             {selectedReport === REPORT_TYPE.ACTIVITY_ASSISTANCE && renderActivityAssistance()}
             {selectedReport === REPORT_TYPE.BENEFICIARY_SUMMARY && renderBeneficiarySummary()}
+            {selectedReport === REPORT_TYPE.BENEFICIARY_LIST && renderBeneficiarySummary()}
             {selectedReport === REPORT_TYPE.RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.GENERAL_RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
