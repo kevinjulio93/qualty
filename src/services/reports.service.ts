@@ -49,11 +49,11 @@ export async function getExcelActivityAssistance(act_id: string) {
     }
 }
 
-export async function getExcelBeneficiaryList(type) {
+export async function getExcelBeneficiaryList(type, config) {
     try {
       const url = `/reports`;
       const requestBody = {
-        configObject: {},
+        configObject: config,
         type,
       };
       const response = await requestInstance.getBlob(url, requestBody);
