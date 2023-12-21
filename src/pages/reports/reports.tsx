@@ -176,6 +176,7 @@ function Reports() {
             case 'Promotor': {
                 return promotorReports;
             }
+            case 'Especialista':
             case 'Profesionales': {
                 return profesionalReports;
             }
