@@ -25,7 +25,7 @@ import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/ben
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
-import { getExcelActivityAssistance, getExcelActivityList, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance, getExcelEventDeliveries } from "../../services/reports.service";
+import { getExcelActivityAssistance, getExcelActivityList, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance, getExcelEventDeliveries, getExcelItemDelivered } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
 import { getAllActivities, getPdfAssistanceActivity } from "../../services/activities.service";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -38,6 +38,7 @@ import { getFilePdfRatings } from "../../services/rating.service";
 import { workshops } from "../../constants/workshops";
 import { getWorkshopListPdf } from "../../services/workshop.service";
 import { getUserList } from "../../services/user.service";
+import { getAllItems } from "../../services/inventory.service";
 
 function Reports() {
     const [selectedReport, setSelectedReport] = useState(null);
@@ -47,6 +48,7 @@ function Reports() {
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [beneficiaries, setBeneficiaries] = useState([]);
     const [usersList, setUsersList] = useState([]);
+    const [itemList, setItemList] = useState([]);
     const [selectedBen, setSelectedBen] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [fileType, setFileType] = useState(reportFileType.PDF);
@@ -56,6 +58,7 @@ function Reports() {
     const [selectedRating, setSelectedRating] = useState(null);
     const [selectedWork, setSelectedWork] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
     const [benInfo, setBenInfo] = useState(null);
     const loggedUser = useSelector((state: RootState) => state.auth.user);
     const userRol = loggedUser.role.role;
@@ -120,6 +123,11 @@ function Reports() {
                     getEvents();
                     break;
                 }
+                case REPORT_TYPE.ITEM_DELIVERED: {
+                    setFileType(reportFileType.EXCEL);
+                    getItemList();
+                    break;
+                }
                 default: break;
             }
         }
@@ -164,6 +172,18 @@ function Reports() {
           if (response.status === 200) {
             const { data: dataList } = response.result;
             setUsersList(dataList);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const getItemList = async () => {
+        try {
+          const response = await getAllItems("", 1, 1000);
+          if (response.status === 200) {
+            const { data: dataList } = response.result.data;
+            setItemList(dataList);
           }
         } catch (error) {
           console.error(error);
@@ -247,6 +267,9 @@ function Reports() {
             case REPORT_TYPE.EVENT_ASSISTANCE_DIFF: {
                 return isEmpty(selectedActivity) || isEmpty(selectedEvent);
             }
+            case REPORT_TYPE.ITEM_DELIVERED: {
+                return isEmpty(selectedItem);
+            }
         }
     }
 
@@ -311,6 +334,10 @@ function Reports() {
         await getExcelEventDeliveries(selectedEvent);
     }
 
+    const generateExcelItemDelivered = async() => {
+        await getExcelItemDelivered(selectedItem);
+    }
+
     const REPORT_DICTIONARY = {
         [REPORT_TYPE.DELIVERY_ACT]: generateEventActPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE]: fileType === reportFileType.EXCEL ? generateExcelEventAssistance : generatePDFEventAssistance,
@@ -327,6 +354,7 @@ function Reports() {
         [REPORT_TYPE.BENEFICIARIES_BY_USER]: generateBeneficiarySummaryPDF,
         [REPORT_TYPE.ACTIVITIES_LIST]: generateExcelActivityList,
         [REPORT_TYPE.EVENT_DELIVERIES]: generateExcelEventDeliveries,
+        [REPORT_TYPE.ITEM_DELIVERED]: generateExcelItemDelivered,
     };
 
     //Reports layout renders
@@ -412,6 +440,14 @@ function Reports() {
         return (
             <>
               {renderDateRange()}
+            </>
+        );
+    }
+
+    const renderItemDelivered = () => {
+        return (
+            <>
+              {renderItemInput()}
             </>
         );
     }
@@ -616,6 +652,24 @@ function Reports() {
         );
     }
 
+    const renderItemInput = () => {
+        return (
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
+                <SelectDropdown
+                    selectValue={selectedItem}
+                    label="Artículo"
+                    options={itemList || []}
+                    keyLabel="name"
+                    keyValue="_id"
+                    targetKey="_id"
+                    handleValue={(value) => setSelectedItem(value._id)}
+                />
+              </div>
+            </form>
+        );
+    }
+
   return (
     <>
       <section className="assistance-container">
@@ -673,6 +727,7 @@ function Reports() {
             {selectedReport === REPORT_TYPE.BENEFICIARIES_BY_USER && renderBeneficiariesByUser()}
             {selectedReport === REPORT_TYPE.ACTIVITIES_LIST && renderActivityList()}
             {selectedReport === REPORT_TYPE.EVENT_DELIVERIES && renderEventAssistance()}
+            {selectedReport === REPORT_TYPE.ITEM_DELIVERED && renderItemDelivered()}
           </div>
         </Paper>
       </section>
