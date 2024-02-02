@@ -59,6 +59,8 @@ import { isEmpty } from "../../helpers/isEmpty";
 import SaveCancelControls from "../../components/saveActionComponent/saveCancelControls";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { regimeList } from "../../constants/regimeList";
+import { SEVERITY_TOAST } from "../../constants/severityToast";
+import Toast from "../../components/toast/toast";
 
 function Beneficiaries() {
   const documentTypes = [
@@ -81,8 +83,14 @@ function Beneficiaries() {
   ];
   const optionsRegimenHealth = [
     { label: regimeList.SUBSIDIADO, value: regimeList.SUBSIDIADO },
-    { label: regimeList.CONTRIBUTIVO_COTIZANTE, value: regimeList.CONTRIBUTIVO_COTIZANTE },
-    { label: regimeList.CONTRIBUTIVO_BENEFICIARIO, value: regimeList.CONTRIBUTIVO_BENEFICIARIO },
+    {
+      label: regimeList.CONTRIBUTIVO_COTIZANTE,
+      value: regimeList.CONTRIBUTIVO_COTIZANTE,
+    },
+    {
+      label: regimeList.CONTRIBUTIVO_BENEFICIARIO,
+      value: regimeList.CONTRIBUTIVO_BENEFICIARIO,
+    },
     { label: regimeList.REGIMEN_ESPECIAL, value: regimeList.REGIMEN_ESPECIAL },
     { label: regimeList.RETIRADO, value: regimeList.RETIRADO },
     { label: regimeList.NO_AFILIADO, value: regimeList.NO_AFILIADO },
@@ -116,7 +124,7 @@ function Beneficiaries() {
     { label: "Mental-Cognitiva", value: "Mental-Cognitiva" },
     { label: "Mental-Psicosocial", value: "Mental-Psicosocial" },
     { label: "Motriz", value: "Motriz" },
-    { label: "Otra", value: "Otra" }
+    { label: "Otra", value: "Otra" },
   ];
 
   const optionsOcupation = [
@@ -135,13 +143,68 @@ function Beneficiaries() {
   ];
 
   const sisbenList = [
-    "A1", "A2", "A3", "A4", "A5",
-    "B1", "B2", "B3", "B4", "B5", "B6", "B7",
-    "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15", "C16", "C17", "C18",
-    "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13", "D14", "D15", "D16", "D17", "D18", "D19", "D20", "D21"
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "A5",
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C8",
+    "C9",
+    "C10",
+    "C11",
+    "C12",
+    "C13",
+    "C14",
+    "C15",
+    "C16",
+    "C17",
+    "C18",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "D8",
+    "D9",
+    "D10",
+    "D11",
+    "D12",
+    "D13",
+    "D14",
+    "D15",
+    "D16",
+    "D17",
+    "D18",
+    "D19",
+    "D20",
+    "D21",
   ];
 
-  const mandatoryFields = ["identification_type", "identification", "first_last_name", "first_name", "sex", "birthday", "blody_type"]
+  const mandatoryFields = [
+    "identification_type",
+    "identification",
+    "first_last_name",
+    "first_name",
+    "sex",
+    "birthday",
+    "blody_type",
+  ];
 
   const [beneficiarie, setBeneficiarie] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
@@ -152,6 +215,7 @@ function Beneficiaries() {
   const [docEps, setDocEps] = useState(null);
   const [docSis, setDocSis] = useState(null);
   const [docReg, setDocReg] = useState(null);
+  const [uploadedPhoto, setUploadedPhoto] = useState(null);
   const { beneficiarieId } = useParams();
   const [openCamaraSupports, setOpenCamaraSupports] = useState(false);
   const webcamRef = useRef(null);
@@ -164,6 +228,7 @@ function Beneficiaries() {
   const [forceRender, setForceRender] = useState(+new Date());
   const [activities, setActivities] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
   const [inAct, setInAct] = useState("");
   const [displayedImage, setDisplayedImage] = useState(null);
   const navigate = useNavigate();
@@ -177,25 +242,25 @@ function Beneficiaries() {
         await getBeneficiary();
       })();
     }
-    
+
     //setValuesDefaultBeneficiarie();
   }, []);
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
-      (async ()=> await getMuns())();
+      (async () => await getMuns())();
     }
   }, [beneficiarie, departmentsList]);
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
-      (async ()=> await getComs())();
+      (async () => await getComs())();
     }
   }, [beneficiarie, municipiesList]);
 
   useEffect(() => {
     if (!isEmpty(beneficiarieId) && !isEmpty(beneficiarie)) {
-      (async ()=> await getAsos())();
+      (async () => await getAsos())();
     }
   }, [beneficiarie, communityList]);
 
@@ -226,13 +291,13 @@ function Beneficiaries() {
     try {
       const response = await getAllActivities(null, 1, 200);
       if (response.status === 200) {
-      const { data: dataList } = response.result;
+        const { data: dataList } = response.result;
         setActivities(dataList);
       }
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const getBeneficiary = async () => {
     try {
@@ -274,9 +339,22 @@ function Beneficiaries() {
     const file = imageBlob;
     const ext = file.type.split("/")[1];
     const filePhoto = new File([file], "foto." + ext);
+    console.log(filePhoto);
     setFileBen("photo_url", filePhoto);
     setSelectedFile(file);
   };
+
+  const handleImageExplored = (e) => {
+    const imageDoc = e.target.files[0];
+    const file = imageDoc;
+    const ext = file.type.split("/")[1];
+    const filePhoto = new File([file], "foto." + ext);
+    console.log(filePhoto);
+    setBeneficiarie({...beneficiarie, photo_url: null});
+    setFileBen("photo_url", imageDoc);
+    setUploadedPhoto(URL.createObjectURL(imageDoc));
+    setSelectedFile(file);
+  }
 
   const handleCaptureFootprint = (imageBlob: any) => {
     // Include the imageBlob in your FormData
@@ -287,8 +365,6 @@ function Beneficiaries() {
     setSelectedFile(file);
   };
 
-
-
   const saveBeneficiary = async (beneficiary: any) => {
     const saveData = beneficiarieId ? updateBeneficiary : createBeneficiary;
     if (files || (beneficiarie as any)?.photo_url) {
@@ -296,7 +372,7 @@ function Beneficiaries() {
         await saveData(files, beneficiary); // Replace with your actual access token
         navigate(`${ROUTES.DASHBOARD}/${ROUTES.BEN_LIST}`);
       } catch (error) {
-        console.error("Upload failed:", error);
+        setOpenToast(true);
       }
     }
   };
@@ -306,6 +382,7 @@ function Beneficiaries() {
   };
 
   const setFileBen = (key, file, name?: string | null) => {
+    console.log(files);
     const listFiles = files;
     let fileParse = null;
     if (name) {
@@ -455,7 +532,6 @@ function Beneficiaries() {
 
   const getAssociations = async (target, community: any) => {
     try {
-      console.log(community);
       formHanlder(target, community);
       const response = await getAssociationsByCommunity(community?._id);
       if (response.status === 200) {
@@ -485,17 +561,17 @@ function Beneficiaries() {
 
   const getFormattedDate = (newDate) => {
     if (newDate.length === 8) {
-      const dateTemp = dayjs(newDate, 'YYYYMMDD');
+      const dateTemp = dayjs(newDate, "YYYYMMDD");
       return dateTemp;
     } else {
       return newDate.format();
     }
-  }
+  };
 
   const getSelectedActivity = (data) => {
-    const currentAct = activities.find(item => item.name === data);
+    const currentAct = activities.find((item) => item.name === data);
     return currentAct._id;
-  }
+  };
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -505,16 +581,31 @@ function Beneficiaries() {
   const displayImage = (image) => {
     setDisplayedImage(image);
     setOpenModal(true);
-  }
+  };
 
   const validateFields = () => {
-    return mandatoryFields.some(item => isEmpty(beneficiarie[item]));
-  }
+    return mandatoryFields.some((item) => isEmpty(beneficiarie[item]));
+  };
 
   const getCurrentActivity = (act) => {
-    const index = activities.findIndex((item) => item._id === act?._id);
+    const actId = typeof act === "object" ? act._id : act;
+    const index = activities.findIndex((item) => item._id === actId);
     return activities[index]?.name || "";
-  }
+  };
+
+  const getAssociationsList = () => {
+    const index = activities.findIndex(
+      (item) => item._id === (beneficiarie as any).activity
+    );
+    const currentAct = activities[index];
+    return !currentAct || currentAct === ""
+      ? associationsList
+      : associationsList.filter((act) =>
+          currentAct.participatingAssociations.some(
+            (element) => element._id === act._id
+          )
+        );
+  };
 
   return (
     <>
@@ -536,13 +627,17 @@ function Beneficiaries() {
               <WebcamCapture
                 onCapture={handleWebcamCapture}
                 isEditing={
-                  (beneficiarie as any)?.photo_url !== undefined ? true : false
+                  (beneficiarie as any)?.photo_url !== undefined || uploadedPhoto ? true : false
                 }
-                existingImage={(beneficiarie as any)?.photo_url || null}
+                existingImage={(beneficiarie as any)?.photo_url || uploadedPhoto || null}
+                onImageExplored={handleImageExplored}
               />
             </div>
             <div>
-              <DPersonaReader handleCaptureFootprint={handleCaptureFootprint} existingImage={(beneficiarie as any)?.footprint_url || null}/>
+              <DPersonaReader
+                handleCaptureFootprint={handleCaptureFootprint}
+                existingImage={(beneficiarie as any)?.footprint_url || null}
+              />
             </div>
           </div>
           <div className="beneficiaries-container__form-section__beneficiarie">
@@ -563,7 +658,9 @@ function Beneficiaries() {
                   <form className="beneficiaries-container__form-section__beneficiarie__form">
                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
                       <SelectDropdown
-                        selectValue={(beneficiarie as any)?.identification_type || ""}
+                        selectValue={
+                          (beneficiarie as any)?.identification_type || ""
+                        }
                         id="tipo_de_documento"
                         label="Tipo de documento"
                         options={documentTypes}
@@ -695,8 +792,8 @@ function Beneficiaries() {
                       />
                     </div>
 
-                     <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                      <FormControl sx={{width: "100%"}}>
+                    <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                      <FormControl sx={{ width: "100%" }}>
                         <InputLabel id="demo-simple-select-label">
                           ¿Registrado en Actividad?
                         </InputLabel>
@@ -704,7 +801,9 @@ function Beneficiaries() {
                           labelId="demo-simple-select-label"
                           id="demo-simple-select"
                           label="Tipo de asociacion"
-                          onChange={(e) => setInAct(e.target.value)}
+                          onChange={(e) => {
+                            setInAct(e.target.value);
+                          }}
                           value={inAct || ""}
                         >
                           <MenuItem key={"inActYes"} value={"SI"}>
@@ -716,23 +815,25 @@ function Beneficiaries() {
                         </Select>
                       </FormControl>
                     </div>
-                     { inAct === "SI" && <div className="beneficiaries-container__form-section__beneficiarie__form__field">
-                      <Autocomplete
-                        style={{ width: "100%" }}
-                        disablePortal
-                        id="activity"
-                        options={activities.map(item => item.name)}
-                        onChange={(e: any, data: any) => {
-                          formHanlder("activity", getSelectedActivity(data))
-                        }
-                        }
-                        value={getCurrentActivity((beneficiarie as any)?.activity)}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Actividad" />
-                        )}
-                      />
-                    </div> 
-                    }
+                    {inAct === "SI" && (
+                      <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                        <Autocomplete
+                          style={{ width: "100%" }}
+                          disablePortal
+                          id="activity"
+                          options={activities.map((item) => item.name)}
+                          onChange={(e: any, data: any) => {
+                            formHanlder("activity", getSelectedActivity(data));
+                          }}
+                          value={getCurrentActivity(
+                            (beneficiarie as any)?.activity
+                          )}
+                          renderInput={(params) => (
+                            <TextField {...params} label="Actividad" />
+                          )}
+                        />
+                      </div>
+                    )}
                   </form>
                 </TabPanel>
                 <TabPanel value="2">
@@ -822,7 +923,9 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    <div className="beneficiaries-container__form-section__beneficiarie__form__field">
+                    <div
+                      className={`beneficiaries-container__form-section__beneficiarie__form__field }`}
+                    >
                       <SelectDropdown
                         id="departamento"
                         selectValue={
@@ -839,7 +942,9 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    <div className="activities-container__form-section__assitants__form-2__field">
+                    <div
+                      className={`activities-container__form-section__assitants__form-2__field}`}
+                    >
                       <SelectDropdown
                         id="municipio"
                         selectValue={getSelectedValueMun("municipality")?.id}
@@ -854,7 +959,9 @@ function Beneficiaries() {
                       />
                     </div>
 
-                    <div className="activities-container__form-section__assitants__form-2__field">
+                    <div
+                      className={`activities-container__form-section__assitants__form-2__field}`}
+                    >
                       <SelectDropdown
                         id="comuna"
                         selectValue={
@@ -880,7 +987,7 @@ function Beneficiaries() {
                           (beneficiarie as any)?.association
                         }
                         label="Asociacion"
-                        options={associationsList}
+                        options={getAssociationsList()}
                         keyLabel="name"
                         keyValue="_id"
                         targetKey="association"
@@ -997,7 +1104,11 @@ function Beneficiaries() {
                       </Button>
                     </div>
                   )}
-                  <Stack className="content-supports" direction="row" spacing={2}>
+                  <Stack
+                    className="content-supports"
+                    direction="row"
+                    spacing={2}
+                  >
                     <Card sx={{ maxWidth: 200 }}>
                       <CardMedia
                         sx={{ width: 100, height: 100 }}
@@ -1188,7 +1299,7 @@ function Beneficiaries() {
       </section>
       <SaveCancelControls
         saveText="Guardar"
-        handleSave={(e) => createBeneficiarie() }
+        handleSave={(e) => createBeneficiarie()}
         disabled={validateFields()}
       />
       <Dialog
@@ -1207,6 +1318,12 @@ function Beneficiaries() {
           />
         </DialogContent>
       </Dialog>
+      <Toast
+          open={openToast}
+          message={`Ocurrio un error al guardar el beneficiario`}
+          severity={SEVERITY_TOAST.ERROR}
+          handleClose={() => setOpenToast(false)}
+        />;
     </>
   );
 }

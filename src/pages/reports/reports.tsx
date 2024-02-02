@@ -25,7 +25,7 @@ import { getBeneficiariesList, getPdfListBeneficiarie } from "../../services/ben
 import "./reports.scss";
 import { isEmpty } from "../../helpers/isEmpty";
 import { getPdfDeliveryBeneficiarie } from "../../services/delivery.service";
-import { getExcelActivityAssistance, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance } from "../../services/reports.service";
+import { getExcelActivityAssistance, getExcelActivityList, getExcelBeneficiaryList, getExcelEventActivityDiff, getExcelEventAssistance, getExcelEventDeliveries, getExcelItemDelivered } from "../../services/reports.service";
 import { reportFileType } from "../../constants/reportFileType";
 import { getAllActivities, getPdfAssistanceActivity } from "../../services/activities.service";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -37,6 +37,8 @@ import { RootState } from "../../app/store";
 import { getFilePdfRatings } from "../../services/rating.service";
 import { workshops } from "../../constants/workshops";
 import { getWorkshopListPdf } from "../../services/workshop.service";
+import { getUserList } from "../../services/user.service";
+import { getAllItems } from "../../services/inventory.service";
 
 function Reports() {
     const [selectedReport, setSelectedReport] = useState(null);
@@ -45,6 +47,8 @@ function Reports() {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedActivity, setSelectedActivity] = useState(null);
     const [beneficiaries, setBeneficiaries] = useState([]);
+    const [usersList, setUsersList] = useState([]);
+    const [itemList, setItemList] = useState([]);
     const [selectedBen, setSelectedBen] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [fileType, setFileType] = useState(reportFileType.PDF);
@@ -53,6 +57,9 @@ function Reports() {
     const [endDate, setEndDate] = useState(null);
     const [selectedRating, setSelectedRating] = useState(null);
     const [selectedWork, setSelectedWork] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [benInfo, setBenInfo] = useState(null);
     const loggedUser = useSelector((state: RootState) => state.auth.user);
     const userRol = loggedUser.role.role;
 
@@ -76,6 +83,7 @@ function Reports() {
                     getActivitiesList();
                     break;
                 }
+                case REPORT_TYPE.ACTIVITIES_LIST:
                 case REPORT_TYPE.BENEFICIARY_LIST:
                 case REPORT_TYPE.WITHOUT_SUPPORTS: {
                     setFileType(reportFileType.EXCEL);
@@ -104,6 +112,22 @@ function Reports() {
                     getActivitiesList();
                     break;
                 }
+                case REPORT_TYPE.BENEFICIARIES_BY_USER: {
+                    setFileType(reportFileType.PDF);
+                    setDisableFileType(true);
+                    getUsersList();
+                    break;
+                }
+                case REPORT_TYPE.EVENT_DELIVERIES: {
+                    setFileType(reportFileType.EXCEL);
+                    getEvents();
+                    break;
+                }
+                case REPORT_TYPE.ITEM_DELIVERED: {
+                    setFileType(reportFileType.EXCEL);
+                    getItemList();
+                    break;
+                }
                 default: break;
             }
         }
@@ -112,7 +136,7 @@ function Reports() {
     //Resources requests
     const getEvents = async() => {
         try {
-          const responseEvents = await getAllEvents();
+          const responseEvents = await getAllEvents(null, 1, 1000);
           const events = responseEvents.result.data.data;
           setEventList(events);
         } catch (error) {
@@ -132,10 +156,34 @@ function Reports() {
 
     const getActivitiesList = async () => {
         try {
-          const response = await getAllActivities("", 1, 100);
+          const response = await getAllActivities("", 1, 1000);
           if (response.status === 200) {
             const { data: dataList } = response.result;
             setActivities(dataList);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const getUsersList = async () => {
+        try {
+          const response = await getUserList("", 1, 1000);
+          if (response.status === 200) {
+            const { data: dataList } = response.result;
+            setUsersList(dataList);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+    }
+
+    const getItemList = async () => {
+        try {
+          const response = await getAllItems("", 1, 1000);
+          if (response.status === 200) {
+            const { data: dataList } = response.result.data;
+            setItemList(dataList);
           }
         } catch (error) {
           console.error(error);
@@ -148,6 +196,7 @@ function Reports() {
             case 'Promotor': {
                 return promotorReports;
             }
+            case 'Especialista':
             case 'Profesionales': {
                 return profesionalReports;
             }
@@ -170,6 +219,7 @@ function Reports() {
 
     const handleSelectedBend = (ben, index) => {
         setSelectedIndex(index);
+        setBenInfo(ben);
         setSelectedBen(ben._id);
     }
 
@@ -182,6 +232,7 @@ function Reports() {
         setSelectedRating(null);
         setSelectedWork(null);
         setSelectedActivity(null);
+        setSelectedUser(null);
     }
 
     const disabledReportButton = () => {
@@ -189,6 +240,7 @@ function Reports() {
             case REPORT_TYPE.DELIVERY_ACT: {
                 return isEmpty(selectedEvent) || isEmpty(selectedBen);
             }
+            case REPORT_TYPE.EVENT_DELIVERIES:
             case REPORT_TYPE.EVENT_SUMMARY:
             case REPORT_TYPE.EVENT_ASSISTANCE: {
                 return isEmpty(selectedEvent);
@@ -196,14 +248,15 @@ function Reports() {
             case REPORT_TYPE.ACTIVITY_ASSISTANCE: {
                 return isEmpty(selectedActivity);
             }
-            case REPORT_TYPE.WITHOUT_SUPPORTS:
-            case REPORT_TYPE.BENEFICIARY_LIST: {
-                return false;
+            case REPORT_TYPE.WITHOUT_SUPPORTS: {
+                    return false;
             }
             case REPORT_TYPE.GENERAL_RATINGS_SUMMARY:
             case REPORT_TYPE.RATINGS_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate) || isEmpty(selectedRating);
             }
+            case REPORT_TYPE.ACTIVITIES_LIST:
+            case REPORT_TYPE.BENEFICIARY_LIST:
             case REPORT_TYPE.BENEFICIARY_SUMMARY: {
                 return isEmpty(startDate) || isEmpty(endDate);
             }
@@ -214,11 +267,14 @@ function Reports() {
             case REPORT_TYPE.EVENT_ASSISTANCE_DIFF: {
                 return isEmpty(selectedActivity) || isEmpty(selectedEvent);
             }
+            case REPORT_TYPE.ITEM_DELIVERED: {
+                return isEmpty(selectedItem);
+            }
         }
     }
 
     const generateEventActPDF = async() => {
-        await getPdfDeliveryBeneficiarie(selectedEvent, selectedBen);
+        await getPdfDeliveryBeneficiarie(selectedEvent, benInfo);
     }
 
     const generateExcelEventAssistance = async() => {
@@ -238,15 +294,17 @@ function Reports() {
     }
 
     const generateExcelBeneficiaryList = async() => {
-        await getExcelBeneficiaryList(REPORT_TYPE.BENEFICIARY_LIST);
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate)};
+        await getExcelBeneficiaryList(REPORT_TYPE.BENEFICIARY_LIST, config);
     }
 
     const generateExcelBeneficiaryWithoutSupports = async() => {
-        await getExcelBeneficiaryList(REPORT_TYPE.WITHOUT_SUPPORTS);
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate)};
+        await getExcelBeneficiaryList(REPORT_TYPE.WITHOUT_SUPPORTS, config);
     }
 
     const generateBeneficiarySummaryPDF = async() => {
-        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate) };
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), userId: selectedUser };
         await getPdfListBeneficiarie(config);
     }
 
@@ -256,7 +314,7 @@ function Reports() {
     }
 
     const generateWorkshopsSummaryPDF = async() => {
-        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), query: selectedWork };
+        const config = { startDate: dayjs(startDate), endDate: dayjs(endDate), typeWorkShop: selectedWork };
         await getWorkshopListPdf(config, selectedReport);
     }
 
@@ -266,6 +324,18 @@ function Reports() {
 
     const generateExcelEventActivityDiff = async() => {
         await getExcelEventActivityDiff(selectedActivity, selectedEvent);
+    }
+
+    const generateExcelActivityList = async() => {
+        await getExcelActivityList(dayjs(startDate), dayjs(endDate));
+    }
+
+    const generateExcelEventDeliveries = async() => {
+        await getExcelEventDeliveries(selectedEvent);
+    }
+
+    const generateExcelItemDelivered = async() => {
+        await getExcelItemDelivered(selectedItem);
     }
 
     const REPORT_DICTIONARY = {
@@ -281,6 +351,10 @@ function Reports() {
         [REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY]: generateWorkshopsSummaryPDF,
         [REPORT_TYPE.EVENT_SUMMARY]: generateEventSummaryPDF,
         [REPORT_TYPE.EVENT_ASSISTANCE_DIFF]: generateExcelEventActivityDiff,
+        [REPORT_TYPE.BENEFICIARIES_BY_USER]: generateBeneficiarySummaryPDF,
+        [REPORT_TYPE.ACTIVITIES_LIST]: generateExcelActivityList,
+        [REPORT_TYPE.EVENT_DELIVERIES]: generateExcelEventDeliveries,
+        [REPORT_TYPE.ITEM_DELIVERED]: generateExcelItemDelivered,
     };
 
     //Reports layout renders
@@ -344,6 +418,40 @@ function Reports() {
         );
     }
 
+    const renderGeneralWorkshopsSummary = () => {
+        return (
+            <>
+              {renderDateRange()}
+              {renderWorkshopInput()}
+            </>
+        );
+    }
+
+    const renderBeneficiariesByUser = () => {
+        return (
+            <>
+              {renderDateRange()}
+              {renderUserInput()}
+            </>
+        );
+    }
+
+    const renderActivityList = () => {
+        return (
+            <>
+              {renderDateRange()}
+            </>
+        );
+    }
+
+    const renderItemDelivered = () => {
+        return (
+            <>
+              {renderItemInput()}
+            </>
+        );
+    }
+
     //Generic input renders
     const renderEventInput = () => {
         return (
@@ -357,6 +465,24 @@ function Reports() {
                     keyValue="_id"
                     targetKey="_id"
                     handleValue={(value) => setSelectedEvent(value._id)}
+                />
+              </div>
+            </form>
+        );
+    }
+
+    const renderUserInput = () => {
+        return (
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
+                <SelectDropdown
+                    selectValue={selectedUser}
+                    label="Usuario"
+                    options={usersList || []}
+                    keyLabel="name"
+                    keyValue="_id"
+                    targetKey="_id"
+                    handleValue={(value) => setSelectedUser(value._id)}
                 />
               </div>
             </form>
@@ -526,6 +652,24 @@ function Reports() {
         );
     }
 
+    const renderItemInput = () => {
+        return (
+            <form className="activities-container__form-section__assitants__form-2">
+                <div className="activities-container__form-section__assitants__form-2__field">
+                <SelectDropdown
+                    selectValue={selectedItem}
+                    label="Artículo"
+                    options={itemList || []}
+                    keyLabel="name"
+                    keyValue="_id"
+                    targetKey="_id"
+                    handleValue={(value) => setSelectedItem(value._id)}
+                />
+              </div>
+            </form>
+        );
+    }
+
   return (
     <>
       <section className="assistance-container">
@@ -573,12 +717,17 @@ function Reports() {
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE && renderEventAssistance()}
             {selectedReport === REPORT_TYPE.ACTIVITY_ASSISTANCE && renderActivityAssistance()}
             {selectedReport === REPORT_TYPE.BENEFICIARY_SUMMARY && renderBeneficiarySummary()}
+            {selectedReport === REPORT_TYPE.BENEFICIARY_LIST && renderBeneficiarySummary()}
             {selectedReport === REPORT_TYPE.RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.GENERAL_RATINGS_SUMMARY && renderRatingsSummary()}
             {selectedReport === REPORT_TYPE.WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
-            {selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY && renderWorkshopsSummary()}
+            {selectedReport === REPORT_TYPE.GENERAL_WORKSHOPS_SUMMARY && renderGeneralWorkshopsSummary()}
             {selectedReport === REPORT_TYPE.EVENT_SUMMARY && renderEventAssistance()}
             {selectedReport === REPORT_TYPE.EVENT_ASSISTANCE_DIFF && renderEventActivityDiff()}
+            {selectedReport === REPORT_TYPE.BENEFICIARIES_BY_USER && renderBeneficiariesByUser()}
+            {selectedReport === REPORT_TYPE.ACTIVITIES_LIST && renderActivityList()}
+            {selectedReport === REPORT_TYPE.EVENT_DELIVERIES && renderEventAssistance()}
+            {selectedReport === REPORT_TYPE.ITEM_DELIVERED && renderItemDelivered()}
           </div>
         </Paper>
       </section>

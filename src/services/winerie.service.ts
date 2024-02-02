@@ -33,3 +33,8 @@ export async function deleteWinerie(id: any) {
   const response = await winerie.delete(`/wineries/${id}`);
   return response;
 }
+
+export async function closeWinerie(id:string) {
+  const response = await winerie.put("/wineries/close/" + id, null);
+  return response;
+}
